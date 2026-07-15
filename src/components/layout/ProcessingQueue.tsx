@@ -2,6 +2,7 @@ import { convertFileSrc } from '@tauri-apps/api/core';
 import { useState } from 'react';
 import { Loader2, X } from 'lucide-react';
 import type { FileItem } from '../../stores/appStore';
+import { isImageFormat } from '../../utils/mediaFormat';
 
 interface ProcessingQueueProps {
   files: FileItem[];
@@ -14,9 +15,6 @@ const fmt = (bytes: number): string => {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 };
 
-const isImageFile = (format: string) =>
-  /^(jpg|jpeg|png|gif|webp|bmp|tiff|avif|ico)$/i.test(format);
-
 function QueueItem({ file, onRemove }: { file: FileItem; onRemove?: (id: string) => void }) {
   const [imgError, setImgError] = useState(false);
 
@@ -24,7 +22,7 @@ function QueueItem({ file, onRemove }: { file: FileItem; onRemove?: (id: string)
   const isCompleted = file.status === 'completed';
   const isError = file.status === 'error';
 
-  const showThumbnail = isImageFile(file.format) && file.path && !imgError;
+  const showThumbnail = isImageFormat(file.format) && file.path && !imgError;
   const thumbnailSrc = showThumbnail ? convertFileSrc(file.path) : null;
 
   const savedPct = file.originalSize > 0

@@ -6,6 +6,48 @@
 
 ## 变更记录
 
+### 2026-07-15 视频剪辑工作区重构
+
+- 视频剪辑页改为“项目素材 / 视频预览 / 右侧检查器 / 单轨时间线”的桌面编辑器布局，交互方向参考剪映与 Final Cut Pro。
+- 新增素材区的本地视频选择入口；仍保持单源视频、非破坏编辑，原文件不会被修改。
+- 保留并接入现有 FFmpeg 能力：逐帧定位、入点/出点、分割、排除片段、撤销/重做、无损优先合并导出和精确 MP4 导出。
+- 参考 LosslessCut 的无损优先剪辑工作流；未复制其 GPL 源代码，许可证和来源记录见 `THIRD_PARTY_NOTICES`。
+- 验证：`tests/components/VideoTrimmer.test.tsx` 13 个测试通过。
+
+---
+
+### 2026-07-15 Windows 构建入口修复（C:\3.5pro）
+
+- 新增 `BUILD_WINDOWS.cmd`，使用纯 ASCII 内容和 Windows CRLF 换行，避免旧批处理入口在 Windows 上被解析成 `ul`、`ython`、`ld.py` 等残缺命令。
+- `build.py` 的源路径候选新增 `C:\3.5pro`，支持用户直接把项目复制到 Windows 根目录后构建。
+- README 的 Windows 构建说明改为优先运行 `C:\3.5pro\BUILD_WINDOWS.cmd`，仍保留 `python build.py` 作为手动备用命令。
+- 验证：`python3 -m pytest -q tests/test_build_script_config.py` 14 个测试通过。
+
+---
+
+### 2026-07-15 TinyPix 3.5.1 预览基础修复（FFprobe 与资产协议）
+
+- 为 Tauri 启用 `protocol-asset`，资产协议静态范围仅开放 `%LOCALAPPDATA%/TinyPix/previews/**`，不授予全磁盘访问。
+- FFprobe 改为按 `codec_type` 选择真实视频流，忽略 attached-picture，音频流字段不再按视频尺寸强制解析。
+- 视频信息新增容器、视频/音频编码、音轨存在性和旋转元数据，同时保留旧 `codec` / `format` 字段兼容现有前端。
+- 时长按 format、视频流 duration、`duration_ts × time_base` 依次回退；VFR 优先使用 `avg_frame_rate`。
+- 验证：11 个定向 FFprobe 测试及 101 个 Rust 全量测试通过，`cargo fmt --check`、`cargo check`、`git diff --check` 通过。
+
+---
+
+### 2026-07-14 TinyPix 3.5 核心完整档
+
+- 信息架构收敛为 `视频输出 / GIF 制作 / 视频剪辑` 与单一 `图片处理` 工作台，移除旧五入口及重复组件。
+- 图片管线补齐裁切、旋转、镜像、两类尺寸、色彩、锐化、透明度、EXIF 清理和五种真实编码输出。
+- 视频输出统一五种视频容器、四种音频格式、用途预设、批量容错、取消与同名安全改名；剪辑默认无损并可切换精确重编码。
+- FFmpeg/FFprobe 改为固定版本、固定 SHA-256 的构建资源，编入主 EXE 后原子释放并校验；设置页可查看版本、许可和清理缓存。
+- 新增 MIT `LICENSE`、`THIRD_PARTY_NOTICES`、媒体能力契约及单一 Portable EXE 构建元数据。
+- 最终验证：612 个前端测试、95 个 Rust 测试、11 个 Python 测试全部通过；UI 审计 20/20、Windows 媒体矩阵 14/14、断网绿色版启动验证通过。
+- 交付物：`TinyPix-Pro-3.5.0-Windows-x64-Portable.exe`，223,005,696 bytes，SHA-256 `c999007cd3b01752238cd29bb936b704b352462f0f7470b6ceec3a434e9a9759`。
+- 完整证据见 `artifacts/verification-report.md`。
+
+---
+
 ### 2026-07-13 第二十次更新 - TDD bug 修复与测试补全
 
 #### 修复内容

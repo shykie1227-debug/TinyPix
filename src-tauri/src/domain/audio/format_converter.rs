@@ -57,17 +57,24 @@ pub struct ConvertConfig {
 }
 
 pub trait AudioFormatConverter: Send + Sync {
-    fn convert(&self, ctx: ConvertContext, config: &ConvertConfig) -> Result<AudioOperationResult, String>;
+    fn convert(
+        &self,
+        ctx: ConvertContext,
+        config: &ConvertConfig,
+    ) -> Result<AudioOperationResult, String>;
 }
 
 /// FfmpegFormatConverter — 音频转码（MP3/AAC/FLAC/WAV/M4A）
 pub struct FfmpegFormatConverter;
 
 impl AudioFormatConverter for FfmpegFormatConverter {
-    fn convert(&self, ctx: ConvertContext, config: &ConvertConfig) -> Result<AudioOperationResult, String> {
-        let ffmpeg = get_ffmpeg_path().ok_or_else(|| {
-            FFmpegError::NotFound("ffmpeg 未找到".to_string()).to_string()
-        })?;
+    fn convert(
+        &self,
+        ctx: ConvertContext,
+        config: &ConvertConfig,
+    ) -> Result<AudioOperationResult, String> {
+        let ffmpeg = get_ffmpeg_path()
+            .ok_or_else(|| FFmpegError::NotFound("ffmpeg 未找到".to_string()).to_string())?;
 
         let start = std::time::Instant::now();
         let original_size = std::fs::metadata(ctx.input_path)

@@ -7,6 +7,9 @@
     "core:default",
     "core:event:default",
     "core:window:default",
+    "core:window:allow-set-size",
+    "core:window:allow-center",
+    "core:webview:allow-set-webview-zoom",
     "core:path:default",
     "core:image:default",
     "dialog:default"

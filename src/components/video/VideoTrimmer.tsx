@@ -1,354 +1,501 @@
-import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { invoke } from '@tauri-apps/api/core';
-import { convertFileSrc } from '@tauri-apps/api/core';
-import { useAppStore } from '../../stores/appStore';
-import { Loader2, Play, Rocket, Sliders, Settings } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { convertFileSrc, invoke } from '@tauri-apps/api/core';
+import { listen } from '@tauri-apps/api/event';
+import { open } from '@tauri-apps/plugin-dialog';
+import {
+  ChevronsLeft,
+  ChevronsRight,
+  Film,
+  Loader2,
+  Maximize2,
+  Pause,
+  Play,
+  Plus,
+  Redo2,
+  RotateCcw,
+  Scissors,
+  Square,
+  StepBack,
+  StepForward,
+  Trash2,
+  Undo2,
+  ZoomIn,
+  ZoomOut,
+} from 'lucide-react';
+import { useAppStore, type FileItem } from '../../stores/appStore';
+import { isVideoFormat } from '../../utils/mediaFormat';
 import { withVideoSuffix } from '../../utils/videoOutput';
 import { formatDuration } from '../../utils/timeFormat';
-import { useVideoProgress } from '../../hooks/useVideoProgress';
-import { useClipProperties } from '../../hooks/useClipProperties';
-import { useCssFilterPreview } from '../../hooks/useCssFilterPreview';
-import { isVideoFormat } from '../../utils/mediaFormat';
-import { submitEditExport } from '../../modules/editExportBridge';
-import TrimTimeline from '../preview/TrimTimeline';
-import SliderControl from '../common/SliderControl';
-import ExportFormatSelector from '../image/ExportFormatSelector';
 import VideoPlayer from '../layout/VideoPlayer';
 import PlayerControls from '../preview/PlayerControls';
 import DropZone from '../layout/DropZone';
-import type { FileItem } from '../../stores/appStore';
+import VideoEditTimeline from '../preview/VideoEditTimeline';
+import { useMediaPreview } from '../../hooks/useMediaPreview';
+import {
+  commitEdit,
+  createEditHistory,
+  createVideoEditProject,
+  getIncludedRanges,
+  redoEdit,
+  setSegmentIncluded,
+  splitAtPlayhead,
+  stepFrame,
+  trimToInPoint,
+  trimToOutPoint,
+  undoEdit,
+  type VideoEditHistory,
+  type VideoEditProject,
+} from '../../modules/video/editProject';
 
-/**
- * 模块15：视频剪辑编排模块（VideoTrimmerOrchestrator）
- * 纯编排：组合 14 个子模块，自身 < 200 行
- */
+interface TimelineAssets {
+  filmstripPath?: string;
+  waveformPath?: string;
+}
+
+const outputFormatFor = (file: FileItem, precise: boolean) => {
+  if (precise) return 'mp4';
+  const format = file.format.toLowerCase();
+  return ['mp4', 'mov', 'mkv'].includes(format) ? format : 'mp4';
+};
+
+const taskId = () =>
+  typeof crypto !== 'undefined' && 'randomUUID' in crypto
+    ? crypto.randomUUID()
+    : `edit-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
+const ToolButton = ({
+  label,
+  onClick,
+  disabled = false,
+  children,
+}: {
+  label: string;
+  onClick: () => void;
+  disabled?: boolean;
+  children: React.ReactNode;
+}) => (
+  <button
+    type="button"
+    aria-label={label}
+    title={label}
+    disabled={disabled}
+    onClick={onClick}
+    className="flex min-h-10 min-w-10 shrink-0 items-center justify-center rounded-lg bg-surface-container-high px-2 text-xs font-semibold text-on-surface hover:bg-surface-container-highest disabled:cursor-not-allowed disabled:opacity-35"
+  >
+    {children}
+  </button>
+);
+
 export default function VideoTrimmer() {
-  const { files, options, addFiles } = useAppStore();
-
-  // 视频元数据
-  const [duration, setDuration] = useState<number>(0);
-  const [currentTime, setCurrentTime] = useState<number>(0);
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [videoPreviewPath, setVideoPreviewPath] = useState<string>('');
-  const [videoPlaybackFailed, setVideoPlaybackFailed] = useState<boolean>(false);
+  const { files, options, addFiles, removeFile } = useAppStore();
+  const videos = files.filter((file) => isVideoFormat(file.format));
+  const firstVideo = videos[0];
+  const [duration, setDuration] = useState(0);
+  const [fps, setFps] = useState(30);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [history, setHistory] = useState<VideoEditHistory | null>(null);
+  const [selectedSegmentId, setSelectedSegmentId] = useState('segment-1');
+  const [zoom, setZoom] = useState(1);
+  const [assets, setAssets] = useState<TimelineAssets | null>(null);
+  const [assetsLoading, setAssetsLoading] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const playbackStopRef = useRef<number | null>(null);
+  const activeTaskIdRef = useRef('');
+  const preview = useMediaPreview(firstVideo?.path, 'video');
+  const project = history?.present ?? null;
 
-  // 模块11 状态
-  const props = useClipProperties(duration);
-  const {
-    trimStart, trimEnd, speed, volume, brightness, contrast, exportFormat,
-    setTrimEnd, setSpeed, setVolume, setBrightness, setContrast, setExportFormat, reset: resetProps,
-  } = props;
+  useEffect(() => {
+    let cleanup: (() => void) | undefined;
+    let active = true;
+    void listen<{ taskId: string; percent: number }>('media-task-progress', (event) => {
+      if (active && event.payload.taskId === activeTaskIdRef.current) {
+        setProgress(Math.max(0, Math.min(100, event.payload.percent)));
+      }
+    }).then((unlisten) => {
+      if (active) cleanup = unlisten; else unlisten();
+    }).catch(() => {});
+    return () => { active = false; cleanup?.(); };
+  }, []);
 
-  useVideoProgress(setProgress);
-
-  const videoFiles = files.filter((f) => isVideoFormat(f.format));
-  const firstVideo = videoFiles[0];
   const assetUrl = useMemo(
-    () => (firstVideo?.path ? convertFileSrc(firstVideo.path) : ''),
-    [firstVideo?.path]
+    () => preview.descriptor?.playbackPath ? convertFileSrc(preview.descriptor.playbackPath) : '',
+    [preview.descriptor?.playbackPath]
   );
-  const posterUrl = useMemo(
-    () => (typeof videoPreviewPath === 'string' && videoPreviewPath ? convertFileSrc(videoPreviewPath) : undefined),
-    [videoPreviewPath]
-  );
+  const filmstripUrl = assets?.filmstripPath ? convertFileSrc(assets.filmstripPath) : undefined;
+  const waveformUrl = assets?.waveformPath ? convertFileSrc(assets.waveformPath) : undefined;
 
-  const handleFilesAdded = useCallback(
-    (newFiles: FileItem[]) => {
-      addFiles(newFiles);
-    },
-    [addFiles]
-  );
-
-  // 模块2：探测元数据
   useEffect(() => {
     if (!firstVideo) return;
-    setVideoPlaybackFailed(false);
-    setVideoPreviewPath('');
-    setCurrentTime(0);
     let cancelled = false;
-    invoke<{ duration_secs: number }>('get_video_info', { path: firstVideo.path })
+    setError('');
+    setCurrentTime(0);
+    setHistory(null);
+    setAssets(null);
+    invoke<{ duration_secs: number; fps?: number }>('get_video_info', { path: firstVideo.path })
       .then((info) => {
-        if (!cancelled) {
-          setDuration(info.duration_secs);
-          setTrimEnd(info.duration_secs);
-        }
+        if (cancelled) return;
+        setDuration(info.duration_secs);
+        if (info.fps && info.fps > 0) setFps(info.fps);
       })
-      .catch(() => { if (!cancelled) setError('无法获取视频信息'); });
+      .catch(() => { if (!cancelled) setError('无法读取视频时长，请确认媒体引擎可用。'); });
     return () => { cancelled = true; };
-  }, [firstVideo?.path, setTrimEnd]);
-
-  // 模块3：预览图
-  useEffect(() => {
-    if (!firstVideo?.path) return;
-    invoke<string>('create_video_preview', { inputPath: firstVideo.path })
-      .then((path) => setVideoPreviewPath(typeof path === 'string' ? path : ''))
-      .catch(() => setVideoPreviewPath(''));
   }, [firstVideo?.path]);
 
-  // 模块10：CSS 预览
-  const previewFilter = useCssFilterPreview(brightness, contrast);
+  useEffect(() => {
+    const previewDuration = preview.descriptor?.durationSecs;
+    if (previewDuration && previewDuration > 0) setDuration(previewDuration);
+    if (preview.descriptor?.fps && preview.descriptor.fps > 0) setFps(preview.descriptor.fps);
+  }, [preview.descriptor?.durationSecs, preview.descriptor?.fps]);
 
-  // 播放控制
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const handlePlayPause = useCallback(() => {
-    const v = videoRef.current;
-    if (!v) return;
-    if (v.paused) {
-      v.play().catch(() => setVideoPlaybackFailed(true));
-    }
-    else v.pause();
-  }, []);
+  useEffect(() => {
+    if (!firstVideo || duration <= 0) return;
+    const format = outputFormatFor(firstVideo, false);
+    const outputPath = withVideoSuffix(firstVideo.path, '_edited', format, options.outputDir);
+    setHistory(createEditHistory(createVideoEditProject({
+      inputPath: firstVideo.path,
+      durationSecs: duration,
+      fps,
+      outputPath,
+    })));
+    setSelectedSegmentId('segment-1');
+  }, [duration, firstVideo?.path, fps, options.outputDir]);
+
+  useEffect(() => {
+    if (!firstVideo || duration <= 0 || preview.descriptor?.state !== 'ready') return;
+    let cancelled = false;
+    setAssetsLoading(true);
+    invoke<TimelineAssets>('generate_timeline_assets', {
+      inputPath: firstVideo.path,
+      durationSecs: duration,
+      fps,
+      hasAudio: Boolean(preview.descriptor.hasAudio),
+      taskId: taskId(),
+    }).then((value) => {
+      if (!cancelled) setAssets(value);
+    }).catch(() => {
+      if (!cancelled) setAssets(null);
+    }).finally(() => {
+      if (!cancelled) setAssetsLoading(false);
+    });
+    return () => { cancelled = true; };
+  }, [duration, firstVideo?.path, fps, preview.descriptor?.hasAudio, preview.descriptor?.state]);
+
+  useEffect(() => {
+    if (videos.length <= 1) return;
+    const replacement = videos[videos.length - 1];
+    const shouldReplace = window.confirm('视频剪辑一次只编辑一个源视频。是否用新视频替换当前视频？');
+    videos.forEach((video) => {
+      if ((shouldReplace && video.id !== replacement.id) || (!shouldReplace && video.id === replacement.id)) {
+        removeFile(video.id);
+      }
+    });
+  }, [removeFile, videos.length]);
+
   const handleSeek = useCallback((time: number) => {
-    const clamped = Math.max(0, Math.min(duration || 0, time));
-    const v = videoRef.current;
-    if (v) v.currentTime = clamped;
-    setCurrentTime(clamped);
-  }, [duration]);
+    const next = Math.max(0, Math.min(duration, time));
+    if (videoRef.current) videoRef.current.currentTime = next;
+    setCurrentTime(next);
+    preview.setPlaybackPosition(next);
+  }, [duration, preview]);
 
-  // 裁切约束
-  const handleTrimStartChange = useCallback(
-    (val: number) => props.setTrimStart(Math.min(val, trimEnd - 0.1)),
-    [trimEnd, props]
-  );
-  const handleTrimEndChange = useCallback(
-    (val: number) => setTrimEnd(Math.max(val, trimStart + 0.1)),
-    [trimStart, setTrimEnd]
-  );
+  const handlePlayPause = useCallback(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    playbackStopRef.current = null;
+    if (video.paused) void video.play(); else video.pause();
+  }, []);
 
-  const handleReset = useCallback(() => {
-    resetProps();
-    handleSeek(0);
-    setIsPlaying(false);
-    setError('');
-  }, [resetProps, handleSeek]);
+  const applyEdit = useCallback((transform: (value: VideoEditProject) => VideoEditProject) => {
+    setHistory((current) => {
+      if (!current) return current;
+      const next = transform(current.present);
+      return next === current.present ? current : commitEdit(current, next);
+    });
+  }, []);
 
-  // 模块12：调用一站式导出
-  const handleExport = useCallback(async () => {
-    if (!firstVideo || isProcessing) return;
-    if (trimEnd - trimStart <= 0.1) {
-      setError('请选择有效的裁切范围');
+  const activeSegment = project?.segments.find((segment) => segment.id === selectedSegmentId)
+    ?? project?.segments.find((segment) => currentTime >= segment.startSecs && currentTime <= segment.endSecs)
+    ?? project?.segments[0];
+
+  const splitCurrent = useCallback(() => {
+    if (!project) return;
+    const next = splitAtPlayhead(project, currentTime);
+    if (next === project) return;
+    const selected = next.segments.find((segment) => Math.abs(segment.startSecs - currentTime) < 1e-5);
+    if (selected) setSelectedSegmentId(selected.id);
+    setHistory((current) => current ? commitEdit(current, next) : current);
+  }, [currentTime, project]);
+
+  const toggleSelected = useCallback(() => {
+    if (!activeSegment) return;
+    applyEdit((value) => setSegmentIncluded(value, activeSegment.id, !activeSegment.included));
+  }, [activeSegment, applyEdit]);
+
+  const playSelected = useCallback(() => {
+    if (!activeSegment || !videoRef.current) return;
+    handleSeek(activeSegment.startSecs);
+    playbackStopRef.current = activeSegment.endSecs;
+    void videoRef.current.play();
+  }, [activeSegment, handleSeek]);
+
+  const frameStep = useCallback((delta: number) => {
+    handleSeek(stepFrame(currentTime, delta, fps, duration));
+  }, [currentTime, duration, fps, handleSeek]);
+
+  const setIn = useCallback(() => applyEdit((value) => trimToInPoint(value, currentTime)), [applyEdit, currentTime]);
+  const setOut = useCallback(() => applyEdit((value) => trimToOutPoint(value, currentTime)), [applyEdit, currentTime]);
+  const doUndo = useCallback(() => setHistory((current) => current ? undoEdit(current) : current), []);
+  const doRedo = useCallback(() => setHistory((current) => current ? redoEdit(current) : current), []);
+
+  useEffect(() => {
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) return;
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'z') {
+        event.preventDefault();
+        if (event.shiftKey) doRedo(); else doUndo();
+      } else if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'y') {
+        event.preventDefault(); doRedo();
+      } else if (event.key.toLowerCase() === 's') splitCurrent();
+      else if (event.key.toLowerCase() === 'i') setIn();
+      else if (event.key.toLowerCase() === 'o') setOut();
+      else if (event.key === 'Delete' || event.key === 'Backspace') toggleSelected();
+      else if (event.key === 'ArrowLeft') frameStep(-1);
+      else if (event.key === 'ArrowRight') frameStep(1);
+      else if (event.key === ' ') { event.preventDefault(); handlePlayPause(); }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [doRedo, doUndo, frameStep, handlePlayPause, setIn, setOut, splitCurrent, toggleSelected]);
+
+  const handleExport = async () => {
+    if (!firstVideo || !project || isProcessing || getIncludedRanges(project).length === 0) return;
+    const mode = project.mode;
+    if (mode === 'lossless' && !['mp4', 'mov', 'mkv'].includes(firstVideo.format.toLowerCase())) {
+      setError('AVI 和 WebM 不能直接封装为 H.264/AAC 无损片段，请启用精确模式输出 MP4。');
       return;
     }
     setIsProcessing(true);
-    setProgress(0);
+    setProgress(5);
     setError('');
+    setSuccess('');
+    const outputPath = withVideoSuffix(
+      firstVideo.path,
+      '_edited',
+      outputFormatFor(firstVideo, mode === 'precise'),
+      options.outputDir
+    );
+    const exportTaskId = taskId();
+    activeTaskIdRef.current = exportTaskId;
     try {
-      await submitEditExport({
-        inputPath: firstVideo.path,
-        outputPath: withVideoSuffix(firstVideo.path, '_edited', exportFormat, options.outputDir),
-        startSecs: trimStart,
-        endSecs: trimEnd,
-        speed, volume: volume / 100, brightness, contrast, targetFormat: exportFormat,
+      const result = await invoke<{ outputPath: string; output_path?: string }>('export_video_edit', {
+        inputPath: project.inputPath,
+        durationSecs: project.durationSecs,
+        fps: project.fps,
+        hasAudio: Boolean(preview.descriptor?.hasAudio),
+        segments: project.segments,
+        mode,
+        outputPath,
+        taskId: exportTaskId,
       });
       setProgress(100);
+      const actualPath = result.outputPath || result.output_path || outputPath;
+      setSuccess(`已导出：${actualPath}`);
       if (options.openAfterProcess && options.outputDir?.trim()) {
         await invoke('open_folder', { path: options.outputDir });
       }
-    } catch (e) {
-      setError(String(e));
+    } catch (reason) {
+      setError(`剪辑失败：${String(reason)}`);
     } finally {
+      activeTaskIdRef.current = '';
       setIsProcessing(false);
     }
-  }, [firstVideo, isProcessing, trimStart, trimEnd, speed, volume, brightness, contrast, exportFormat, options.outputDir, options.openAfterProcess]);
+  };
 
-  const handleMergeExport = useCallback(async () => {
-    if (!firstVideo || videoFiles.length < 2 || isProcessing) return;
-    setIsProcessing(true);
-    setProgress(0);
-    setError('');
+  const cancelExport = async () => {
+    setError('正在取消剪辑任务…');
+    await invoke('cancel_video_tasks');
+  };
+
+  const handleAddSource = useCallback(async () => {
     try {
-      await invoke('merge_videos', {
-        inputPaths: videoFiles.map((file) => file.path),
-        outputPath: withVideoSuffix(firstVideo.path, '_merged', exportFormat, options.outputDir),
+      const selected = await open({
+        multiple: false,
+        filters: [{ name: 'Videos', extensions: ['mp4', 'mov', 'mkv', 'avi', 'webm'] }],
       });
-      setProgress(100);
-      if (options.openAfterProcess && options.outputDir?.trim()) {
-        await invoke('open_folder', { path: options.outputDir });
+      if (!selected || Array.isArray(selected)) return;
+      const inputPath = String(selected);
+      const fallbackName = inputPath.split(/[\\/]/).pop() || inputPath;
+      const extension = fallbackName.split('.').pop()?.toUpperCase() || 'VIDEO';
+      let originalSize = 0;
+      try {
+        const metadata = await invoke<{ size_bytes?: number }>('read_file_metadata', { path: inputPath });
+        originalSize = metadata.size_bytes || 0;
+      } catch {
+        // The editor can still open the source when metadata probing is unavailable.
       }
-    } catch (e) {
-      setError(String(e));
-    } finally {
-      setIsProcessing(false);
+      addFiles([{
+        id: taskId(),
+        path: inputPath,
+        name: fallbackName,
+        format: extension,
+        originalSize,
+        status: 'pending',
+      }]);
+    } catch {
+      // User cancelled the picker or the desktop dialog was unavailable.
     }
-  }, [firstVideo, videoFiles, isProcessing, exportFormat, options.outputDir, options.openAfterProcess]);
-
-  const canExport = Boolean(firstVideo && !isProcessing && trimEnd - trimStart > 0.1);
-  const canMerge = videoFiles.length > 1 && !isProcessing;
+  }, [addFiles]);
 
   if (!firstVideo) {
     return (
-      <div
-        className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(320px,384px)] gap-6"
-        role="region"
-        aria-label="视频剪辑工作区"
-      >
-        <div className="min-w-0">
-          <DropZone onFilesAdded={handleFilesAdded} mediaType="video" />
-        </div>
-        <div className="min-w-[320px] flex flex-col gap-4">
-          <div className="bg-surface-container-lowest rounded-[18px] shadow-[0px_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/10 p-5">
-            <label className="font-label-caps text-label-caps uppercase opacity-50 block mb-4 flex items-center gap-2">
-              <Sliders size={18} className="text-secondary" />
-              片段属性
-            </label>
-            <p className="text-sm text-on-surface-variant leading-6">
-              添加视频后可选择入点、出点、播放速度、音量、亮度和对比度。
-            </p>
-          </div>
-          <div className="bg-surface-container-lowest rounded-[18px] shadow-[0px_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/10 p-5">
-            <label className="font-label-caps text-label-caps uppercase opacity-50 block mb-4 flex items-center gap-2">
-              <Settings size={18} className="text-secondary" />
-              导出设置
-            </label>
-            <ExportFormatSelector value={exportFormat} onChange={setExportFormat} disabled />
-          </div>
-        </div>
+      <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_clamp(280px,30vw,340px)] gap-5" role="region" aria-label="视频剪辑工作区">
+        <DropZone onFilesAdded={addFiles} mediaType="video" />
+        <aside className="min-w-0 rounded-[18px] border border-outline-variant/10 bg-surface-container-lowest p-5">
+          <h2 className="flex items-center gap-2 text-sm font-semibold text-on-surface"><Scissors size={18} />片段设置</h2>
+          <p className="mt-3 text-sm leading-6 text-on-surface-variant">添加一个视频后可分割、删除片段、逐帧定位并合并导出。</p>
+        </aside>
       </div>
     );
   }
 
+  const includedRanges = project ? getIncludedRanges(project) : [];
+  const inPoint = includedRanges[0]?.startSecs ?? 0;
+  const outPoint = includedRanges[includedRanges.length - 1]?.endSecs ?? duration;
+  const canExport = !isProcessing && includedRanges.length > 0;
+
   return (
-    <div
-      className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(320px,384px)] gap-6"
-      role="region"
-      aria-label="视频剪辑工作区"
-    >
-      {/* 左侧：预览 + 时间线 */}
-      <div className="flex-1 flex flex-col gap-6 min-w-0">
-        <div
-          className="aspect-video rounded-[18px] bg-[#111] relative overflow-hidden"
-          data-testid="video-preview-poster"
-        >
-          {firstVideo ? (
-            <>
-              <VideoPlayer
-                src={assetUrl}
-                poster={posterUrl}
-                filter={previewFilter}
-                onTimeUpdate={setCurrentTime}
-                onDurationChange={(nextDuration) => {
-                  setDuration(nextDuration);
-                  setTrimEnd(nextDuration);
-                }}
-                onPlayStateChange={setIsPlaying}
-                onError={() => setVideoPlaybackFailed(true)}
-                onReady={(node) => { videoRef.current = node; }}
-              />
-              {videoPlaybackFailed && posterUrl && (
-                <img
-                  src={posterUrl}
-                  alt={`${firstVideo.name} 预览图`}
-                  className="absolute inset-0 h-full w-full object-contain bg-[#111]"
-                />
-              )}
-              {videoPlaybackFailed && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/55 text-white/90 pointer-events-none">
-                  <Play size={48} className="mb-4 text-secondary-fixed" fill="currentColor" />
-                  <p className="text-sm">内嵌播放器暂不支持此编码</p>
-                  <p className="text-xs mt-1 text-white/70">FFmpeg 本地处理仍可继续</p>
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-white/40">
-              <Play size={48} className="mb-4" fill="currentColor" />
-              <p className="text-sm">请添加视频文件</p>
+    <div className="grid min-w-0 grid-cols-[minmax(150px,190px)_minmax(0,1fr)] gap-4" role="region" aria-label="视频剪辑工作区">
+      <aside className="min-w-0 rounded-[18px] border border-outline-variant/10 bg-surface-container-lowest p-3" role="region" aria-label="项目素材">
+        <div className="flex items-center justify-between gap-2 px-1">
+          <h2 className="flex min-w-0 items-center gap-2 text-xs font-semibold text-on-surface"><Film size={15} />素材</h2>
+          <button type="button" onClick={() => void handleAddSource()} className="flex min-h-8 min-w-8 items-center justify-center rounded-lg bg-surface-container-low text-on-surface hover:bg-surface-container-high" aria-label="添加素材" title="添加素材"><Plus size={15} /></button>
+        </div>
+        <p className="mt-4 px-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-on-surface-variant">源视频</p>
+        <button type="button" className="mt-2 w-full overflow-hidden rounded-xl border-2 border-secondary-fixed bg-surface-container-low p-2 text-left" aria-label={`选择 ${firstVideo.name}`} onClick={() => handleSeek(0)}>
+          <div className="flex aspect-video items-center justify-center rounded-lg bg-[#202020] text-secondary-fixed"><Film size={24} /></div>
+          <span className="mt-2 block truncate text-xs font-semibold text-on-surface">{firstVideo.name}</span>
+          <span className="mt-1 block text-[10px] text-on-surface-variant">{firstVideo.format} · 单轨</span>
+        </button>
+        <p className="mt-4 px-1 text-[10px] leading-4 text-on-surface-variant">当前剪辑只使用一个源视频，导出时不会修改原文件。</p>
+      </aside>
+      <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_clamp(280px,30vw,340px)] gap-5">
+      <section className="min-w-0 space-y-4 overflow-hidden">
+        <div className="relative aspect-video max-h-[44vh] overflow-hidden rounded-[18px] bg-[#111]" data-testid="video-preview-poster" role="region" aria-label="视频预览">
+          <VideoPlayer
+            src={assetUrl}
+            poster={preview.descriptor?.posterPath ? convertFileSrc(preview.descriptor.posterPath) : undefined}
+            onTimeUpdate={(value) => {
+              setCurrentTime(value);
+              preview.setPlaybackPosition(value);
+              if (playbackStopRef.current !== null && value >= playbackStopRef.current) {
+                videoRef.current?.pause();
+                playbackStopRef.current = null;
+              }
+            }}
+            onDurationChange={setDuration}
+            onPlayStateChange={setIsPlaying}
+            onError={preview.forceProxy}
+            onReady={(node) => {
+              videoRef.current = node;
+              if (preview.playbackPosition > 0) node.currentTime = preview.playbackPosition;
+            }}
+          />
+          {(preview.descriptor?.state === 'probing' || preview.descriptor?.state === 'generating') && (
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/70 text-white" role="status">
+              <Loader2 size={26} className="mb-3 animate-spin text-secondary-fixed" />
+              <p className="text-sm font-semibold">正在准备可播放预览 {Math.round(preview.progress)}%</p>
+              <button type="button" onClick={() => void preview.cancel()} className="mt-3 min-h-10 rounded-full bg-white/10 px-5 text-xs font-semibold">取消预览</button>
             </div>
           )}
-          <PlayerControls
-            currentTime={currentTime}
-            duration={duration}
-            isPlaying={isPlaying}
-            onPlayPause={handlePlayPause}
-            onSeek={handleSeek}
-            formatTime={formatDuration}
-          />
-        </div>
-
-        <TrimTimeline
-          duration={duration}
-          trimStart={trimStart}
-          trimEnd={trimEnd}
-          currentTime={currentTime}
-          onTrimStartChange={handleTrimStartChange}
-          onTrimEndChange={handleTrimEndChange}
-          onSeek={handleSeek}
-        />
-      </div>
-
-      {/* 右侧：参数面板 */}
-      <div className="min-w-[320px] flex flex-col gap-4">
-        <div className="bg-surface-container-lowest rounded-[18px] shadow-[0px_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/10 p-5">
-          <label className="font-label-caps text-label-caps uppercase opacity-50 block mb-4 flex items-center gap-2">
-            <Sliders size={18} className="text-secondary" />
-            片段属性
-          </label>
-          <div className="space-y-4">
-            <SliderControl label="播放速度" value={speed} min={0.25} max={4} step={0.25}
-              onChange={setSpeed} format={(v) => `${v.toFixed(2)}x`} />
-            <SliderControl label="音量" value={volume} min={0} max={200} step={5}
-              onChange={setVolume} format={(v) => `${v}%`} />
-            <SliderControl label="亮度" value={brightness} min={-100} max={100} step={5}
-              onChange={setBrightness} format={(v) => `${v}`} />
-            <SliderControl label="对比度" value={contrast} min={-100} max={100} step={5}
-              onChange={setContrast} format={(v) => `${v}`} />
-          </div>
-        </div>
-
-        <div className="bg-surface-container-lowest rounded-[18px] shadow-[0px_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/10 p-5">
-          <label className="font-label-caps text-label-caps uppercase opacity-50 block mb-4 flex items-center gap-2">
-            <Settings size={18} className="text-secondary" />
-            导出设置
-          </label>
-          <ExportFormatSelector value={exportFormat} onChange={setExportFormat} disabled={isProcessing} />
-        </div>
-
-        {error && <p className="text-error text-xs text-center">{error}</p>}
-
-        {isProcessing && (
-          <div>
-            <div className="w-full bg-surface-container-high rounded-full h-2">
-              <div className="bg-secondary-fixed h-2 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} />
+          {(preview.descriptor?.state === 'error' || preview.descriptor?.state === 'cancelled') && (
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/75 px-8 text-center text-white" role="alert">
+              <p className="text-sm font-semibold">{preview.descriptor.error?.message || '视频预览失败'}</p>
+              <button type="button" onClick={preview.retry} className="mt-3 min-h-10 rounded-full bg-secondary-fixed px-5 text-xs font-semibold text-on-secondary-fixed">重试预览</button>
             </div>
-            <p className="text-on-surface-variant mt-1.5 text-center text-xs">渲染中 {progress}%</p>
+          )}
+          <PlayerControls currentTime={currentTime} duration={duration} isPlaying={isPlaying} onPlayPause={handlePlayPause} onSeek={handleSeek} formatTime={formatDuration} />
+        </div>
+
+        <div className="flex max-w-full gap-2 overflow-x-auto rounded-[14px] bg-surface-container-lowest p-2" role="toolbar" aria-label="视频剪辑工具栏">
+          <ToolButton label="到开头" onClick={() => handleSeek(0)}><ChevronsLeft size={17} /></ToolButton>
+          <ToolButton label="上一帧" onClick={() => frameStep(-1)}><StepBack size={17} /></ToolButton>
+          <ToolButton label="播放/暂停" onClick={handlePlayPause}>{isPlaying ? <Pause size={17} /> : <Play size={17} />}</ToolButton>
+          <ToolButton label="下一帧" onClick={() => frameStep(1)}><StepForward size={17} /></ToolButton>
+          <ToolButton label="到结尾" onClick={() => handleSeek(duration)}><ChevronsRight size={17} /></ToolButton>
+          <ToolButton label="设置入点" onClick={setIn}><span>I</span></ToolButton>
+          <ToolButton label="设置出点" onClick={setOut}><span>O</span></ToolButton>
+          <ToolButton label="分割片段" onClick={splitCurrent}><Scissors size={17} /><span className="ml-1">S</span></ToolButton>
+          <ToolButton label={activeSegment?.included === false ? '恢复选中片段' : '删除选中片段'} onClick={toggleSelected}><Trash2 size={17} /></ToolButton>
+          <ToolButton label="撤销" disabled={!history?.past.length} onClick={doUndo}><Undo2 size={17} /></ToolButton>
+          <ToolButton label="重做" disabled={!history?.future.length} onClick={doRedo}><Redo2 size={17} /></ToolButton>
+          <ToolButton label="播放所选" onClick={playSelected}><Play size={17} /></ToolButton>
+          <ToolButton label="缩小时间线" onClick={() => setZoom((value) => Math.max(1, value / 1.5))}><ZoomOut size={17} /></ToolButton>
+          <ToolButton label="放大时间线" onClick={() => setZoom((value) => Math.min(8, value * 1.5))}><ZoomIn size={17} /></ToolButton>
+          <ToolButton label="适配全片" onClick={() => setZoom(1)}><Maximize2 size={17} /></ToolButton>
+        </div>
+
+        {project && (
+          <VideoEditTimeline
+            duration={duration}
+            currentTime={currentTime}
+            segments={project.segments}
+            selectedSegmentId={activeSegment?.id}
+            zoom={zoom}
+            filmstripUrl={filmstripUrl}
+            waveformUrl={waveformUrl}
+            inPoint={inPoint}
+            outPoint={outPoint}
+            onSeek={handleSeek}
+            onInPointChange={(value) => { handleSeek(value); applyEdit((current) => trimToInPoint(current, value)); }}
+            onOutPointChange={(value) => { handleSeek(value); applyEdit((current) => trimToOutPoint(current, value)); }}
+            onSelectSegment={setSelectedSegmentId}
+          />
+        )}
+        {assetsLoading && <p className="text-center text-xs text-on-surface-variant" role="status">正在生成真实缩略图和音频波形…</p>}
+      </section>
+
+      <aside className="min-w-0 space-y-4 overflow-y-auto pr-1">
+        <section className="rounded-[18px] border border-outline-variant/10 bg-surface-container-lowest p-5">
+          <h2 className="text-sm font-semibold text-on-surface">片段属性</h2>
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            <label className="text-xs text-on-surface-variant">入点（秒）
+              <input aria-label="入点（秒）" className="mt-1 min-h-10 w-full rounded-lg bg-surface-container-low px-3 text-sm text-on-surface" type="number" min={0} max={outPoint} step={1 / fps} value={Number(inPoint.toFixed(3))} onChange={(event) => { handleSeek(Number(event.target.value)); applyEdit((value) => trimToInPoint(value, Number(event.target.value))); }} />
+            </label>
+            <label className="text-xs text-on-surface-variant">出点（秒）
+              <input aria-label="出点（秒）" className="mt-1 min-h-10 w-full rounded-lg bg-surface-container-low px-3 text-sm text-on-surface" type="number" min={inPoint} max={duration} step={1 / fps} value={Number(outPoint.toFixed(3))} onChange={(event) => { handleSeek(Number(event.target.value)); applyEdit((value) => trimToOutPoint(value, Number(event.target.value))); }} />
+            </label>
           </div>
-        )}
+          {activeSegment && (
+            <p className="mt-3 rounded-xl bg-surface-container-low p-3 text-xs text-on-surface-variant">
+              当前片段：{formatDuration(activeSegment.startSecs)} – {formatDuration(activeSegment.endSecs)} · {activeSegment.included ? '保留' : '已排除'}
+            </p>
+          )}
+        </section>
 
-        <button
-          onClick={handleExport}
-          disabled={!canExport}
-          className={
-            canExport
-              ? 'w-full py-3.5 bg-primary text-on-primary rounded-[980px] hover:opacity-80 active:opacity-70 transition-opacity text-sm font-semibold flex items-center justify-center gap-2'
-              : 'w-full py-3.5 bg-surface-container-high text-on-surface-variant rounded-[980px] cursor-not-allowed text-sm font-semibold flex items-center justify-center gap-2'
-          }
-        >
-          {isProcessing ? (<><Loader2 size={16} className="animate-spin" />渲染中...</>)
-            : (<><Rocket size={16} />开始渲染导出</>)}
+        <section className="rounded-[18px] border border-outline-variant/10 bg-surface-container-lowest p-5">
+          <h2 className="text-sm font-semibold text-on-surface">导出设置</h2>
+          <label className="mt-4 flex min-h-11 items-start gap-3 text-sm text-on-surface">
+            <input className="mt-1" type="checkbox" checked={project?.mode === 'precise'} onChange={(event) => setHistory((current) => current ? { ...current, present: { ...current.present, mode: event.target.checked ? 'precise' : 'lossless' } } : current)} />
+            <span><span className="block font-semibold">精确边界</span><span className="mt-1 block text-xs leading-5 text-on-surface-variant">关闭时逐段无损复制后合并，边界可能有关键帧误差；开启后统一 CPU 重编码为 MP4/H.264/AAC。</span></span>
+          </label>
+        </section>
+
+        {(error || success) && <p className={`break-all rounded-xl p-3 text-xs leading-5 ${error ? 'bg-error/10 text-error' : 'bg-secondary-container text-on-secondary-container'}`} role="status">{error || success}</p>}
+        {isProcessing && <div role="status" aria-live="polite"><div className="h-2 overflow-hidden rounded-full bg-surface-container-high"><div className="h-full bg-secondary-fixed" style={{ width: `${progress}%` }} /></div><p className="mt-2 text-center text-xs text-on-surface-variant">剪辑中 {progress}%</p></div>}
+
+        <button type="button" onClick={isProcessing ? () => void cancelExport() : () => void handleExport()} disabled={!isProcessing && !canExport} className="flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-primary px-4 text-sm font-semibold text-on-primary disabled:cursor-not-allowed disabled:opacity-50">
+          {isProcessing ? <Square size={17} /> : <Scissors size={17} />}{isProcessing ? '取消剪辑' : '合并导出'}
         </button>
-
-        {videoFiles.length > 1 && (
-          <button
-            type="button"
-            onClick={handleMergeExport}
-            disabled={!canMerge}
-            className={
-              canMerge
-                ? 'w-full py-3.5 bg-surface-container-low text-on-surface rounded-[980px] hover:bg-surface-container-high active:opacity-70 transition-colors text-sm font-semibold flex items-center justify-center gap-2'
-                : 'w-full py-3.5 bg-surface-container-high text-on-surface-variant rounded-[980px] cursor-not-allowed text-sm font-semibold flex items-center justify-center gap-2'
-            }
-          >
-            合并导出
-          </button>
-        )}
-
-        <button onClick={handleReset}
-          className="w-full py-2.5 bg-surface-container-low hover:bg-surface-container-high text-on-surface rounded-[12px] transition-colors text-xs font-semibold">
-          重置
-        </button>
+        <div className="grid grid-cols-2 gap-2">
+          <button type="button" onClick={() => { if (firstVideo && duration > 0) { const format = outputFormatFor(firstVideo, false); setHistory(createEditHistory(createVideoEditProject({ inputPath: firstVideo.path, durationSecs: duration, fps, outputPath: withVideoSuffix(firstVideo.path, '_edited', format, options.outputDir) }))); setSelectedSegmentId('segment-1'); handleSeek(0); } setError(''); setSuccess(''); }} className="flex min-h-10 items-center justify-center gap-2 rounded-full bg-surface-container-low text-xs font-semibold text-on-surface"><RotateCcw size={15} />重置项目</button>
+          <button type="button" onClick={() => removeFile(firstVideo.id)} className="flex min-h-10 items-center justify-center gap-2 rounded-full bg-surface-container-low text-xs font-semibold text-on-surface"><Trash2 size={15} />移除视频</button>
+        </div>
+      </aside>
       </div>
     </div>
   );

@@ -32,6 +32,13 @@ describe('useImageProcessor', () => {
         rotateDegrees: 0,
         openAfterProcess: false,
         cropPercent: undefined,
+        preserveTransparency: true,
+        opacityPercent: 100,
+        resizeTargetW: undefined,
+        resizeTargetH: undefined,
+        colorAdjust: { brightness: 0, contrast: 0, saturation: 0, sharpness: 0 },
+        flipH: false,
+        flipV: false,
       },
     });
   });
@@ -66,6 +73,13 @@ describe('useImageProcessor', () => {
         stripExif: true,
         rotateDegrees: 90,
         cropPercent: { x: 10, y: 12, width: 70, height: 60 },
+        preserveTransparency: false,
+        opacityPercent: 70,
+        resizeTargetW: 800,
+        resizeTargetH: 600,
+        colorAdjust: { brightness: 10, contrast: -5, saturation: 20, sharpness: 30 },
+        flipH: true,
+        flipV: false,
       });
     });
 
@@ -80,6 +94,13 @@ describe('useImageProcessor', () => {
         output_dir: undefined,
         rotate_degrees: 90,
         crop_percent: { x: 10, y: 12, width: 70, height: 60 },
+        preserve_transparency: false,
+        opacity_percent: 70,
+        resize_target_width: 800,
+        resize_target_height: 600,
+        color_adjust: { brightness: 10, contrast: -5, saturation: 20, sharpness: 30 },
+        flip_h: true,
+        flip_v: false,
       },
     });
   });

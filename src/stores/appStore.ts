@@ -13,7 +13,7 @@ export interface FileItem {
   error?: string;
 }
 
-export type OutputFormat = 'webp' | 'png' | 'jpeg' | 'avif' | 'original';
+export type OutputFormat = 'webp' | 'png' | 'jpeg' | 'avif' | 'bmp';
 
 export interface CropPercent {
   x: number;
@@ -36,6 +36,7 @@ export interface ProcessOptions {
   resizeMaxPx: number;
   stripExif: boolean;
   preserveTransparency: boolean;
+  opacityPercent: number;
   outputDir?: string;
   rotateDegrees: 0 | 90 | 180 | 270;
   cropPercent?: CropPercent;
@@ -130,6 +131,7 @@ export const useAppStore = create<AppState>()(
         resizeMaxPx: 1920,
         stripExif: false,
         preserveTransparency: true,
+        opacityPercent: 100,
         outputDir: undefined,
         rotateDegrees: 0,
         openAfterProcess: false,
@@ -154,6 +156,7 @@ export const useAppStore = create<AppState>()(
             resizeMaxPx: 1920,
             stripExif: false,
             preserveTransparency: true,
+            opacityPercent: 100,
             rotateDegrees: 0,
             cropPercent: undefined,
             editMode: false,

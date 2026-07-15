@@ -16,6 +16,19 @@ const video: FileItem = {
   status: 'pending',
 };
 
+const useDefaultInvokeMock = () => {
+  vi.mocked(invoke).mockImplementation(async (command: string, args?: Record<string, unknown>) => {
+    if (command === 'prepare_media_preview') {
+      return {
+        state: 'ready', kind: 'direct-video', playbackPath: video.path,
+        durationSecs: 30, width: 1920, height: 1080, fps: 30,
+        hasAudio: true, isProxy: false, taskId: args?.taskId,
+      };
+    }
+    return {};
+  });
+};
+
 const setVideoFile = () => {
   useAppStore.setState({
     files: [video],
@@ -32,6 +45,7 @@ const clearFiles = () => {
 describe('GifMaker component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    useDefaultInvokeMock();
     clearFiles();
     useAppStore.setState((state) => ({
       options: { ...state.options, outputDir: undefined },
@@ -127,12 +141,13 @@ describe('GifMaker component', () => {
       expect(cta).toBeDisabled();
     });
 
-    it('is enabled when video files are present', () => {
+    it('is enabled when video files are present', async () => {
       setVideoFile();
       render(<GifMaker />);
 
       const cta = screen.getByRole('button', { name: /开始转换/ });
       expect(cta).not.toBeDisabled();
+      await waitFor(() => expect(screen.getByLabelText('结束时间')).toHaveValue('00:30.00'));
     });
 
     it('calls create_gif with correct parameters on click', async () => {
@@ -156,6 +171,7 @@ describe('GifMaker component', () => {
 
       const slider = screen.getByRole('slider') as HTMLInputElement;
       fireEvent.change(slider, { target: { value: '3' } });
+      await userEvent.selectOptions(screen.getByLabelText('循环次数'), '3');
 
       const cta = screen.getByRole('button', { name: /开始转换/ });
       await userEvent.click(cta);
@@ -167,10 +183,11 @@ describe('GifMaker component', () => {
             inputPath: video.path,
             outputPath: expect.stringMatching(/\.gif$/),
             fps: 15,
-            width: expect.any(Number),
+            width: null,
             quality: 3,
             startSecs: 4.2,
             endSecs: 8.5,
+            loopCount: 3,
           })
         );
       });
@@ -219,6 +236,7 @@ describe('GifMaker component', () => {
 describe('GifMaker time range validation', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    useDefaultInvokeMock();
     clearFiles();
     useAppStore.setState((state) => ({
       options: { ...state.options, outputDir: undefined, openAfterProcess: false },
@@ -274,7 +292,7 @@ describe('GifMaker time range validation', () => {
 
     await userEvent.click(screen.getByRole('button', { name: /开始转换/ }));
 
-    expect(await screen.findByText(/完成:/)).toBeInTheDocument();
+    expect(await screen.findByText('全部完成，共 1 个')).toBeInTheDocument();
     expect(invoke).toHaveBeenCalledWith(
       'create_gif',
       expect.objectContaining({

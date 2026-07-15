@@ -64,9 +64,8 @@ mod tests {
 
 impl AudioInspector for FfprobeAudioInspector {
     fn inspect(&self, path: &str) -> Result<AudioSourceInfo, String> {
-        let probe_path = get_ffprobe_path().ok_or_else(|| {
-            FFmpegError::NotFound("ffprobe 未找到".to_string()).to_string()
-        })?;
+        let probe_path = get_ffprobe_path()
+            .ok_or_else(|| FFmpegError::NotFound("ffprobe 未找到".to_string()).to_string())?;
 
         if !Path::new(path).exists() {
             return Err(format!("文件不存在: {path}"));
@@ -74,10 +73,13 @@ impl AudioInspector for FfprobeAudioInspector {
 
         let output = Command::new(&probe_path)
             .args([
-                "-v", "quiet",
-                "-print_format", "json",
+                "-v",
+                "quiet",
+                "-print_format",
+                "json",
                 "-show_streams",
-                "-select_streams", "a:0",
+                "-select_streams",
+                "a:0",
                 path,
             ])
             .output()
@@ -88,8 +90,8 @@ impl AudioInspector for FfprobeAudioInspector {
         }
 
         let json = String::from_utf8_lossy(&output.stdout);
-        let parsed: FfprobeOutput = serde_json::from_str(&json)
-            .map_err(|e| format!("ffprobe JSON 解析失败: {e}"))?;
+        let parsed: FfprobeOutput =
+            serde_json::from_str(&json).map_err(|e| format!("ffprobe JSON 解析失败: {e}"))?;
 
         let stream = parsed
             .streams
@@ -98,15 +100,9 @@ impl AudioInspector for FfprobeAudioInspector {
 
         Ok(AudioSourceInfo {
             codec: stream.codec_name.unwrap_or_else(|| "unknown".to_string()),
-            sample_rate: stream
-                .sample_rate
-                .and_then(|s| s.parse().ok())
-                .unwrap_or(0),
+            sample_rate: stream.sample_rate.and_then(|s| s.parse().ok()).unwrap_or(0),
             channels: stream.channels.map(|c| c as u8).unwrap_or(2),
-            duration_secs: stream
-                .duration
-                .and_then(|s| s.parse().ok())
-                .unwrap_or(0.0),
+            duration_secs: stream.duration.and_then(|s| s.parse().ok()).unwrap_or(0.0),
             bitrate_kbps: stream
                 .bit_rate
                 .and_then(|s| s.parse::<u32>().ok())

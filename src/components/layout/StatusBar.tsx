@@ -1,7 +1,10 @@
+import { useEffect, useState } from 'react';
+import { invoke } from '@tauri-apps/api/core';
 import { useAppStore } from '../../stores/appStore';
 import { isVideoFormat } from '../../utils/mediaFormat';
 import { formatBytes } from '../../utils/formatBytes';
 import { Cpu } from 'lucide-react';
+import type { MediaEngineStatus } from '../../types/media';
 
 const PRESET_RATIO: Record<string, number> = {
   light: 0.8,
@@ -11,6 +14,26 @@ const PRESET_RATIO: Record<string, number> = {
 
 export default function StatusBar() {
   const { isProcessing, progress, totalSaved, files, videoPreset } = useAppStore();
+  const [engineStatus, setEngineStatus] = useState<'checking' | 'ready' | 'unavailable'>('checking');
+  const [engineError, setEngineError] = useState('');
+
+  useEffect(() => {
+    let active = true;
+    invoke<MediaEngineStatus>('get_media_engine_status')
+      .then((status) => {
+        if (!active) return;
+        setEngineStatus(status.ready ? 'ready' : 'unavailable');
+        setEngineError(status.error ?? '');
+      })
+      .catch(() => {
+        if (!active) return;
+        setEngineStatus('unavailable');
+        setEngineError('无法读取媒体引擎状态');
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const videoFiles = files.filter((f) => isVideoFormat(f.format));
   const pendingVideos = videoFiles.filter((f) => f.status === 'pending');
@@ -30,16 +53,24 @@ export default function StatusBar() {
 
   const showEstimate = pendingVideos.length > 0 && !isProcessing;
   const showCompleted = completedFiles.length > 0;
+  const engineLabel = isProcessing
+    ? '处理中'
+    : engineStatus === 'ready'
+      ? '就绪'
+      : engineStatus === 'unavailable'
+        ? '不可用'
+        : '检查中';
 
   return (
     <footer
-      className="fixed bottom-0 left-64 right-0 h-12 z-50 flex items-center justify-between px-8 bg-surface-container-highest border-t border-outline-variant/30 font-mono-status text-[11px] uppercase tracking-wider"
+      data-testid="status-bar"
+      className="h-12 min-w-0 shrink-0 flex items-center justify-between overflow-hidden px-4 bg-surface-container-highest border-t border-outline-variant/30 font-mono-status text-[11px] uppercase tracking-wider"
     >
       {/* Left: GPU status + original → estimated output */}
-      <div className="flex items-center gap-8">
+      <div className="flex min-w-0 items-center gap-4 overflow-hidden">
         <span className="flex items-center gap-2 text-on-surface-variant">
           <Cpu size={14} />
-          GPU 加速: 已开启
+          CPU 编码: 通用兼容
         </span>
         {(showEstimate || showCompleted) && (
           <>
@@ -60,7 +91,7 @@ export default function StatusBar() {
       </div>
 
       {/* Right: compression ratio, saved space, engine status */}
-      <div className="flex items-center gap-8">
+      <div className="flex min-w-0 shrink-0 items-center gap-4">
         {(showEstimate || showCompleted) && (
           <>
             <span className="text-on-surface-variant">
@@ -71,14 +102,17 @@ export default function StatusBar() {
             </span>
           </>
         )}
-        <span className="flex items-center gap-2 text-primary font-bold">
+        <span
+          className={`flex items-center gap-2 font-bold ${engineStatus === 'unavailable' ? 'text-error' : 'text-primary'}`}
+          title={engineError || undefined}
+        >
           <span className="relative flex h-2 w-2">
             {isProcessing && (
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary-fixed opacity-75" />
             )}
             <span className="relative inline-flex rounded-full h-2 w-2 bg-secondary-fixed" />
           </span>
-          引擎状态: {isProcessing ? '处理中' : '稳定'}
+          引擎状态: {engineLabel}
         </span>
       </div>
     </footer>

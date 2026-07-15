@@ -151,12 +151,12 @@ pub fn crop_center(img: &DynamicImage, target_ratio: f32) -> Result<DynamicImage
 
 // ── Encode ───────────────────────────────────────────────────────────────────
 
-pub fn encode_to_webp(img: &DynamicImage, _quality: u8) -> Result<Vec<u8>, String> {
-    let mut buf = Vec::new();
-    let mut cursor = std::io::Cursor::new(&mut buf);
-    img.write_to(&mut cursor, ImageFormat::WebP)
-        .map_err(|e| format!("WebP 编码失败: {}", e))?;
-    Ok(buf)
+pub fn encode_to_webp(img: &DynamicImage, quality: u8) -> Result<Vec<u8>, String> {
+    let rgba = img.to_rgba8();
+    let (width, height) = rgba.dimensions();
+    let encoded =
+        webp::Encoder::from_rgba(rgba.as_raw(), width, height).encode(quality.clamp(1, 100) as f32);
+    Ok(encoded.to_vec())
 }
 
 pub fn encode_to_jpeg(img: &DynamicImage, quality: u8) -> Result<Vec<u8>, String> {
@@ -179,12 +179,34 @@ pub fn encode_to_png(img: &DynamicImage) -> Result<Vec<u8>, String> {
     Ok(buf)
 }
 
+pub fn encode_to_avif(img: &DynamicImage, quality: u8) -> Result<Vec<u8>, String> {
+    let rgba = img.to_rgba8();
+    let (width, height) = rgba.dimensions();
+    let mut buffer = Vec::new();
+    image::codecs::avif::AvifEncoder::new_with_speed_quality(&mut buffer, 6, quality.clamp(1, 100))
+        .write_image(
+            rgba.as_raw(),
+            width,
+            height,
+            image::ExtendedColorType::Rgba8,
+        )
+        .map_err(|error| format!("AVIF 编码失败: {error}"))?;
+    Ok(buffer)
+}
+
 pub fn encode_to_format(img: &DynamicImage, format: &str, quality: u8) -> Result<Vec<u8>, String> {
     let fmt_lower = format.to_lowercase();
     match fmt_lower.as_str() {
         "png" => encode_to_png(img),
         "jpg" | "jpeg" => encode_to_jpeg(img, quality),
         "webp" => encode_to_webp(img, quality),
+        "avif" => encode_to_avif(img, quality),
+        "bmp" => {
+            let mut buffer = Vec::new();
+            img.write_to(&mut std::io::Cursor::new(&mut buffer), ImageFormat::Bmp)
+                .map_err(|error| format!("BMP 编码失败: {error}"))?;
+            Ok(buffer)
+        }
         _ => Err(format!("不支持的输出格式: {}", format)),
     }
 }
@@ -206,6 +228,8 @@ pub fn estimate_size(path: &str, output_format: &str, quality: u8) -> Result<Siz
         "jpg" | "jpeg" => encode_to_jpeg(&img, quality)?,
         "webp" => encode_to_webp(&img, quality)?,
         "png" => encode_to_png(&img)?,
+        "avif" => encode_to_avif(&img, quality)?,
+        "bmp" => encode_to_format(&img, "bmp", quality)?,
         _ => return Err(format!("不支持的格式: {}", output_format)),
     };
 
@@ -293,15 +317,61 @@ pub struct ImageCropPercent {
     pub height: f32,
 }
 
+#[derive(Debug, Clone, serde::Deserialize, Default)]
+pub struct ImageColorAdjust {
+    pub brightness: i16,
+    pub contrast: i16,
+    pub saturation: i16,
+    pub sharpness: u8,
+}
+
+#[derive(Debug, Clone)]
+pub struct ImageTransformOptions {
+    pub crop_percent: Option<ImageCropPercent>,
+    pub rotate_degrees: u16,
+    pub flip_h: bool,
+    pub flip_v: bool,
+    pub resize_max_px: Option<u32>,
+    pub resize_target_width: Option<u32>,
+    pub resize_target_height: Option<u32>,
+    pub color_adjust: ImageColorAdjust,
+    pub opacity_percent: u8,
+    pub preserve_transparency: bool,
+}
+
+impl Default for ImageTransformOptions {
+    fn default() -> Self {
+        Self {
+            crop_percent: None,
+            rotate_degrees: 0,
+            flip_h: false,
+            flip_v: false,
+            resize_max_px: None,
+            resize_target_width: None,
+            resize_target_height: None,
+            color_adjust: ImageColorAdjust::default(),
+            opacity_percent: 100,
+            preserve_transparency: true,
+        }
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct ImageProcessItem {
     pub input_path: String,
     pub output_format: String,
     pub quality: u8,
     pub resize_max_px: Option<u32>,
+    pub resize_target_width: Option<u32>,
+    pub resize_target_height: Option<u32>,
     pub strip_exif: bool,
+    pub preserve_transparency: bool,
     pub rotate_degrees: u16,
     pub crop_percent: Option<ImageCropPercent>,
+    pub flip_h: bool,
+    pub flip_v: bool,
+    pub color_adjust: ImageColorAdjust,
+    pub opacity_percent: u8,
 }
 
 fn process_single(item: &ImageProcessItem, output_dir: &str) -> ProcessResult {
@@ -343,6 +413,8 @@ fn process_single(item: &ImageProcessItem, output_dir: &str) -> ProcessResult {
         "jpg" | "jpeg" => "jpg",
         "webp" => "webp",
         "png" => "png",
+        "avif" => "avif",
+        "bmp" => "bmp",
         _ => "bin",
     };
     let output_dir_path = PathBuf::from(output_dir);
@@ -388,7 +460,7 @@ fn process_single(item: &ImageProcessItem, output_dir: &str) -> ProcessResult {
         actual_input_path = input_path;
     }
 
-    let mut img = match decode_image(actual_input_path) {
+    let img = match decode_image(actual_input_path) {
         Ok(img) => img,
         Err(e) => {
             // Clean up temp file on decode failure
@@ -412,28 +484,32 @@ fn process_single(item: &ImageProcessItem, output_dir: &str) -> ProcessResult {
         let _ = std::fs::remove_file(&work_path);
     }
 
-    img = rotate_image(&img, item.rotate_degrees);
-
-    if let Some(crop) = &item.crop_percent {
-        match crop_by_percent(&img, crop.x, crop.y, crop.width, crop.height) {
-            Ok(cropped) => img = cropped,
-            Err(e) => {
-                return ProcessResult {
-                    input_path: input_path.clone(),
-                    output_path,
-                    original_size,
-                    new_size: 0,
-                    saved_bytes: 0,
-                    success: false,
-                    error: Some(e),
-                };
-            }
+    let transform_options = ImageTransformOptions {
+        crop_percent: item.crop_percent.clone(),
+        rotate_degrees: item.rotate_degrees,
+        flip_h: item.flip_h,
+        flip_v: item.flip_v,
+        resize_max_px: item.resize_max_px,
+        resize_target_width: item.resize_target_width,
+        resize_target_height: item.resize_target_height,
+        color_adjust: item.color_adjust.clone(),
+        opacity_percent: item.opacity_percent,
+        preserve_transparency: item.preserve_transparency,
+    };
+    let img = match apply_transforms(img, &transform_options) {
+        Ok(image) => image,
+        Err(error) => {
+            return ProcessResult {
+                input_path: input_path.clone(),
+                output_path,
+                original_size,
+                new_size: 0,
+                saved_bytes: 0,
+                success: false,
+                error: Some(error),
+            };
         }
-    }
-
-    if let Some(max_px) = item.resize_max_px {
-        img = resize_to_max_edge(&img, max_px);
-    }
+    };
 
     // ── Encode ─────────────────────────────────────────────────────────
     let encoded = match encode_to_format(&img, &item.output_format, item.quality) {
@@ -501,6 +577,103 @@ fn crop_by_percent(
     crop_image(img, crop_x, crop_y, crop_w, crop_h)
 }
 
+pub fn validate_dimensions(width: Option<u32>, height: Option<u32>) -> Result<(), String> {
+    match (width, height) {
+        (None, None) => Ok(()),
+        (Some(width), Some(height))
+            if (1..=16_384).contains(&width) && (1..=16_384).contains(&height) =>
+        {
+            Ok(())
+        }
+        (Some(_), Some(_)) => Err("图片宽高必须在 1..16384 之间".to_string()),
+        _ => Err("精确尺寸必须同时提供宽度和高度".to_string()),
+    }
+}
+
+pub fn apply_transforms(
+    mut img: DynamicImage,
+    options: &ImageTransformOptions,
+) -> Result<DynamicImage, String> {
+    if let Some(crop) = &options.crop_percent {
+        img = crop_by_percent(&img, crop.x, crop.y, crop.width, crop.height)?;
+    }
+    img = rotate_image(&img, options.rotate_degrees);
+    if options.flip_h {
+        img = img.fliph();
+    }
+    if options.flip_v {
+        img = img.flipv();
+    }
+    validate_dimensions(options.resize_target_width, options.resize_target_height)?;
+    if let (Some(width), Some(height)) = (options.resize_target_width, options.resize_target_height)
+    {
+        img = img.resize_exact(width, height, image::imageops::FilterType::Lanczos3);
+    } else if let Some(max_px) = options.resize_max_px {
+        if max_px == 0 || max_px > 16_384 {
+            return Err("最长边必须在 1..16384 之间".to_string());
+        }
+        img = resize_to_max_edge(&img, max_px);
+    }
+    img = apply_color_adjustments(img, &options.color_adjust);
+    img = apply_opacity(img, options.opacity_percent);
+    if !options.preserve_transparency {
+        img = flatten_alpha_on_white(img);
+    }
+    Ok(img)
+}
+
+fn apply_opacity(img: DynamicImage, opacity_percent: u8) -> DynamicImage {
+    let opacity = opacity_percent.min(100) as u16;
+    let mut rgba = img.to_rgba8();
+    for pixel in rgba.pixels_mut() {
+        pixel.0[3] = ((pixel.0[3] as u16 * opacity + 50) / 100) as u8;
+    }
+    DynamicImage::ImageRgba8(rgba)
+}
+
+fn apply_color_adjustments(mut img: DynamicImage, adjust: &ImageColorAdjust) -> DynamicImage {
+    if adjust.brightness != 0 {
+        img = img.brighten((adjust.brightness.clamp(-100, 100) as f32 * 2.55).round() as i32);
+    }
+    if adjust.contrast != 0 {
+        img = img.adjust_contrast(adjust.contrast.clamp(-100, 100) as f32);
+    }
+    if adjust.saturation != 0 {
+        img = apply_saturation(img, adjust.saturation.clamp(-100, 100));
+    }
+    if adjust.sharpness != 0 {
+        img = img.unsharpen(1.0 + adjust.sharpness.min(100) as f32 / 50.0, 1);
+    }
+    img
+}
+
+fn apply_saturation(img: DynamicImage, saturation: i16) -> DynamicImage {
+    let factor = 1.0 + saturation as f32 / 100.0;
+    let mut rgba = img.to_rgba8();
+    for pixel in rgba.pixels_mut() {
+        let r = pixel[0] as f32;
+        let g = pixel[1] as f32;
+        let b = pixel[2] as f32;
+        let luma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+        pixel[0] = (luma + (r - luma) * factor).clamp(0.0, 255.0) as u8;
+        pixel[1] = (luma + (g - luma) * factor).clamp(0.0, 255.0) as u8;
+        pixel[2] = (luma + (b - luma) * factor).clamp(0.0, 255.0) as u8;
+    }
+    DynamicImage::ImageRgba8(rgba)
+}
+
+pub fn flatten_alpha_on_white(img: DynamicImage) -> DynamicImage {
+    let mut rgba = img.to_rgba8();
+    for pixel in rgba.pixels_mut() {
+        let alpha = pixel[3] as u16;
+        for channel in 0..3 {
+            pixel[channel] = ((pixel[channel] as u16 * alpha + 255 * (255 - alpha)) / 255) as u8;
+        }
+        pixel[3] = 255;
+    }
+    DynamicImage::ImageRgba8(rgba)
+}
+
 // UUID v4 generator using the `uuid` crate for cryptographically secure random UUIDs
 fn uuid_v4() -> String {
     uuid::Uuid::new_v4().to_string()
@@ -525,5 +698,105 @@ fn unique_output_path(output_dir: &Path, stem: &str, ext: &str, input_path: &Pat
             return candidate;
         }
         idx += 1;
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn quadrant_image(width: u32, height: u32) -> DynamicImage {
+        DynamicImage::ImageRgba8(image::ImageBuffer::from_fn(width, height, |x, y| {
+            match (x < width / 2, y < height / 2) {
+                (true, true) => image::Rgba([255, 0, 0, 255]),
+                (false, true) => image::Rgba([0, 255, 0, 255]),
+                (true, false) => image::Rgba([0, 0, 255, 255]),
+                (false, false) => image::Rgba([255, 255, 0, 255]),
+            }
+        }))
+    }
+
+    #[test]
+    fn pipeline_applies_crop_rotate_flip_resize_and_color() {
+        let options = ImageTransformOptions {
+            crop_percent: Some(ImageCropPercent {
+                x: 0.0,
+                y: 0.0,
+                width: 50.0,
+                height: 100.0,
+            }),
+            rotate_degrees: 90,
+            flip_h: true,
+            flip_v: false,
+            resize_max_px: None,
+            resize_target_width: Some(40),
+            resize_target_height: Some(20),
+            color_adjust: ImageColorAdjust {
+                brightness: 10,
+                contrast: 20,
+                saturation: -10,
+                sharpness: 30,
+            },
+            opacity_percent: 100,
+            preserve_transparency: true,
+        };
+        let result = apply_transforms(quadrant_image(100, 80), &options).unwrap();
+        assert_eq!(result.dimensions(), (40, 20));
+        assert_ne!(
+            result.to_rgba8().get_pixel(0, 0),
+            result.to_rgba8().get_pixel(39, 0)
+        );
+    }
+
+    #[test]
+    fn encodes_real_avif_and_bmp_signatures() {
+        let img = DynamicImage::new_rgb8(4, 4);
+        let avif = encode_to_format(&img, "avif", 85).unwrap();
+        let bmp = encode_to_format(&img, "bmp", 85).unwrap();
+        assert_eq!(&avif[4..12], b"ftypavif");
+        assert_eq!(&bmp[..2], b"BM");
+    }
+
+    #[test]
+    fn webp_quality_changes_lossy_output() {
+        let img = quadrant_image(256, 256);
+        let low = encode_to_format(&img, "webp", 30).unwrap();
+        let high = encode_to_format(&img, "webp", 90).unwrap();
+        assert_ne!(low, high);
+        assert!(low.starts_with(b"RIFF") && high.starts_with(b"RIFF"));
+    }
+
+    #[test]
+    fn flatten_transparency_uses_white_background() {
+        let img = DynamicImage::ImageRgba8(image::RgbaImage::from_pixel(
+            1,
+            1,
+            image::Rgba([0, 0, 0, 0]),
+        ));
+        let flattened = flatten_alpha_on_white(img).to_rgba8();
+        assert_eq!(flattened.get_pixel(0, 0).0, [255, 255, 255, 255]);
+    }
+
+    #[test]
+    fn opacity_is_applied_before_transparency_flattening() {
+        let image = DynamicImage::ImageRgba8(image::RgbaImage::from_pixel(
+            1,
+            1,
+            image::Rgba([10, 20, 30, 200]),
+        ));
+        let options = ImageTransformOptions {
+            opacity_percent: 50,
+            preserve_transparency: true,
+            ..Default::default()
+        };
+        let result = apply_transforms(image, &options).unwrap().to_rgba8();
+        assert_eq!(result.get_pixel(0, 0).0[3], 100);
+    }
+
+    #[test]
+    fn rejects_partial_or_oversized_exact_dimensions() {
+        assert!(validate_dimensions(Some(100), None).is_err());
+        assert!(validate_dimensions(Some(20_000), Some(100)).is_err());
+        assert!(validate_dimensions(Some(100), Some(100)).is_ok());
     }
 }

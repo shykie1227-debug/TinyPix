@@ -5,7 +5,7 @@ TinyPix v3.5 Pro Build Script
 ================================
 阶段：
   1. 环境检查（OS / 管理员 / Node / npm / Rust / ffmpeg / 源项目路径）
-  2. 安装依赖（Defender 排除 / 复制项目到本地 / npm install / Rust 预检）
+  2. 安装依赖（复制项目到本地 / npm install / Rust 预检）
   3. 构建（npm run build 前端 + cargo tauri build 后端 / NSIS 打包）
   4. 验证产物（.exe 大小 / 复制回 SMB / 清理临时目录）
 
@@ -22,6 +22,7 @@ import platform
 import re
 import json
 import traceback
+import hashlib
 import urllib.request
 import zipfile
 import stat
@@ -253,13 +254,14 @@ def err(msg: str):
 
 
 # ── 配置 ────────────────────────────────────────────────────────────────────
-VERSION = "3.5.0"
+VERSION = "3.5.1"
 # 2026-06-24: 优先支持手动复制到 Parallels Desktop 的共享桌面 test 目录。
 # 若用户从 Mac 复制 /Users/huashu/TinyPix/3.5pro 到
 # C:\Mac\Home\Desktop\test 后运行 build.py，应优先使用这份源码。
 SOURCE_CANDIDATES = [
     Path(__file__).resolve().parent,                                      # build.py 所在项目目录（优先）
     Path.cwd(),                                                           # 当前运行 build.py 的目录
+    Path(r"C:\3.5pro"),                                                    # 用户手动复制到 Windows 根目录
     Path(r"C:\Mac\Home\Desktop\test\3.5pro"),                              # Parallels 手动复制目录
     Path(r"Y:\TinyPix\3.5pro"),                                            # Parallels SMB (主)
     Path(r"\\Mac\Home\TinyPix\3.5pro"),                                    # SMB UNC 形式
@@ -286,7 +288,10 @@ NODE_MIN = (20, 0, 0)
 # 自动安装器固定提供 Node.js 20 LTS；项目的 Vite 6/Tauri 2 构建链也支持该版本。
 NPM_MIN = (10, 0, 0)
 RUST_MIN = (1, 80, 0)
-FFMPEG_DOWNLOAD_URL = "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip"
+FFMPEG_VERSION = "8.1.2"
+FFMPEG_DOWNLOAD_URL = "https://www.gyan.dev/ffmpeg/builds/packages/ffmpeg-8.1.2-essentials_build.zip"
+FFMPEG_ZIP_SHA256 = "db580001caa24ac104c8cb856cd113a87b0a443f7bdf47d8c12b1d740584a2ec"
+PORTABLE_EXE_NAME = "TinyPix-Pro-3.5.1-Windows-x64-Portable.exe"
 COPY_EXCLUDED_DIRS = [
     ".git",
     ".build-backups",
@@ -802,8 +807,11 @@ def check_environment() -> bool:
 #  阶段 2：安装/准备
 # ═════════════════════════════════════════════════════════════════════════════
 def configure_defender() -> bool:
-    step("配置 Windows Defender 排除项")
+    step("检查 Windows Defender 构建选项")
     if platform.system() != "Windows":
+        return True
+    if os.environ.get("TINYPIX_CONFIGURE_DEFENDER", "").strip() != "1":
+        ok("保持系统安全设置不变（如确需排除项可显式设置 TINYPIX_CONFIGURE_DEFENDER=1）")
         return True
     excludes = [
         r"\\Mac\Home\TinyPix",
@@ -957,18 +965,23 @@ def download_ffmpeg_bundle() -> Dict[str, Path]:
     """下载并解压 Windows FFmpeg essentials 包,返回 ffmpeg/ffprobe 路径。"""
     cache_dir = FFMPEG_CACHE_DIR
     extract_dir = cache_dir / "extract"
-    zip_path = cache_dir / "ffmpeg-release-essentials.zip"
+    zip_path = cache_dir / f"ffmpeg-{FFMPEG_VERSION}-essentials_build.zip"
     cache_dir.mkdir(parents=True, exist_ok=True)
     FFMPEG_SIDECAR_DIR.mkdir(parents=True, exist_ok=True)
 
-    sidecar_found = {
-        name: FFMPEG_SIDECAR_DIR / name
-        for name in ("ffmpeg.exe", "ffprobe.exe")
-        if file_exists(FFMPEG_SIDECAR_DIR / name, min_size=1024 * 1024)
-    }
-    if len(sidecar_found) == 2:
-        ok(f"复用 FFmpeg 长期缓存: {FFMPEG_SIDECAR_DIR}")
-        return sidecar_found
+    def zip_hash() -> str:
+        digest = hashlib.sha256()
+        with zip_path.open("rb") as handle:
+            for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+                digest.update(chunk)
+        return digest.hexdigest()
+
+    def verify_zip() -> None:
+        actual = zip_hash()
+        if actual.lower() != FFMPEG_ZIP_SHA256.lower():
+            zip_path.unlink(missing_ok=True)
+            raise ValueError(f"FFmpeg 压缩包 SHA-256 校验失败: {actual}")
+        ok(f"FFmpeg {FFMPEG_VERSION} SHA-256 校验通过")
 
     def download_zip() -> None:
         for local_zip in LOCAL_FFMPEG_ZIP_CANDIDATES:
@@ -976,16 +989,25 @@ def download_ffmpeg_bundle() -> Dict[str, Path]:
                 step("复用本地 FFmpeg 下载包")
                 ok(f"来源: {local_zip}")
                 shutil.copy2(local_zip, zip_path)
-                return
+                try:
+                    verify_zip()
+                    return
+                except ValueError:
+                    warn("本地 FFmpeg 包不是固定版本，忽略并从官方地址下载")
 
         step("下载 FFmpeg Windows essentials")
         ok(f"来源: {FFMPEG_DOWNLOAD_URL}")
         urllib.request.urlretrieve(FFMPEG_DOWNLOAD_URL, zip_path)
+        verify_zip()
 
     if not zip_path.exists() or zip_path.stat().st_size < 10 * 1024 * 1024:
         download_zip()
     else:
         ok(f"复用 FFmpeg 下载包缓存: {zip_path}")
+        try:
+            verify_zip()
+        except ValueError:
+            download_zip()
 
     if extract_dir.exists():
         shutil.rmtree(extract_dir, ignore_errors=True)
@@ -1018,22 +1040,16 @@ def download_ffmpeg_bundle() -> Dict[str, Path]:
 
 
 def prepare_ffmpeg_resources() -> bool:
-    """把 FFmpeg/FFprobe 准备到 src-tauri/resources,供 Tauri 打包。"""
+    """校验固定版本 FFmpeg/FFprobe 并准备为 Rust 编译期字节资源。"""
     step("准备 FFmpeg/FFprobe 视频引擎")
-    ffmpeg = find_ffmpeg_binary("ffmpeg.exe")
-    ffprobe = find_ffmpeg_binary("ffprobe.exe")
-
-    if not ffmpeg or not ffprobe:
-        warn("本机未找到完整 FFmpeg/FFprobe,尝试自动下载")
-        try:
-            downloaded = download_ffmpeg_bundle()
-            ffmpeg = downloaded["ffmpeg.exe"]
-            ffprobe = downloaded["ffprobe.exe"]
-        except Exception as e:
-            warn(f"FFmpeg 准备失败: {e}")
-            warn(r"请手动安装 FFmpeg,或将 ffmpeg.exe / ffprobe.exe 放到 C:\Users\huashu\AppData\Roaming\TinyPix\sidecars")
-            warn("继续构建（视频功能将受限）")
-            return True
+    try:
+        downloaded = download_ffmpeg_bundle()
+        ffmpeg = downloaded["ffmpeg.exe"]
+        ffprobe = downloaded["ffprobe.exe"]
+    except Exception as e:
+        err(f"FFmpeg 固定版本准备失败: {e}")
+        err("禁止生成缺少媒体引擎或校验未通过的发布包")
+        return False
 
     resources_dir = TARGET / "src-tauri" / "resources"
     resources_dir.mkdir(parents=True, exist_ok=True)
@@ -1053,20 +1069,6 @@ def prepare_ffmpeg_resources() -> bool:
         if not (resources_dir / name).exists():
             warn(f"resources/{name} 不存在 — Tauri 打包将失败")
             warn("如需视频功能，请确保 ffmpeg.exe / ffprobe.exe 可用")
-
-    config_path = TARGET / "src-tauri" / "tauri.conf.json"
-    try:
-        config = json.loads(config_path.read_text(encoding="utf-8"))
-        bundle = config.setdefault("bundle", {})
-        resources = bundle.setdefault("resources", [])
-        for item in ("resources/ffmpeg.exe", "resources/ffprobe.exe"):
-            if item not in resources:
-                resources.append(item)
-        config_path.write_text(json.dumps(config, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-        ok("Tauri resources 已包含 FFmpeg/FFprobe")
-    except Exception as e:
-        warn(f"写入 Tauri resources 失败: {e}")
-        warn("继续构建（视频功能将受限）")
 
     return True
 
@@ -1235,7 +1237,7 @@ def build_tauri() -> bool:
     env["CARGO_TARGET_DIR"] = str(CARGO_TARGET_CACHE)
 
     code, stdout, stderr = run(
-        "npm run tauri build",
+        "npx tauri build --no-bundle",
         cwd=TARGET, env=env, timeout=3600
     )
     if code != 0:
@@ -1244,7 +1246,6 @@ def build_tauri() -> bool:
             warn("Tauri 打包器返回失败，但主程序 EXE 已生成；按便携版 EXE 继续")
             warn("通常原因是 NSIS 安装包工具不可用；无需安装版本不依赖 NSIS")
             ok(f"便携主程序: {portable}")
-            bundle_ffmpeg(str(TARGET))
             return True
         err("Tauri 构建失败")
         # 输出关键错误
@@ -1257,23 +1258,15 @@ def build_tauri() -> bool:
     return True
 
 
-def bundle_ffmpeg(target_dir: str) -> bool:
-    """将 FFmpeg/FFprobe 复制到 release 目录"""
-    release_path = release_dir()
-    resource_dir = Path(target_dir) / "src-tauri" / "resources"
-    release_path.mkdir(parents=True, exist_ok=True)
-
-    for name in ("ffmpeg.exe", "ffprobe.exe"):
-        src = resource_dir / name
-        if not src.exists():
-            src = find_ffmpeg_binary(name)
-        if src and src.exists():
-            dst = release_path / name
-            shutil.copy2(src, dst)
-            ok(f"Copied {name} to {dst}")
-        else:
-            warn(f"{name} not found, video features will be unavailable")
-    return True
+def finalize_portable_exe() -> Optional[Path]:
+    """将原始 Tauri 主程序规范化为唯一便携 EXE 交付物。"""
+    source = release_dir() / "tinypix.exe"
+    if not file_exists(source, min_size=1024 * 1024):
+        return None
+    destination = release_dir() / PORTABLE_EXE_NAME
+    shutil.copy2(source, destination)
+    ok(f"单 EXE 便携版: {destination}")
+    return destination
 
 
 def security_audit(project_dir: str) -> bool:
@@ -1325,21 +1318,8 @@ def release_dir() -> Path:
 
 
 def find_artifacts() -> List[Path]:
-    """查找所有构建产物"""
-    rel = release_dir()
-    candidates = [
-        rel / "TinyPix Pro.exe",
-        rel / "tinypix.exe",
-        rel / "TinyPix Pro Setup.exe",
-    ]
-    found = [p for p in candidates if file_exists(p, min_size=1024 * 1024)]
-
-    # NSIS 安装包
-    import glob
-    nsis = glob.glob(str(rel / "bundle" / "nsis" / "TinyPix Pro_*_x64-setup.exe"))
-    found.extend(Path(p) for p in nsis if file_exists(Path(p), min_size=1024 * 1024))
-
-    return found
+    artifact = release_dir() / PORTABLE_EXE_NAME
+    return [artifact] if file_exists(artifact, min_size=1024 * 1024) else []
 
 
 def copy_artifacts_to_smb() -> None:
@@ -1392,14 +1372,27 @@ def copy_artifacts_to_smb() -> None:
             except Exception as e:
                 warn(f"  [FAIL] {src.name} 复制异常: {e}")
 
-        for name in ("ffmpeg.exe", "ffprobe.exe"):
-            sidecar = release_dir() / name
-            if sidecar.exists():
-                try:
-                    shutil.copy2(sidecar, dest_dir / name)
-                    ok(f"  [OK] {name} -> {dest_dir / name}")
-                except Exception as e:
-                    warn(f"  [FAIL] {name} 复制异常: {e}")
+
+
+def file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def source_git_commit() -> str:
+    if SOURCE is None:
+        return "unknown"
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "HEAD"], cwd=SOURCE,
+            capture_output=True, text=True, timeout=10, check=False,
+        )
+        return result.stdout.strip() if result.returncode == 0 else "unknown"
+    except (OSError, subprocess.SubprocessError):
+        return "unknown"
 
 
 def verify_and_report() -> bool:
@@ -1421,13 +1414,8 @@ def verify_and_report() -> bool:
         cprint(f"    [OK] {p.name} ({size_mb:.1f} MB)", "green")
         cprint(f"      {p}", "gray")
 
-    # 检查 ffmpeg sidecar 是否需要
-    ffmpeg_exe = release_dir() / "ffmpeg.exe"
-    if not ffmpeg_exe.exists():
-        warn("ffmpeg.exe 未在 release 目录（视频功能受限）")
-        warn("如需视频功能，请将 ffmpeg.exe 放到 release/ 同目录")
-    else:
-        ok(f"ffmpeg.exe 已包含 ({ffmpeg_exe.stat().st_size // (1024*1024)} MB)")
+    digest = file_sha256(artifacts[0])
+    ok(f"EXE SHA-256: {digest}")
 
     return True
 
@@ -1515,9 +1503,9 @@ def main() -> int:
                            error_summary="Tauri 构建失败 (cargo, 详见 logs/error.log)")
         return 1
 
-    # 构建后打包 FFmpeg
-    step("打包 FFmpeg 到 release 目录")
-    bundle_ffmpeg(str(TARGET))
+    if finalize_portable_exe() is None:
+        err("未找到可规范化的 Tauri 主程序 EXE")
+        return 1
 
     # 阶段 4
     if not verify_and_report():
@@ -1540,12 +1528,18 @@ def main() -> int:
         "elapsed_seconds": round(elapsed, 2),
         "elapsed_human": f"{m} 分 {s} 秒",
         "output_dir": str(TARGET),
+        "build_commit": source_git_commit(),
+        "ffmpeg_version": FFMPEG_VERSION,
+        "ffmpeg_package": FFMPEG_DOWNLOAD_URL.rsplit("/", 1)[-1],
+        "ffmpeg_package_sha256": FFMPEG_ZIP_SHA256,
+        "windows_validation": "pending",
     }
     # 尝试找到 .exe 路径
     try:
         for candidate in find_artifacts():
             _extras["output_exe"] = str(candidate)
             _extras["output_exe_size_mb"] = round(candidate.stat().st_size / (1024*1024), 2)
+            _extras["output_exe_sha256"] = file_sha256(candidate)
             # SMB 副本路径(Mac 和 Windows 都能直接看到)
             if SOURCE is not None:
                 # 2026-06-03: 复制到 C:\Mac\Home\Desktop\tiny\,而不是 SOURCE/release

@@ -17,14 +17,14 @@ interface DropZoneProps {
 const COPY = {
   image: {
     title: '拖拽图片文件到这里',
-    subtitle: '支持格式: JPG, PNG, WebP, AVIF, HEIC (单次最多 50 张)',
-    formats: ['JPG', 'PNG', 'WebP'],
+    subtitle: '支持 JPG/JPEG、PNG、WebP、AVIF、BMP、TIFF/TIF、PSD（单次最多 50 张）',
+    formats: ['JPG', 'PNG', 'WebP', 'PSD'],
     acceptButton: '选择本地图片',
   },
   video: {
     title: '拖拽视频文件到这里',
-    subtitle: '支持格式: MP4, MOV, MKV, AVI (最大 4GB / 文件)',
-    formats: ['MP4', 'MOV', 'MKV'],
+    subtitle: '支持 MP4、MOV、MKV、AVI、WebM（最大 4GB / 文件）',
+    formats: ['MP4', 'MOV', 'MKV', 'WebM'],
     acceptButton: '选择本地视频',
   },
 } as const;
@@ -36,7 +36,7 @@ interface FileMetadata {
   size_bytes: number;
 }
 
-const IMAGE_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'tiff', 'tif', 'avif', 'heic', 'psd']);
+const IMAGE_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'webp', 'bmp', 'tiff', 'tif', 'avif', 'psd']);
 const VIDEO_EXTENSIONS = new Set(['mp4', 'mov', 'webm', 'avi', 'mkv']);
 const MAX_VIDEO_BYTES = 4 * 1024 * 1024 * 1024;
 
@@ -242,13 +242,13 @@ export default function DropZone({
 
   return (
     <div
-      className={`bg-surface-container-lowest rounded-[18px] p-10 shadow-[0px_10px_30px_rgba(0,0,0,0.04)] flex flex-col items-center justify-center border-2 border-dashed border-outline-variant/40 hover:border-secondary-fixed transition-colors group min-h-[440px] ${isDragOver ? 'drop-zone-active' : ''}`}
+      className={`tinypix-drop-zone bg-surface-container-lowest rounded-[18px] p-10 shadow-[0px_10px_30px_rgba(0,0,0,0.04)] flex flex-col items-center justify-center border-2 border-dashed border-outline-variant/40 hover:border-secondary-fixed transition-colors group min-h-[440px] ${isDragOver ? 'drop-zone-active' : ''}`}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
       {/* Icon */}
-      <div className="w-20 h-20 rounded-[18px] bg-surface-container-low flex items-center justify-center mb-6 group-hover:opacity-80 transition-opacity duration-180">
+      <div className="tinypix-drop-zone-icon w-20 h-20 rounded-[18px] bg-surface-container-low flex items-center justify-center mb-6 group-hover:opacity-80 transition-opacity duration-180">
         <CloudUpload size={40} className="text-on-surface" />
       </div>
 
@@ -272,7 +272,7 @@ export default function DropZone({
       )}
 
       {/* Format chips */}
-      <div className="flex gap-3 mt-8">
+      <div className="tinypix-drop-zone-formats flex gap-3 mt-8">
         {copy.formats.map((fmt) => (
           <div
             key={fmt}
@@ -287,7 +287,7 @@ export default function DropZone({
       {/* Browse button */}
       <button
         onClick={handleBrowse}
-        className="mt-10 px-8 py-4 bg-primary text-on-primary rounded-full hover:opacity-80 active:opacity-70 transition-opacity font-label-caps text-label-caps"
+        className="tinypix-drop-zone-browse mt-10 min-h-11 px-8 py-3 bg-primary text-on-primary rounded-full hover:opacity-80 active:opacity-70 transition-opacity font-label-caps text-label-caps"
       >
         {copy.acceptButton}
       </button>

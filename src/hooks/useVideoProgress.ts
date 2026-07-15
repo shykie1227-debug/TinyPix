@@ -18,8 +18,11 @@ export function useVideoProgress(onProgress?: (pct: number) => void) {
 
     const setup = async () => {
       try {
-        const unlisten = await listen<VideoProgress>('video-progress', (event) => {
-          onProgress?.(event.payload.progress_pct);
+        const unlisten = await listen<VideoProgress | number>('video-progress', (event) => {
+          const percent = typeof event.payload === 'number'
+            ? event.payload
+            : event.payload.progress_pct;
+          if (Number.isFinite(percent)) onProgress?.(Math.max(0, Math.min(100, percent)));
         });
         unlistenRef.current.push(unlisten);
       } catch {

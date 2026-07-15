@@ -1,13 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { convertFileSrc, invoke } from '@tauri-apps/api/core';
+import { convertFileSrc } from '@tauri-apps/api/core';
 import { CloudUpload, Image as ImageIcon, Play, Scissors, Waves } from 'lucide-react';
-import type { FileItem } from '../../stores/appStore';
+import type { CropPercent, FileItem } from '../../stores/appStore';
 import { useAppStore } from '../../stores/appStore';
-import { useCssFilterPreview } from '../../hooks/useCssFilterPreview';
 import { formatBytes } from '../../utils/formatBytes';
 import VideoPreviewStage from './VideoPreviewStage';
 import ImagePreviewStage from './ImagePreviewStage';
 import type { Crop } from 'react-image-crop';
+import { useMediaPreview } from '../../hooks/useMediaPreview';
+import { mapDisplayCropToSource, mapSourceCropToDisplay } from '../../utils/imagePreviewRenderer';
+import { formatDuration } from '../../utils/timeFormat';
 
 interface MediaPreviewStageProps {
   mode?: 'upload' | 'preview' | 'timeline' | 'waveform' | 'image' | 'gif';
@@ -25,11 +27,23 @@ interface MediaPreviewStageProps {
 
 const DEFAULT_CROP: Crop = {
   unit: '%',
-  x: 10,
-  y: 10,
-  width: 80,
-  height: 80,
+  x: 0,
+  y: 0,
+  width: 100,
+  height: 100,
 };
+
+const cropFromOptions = (
+  cropPercent: CropPercent | undefined,
+  rotation: number,
+  flipH: boolean,
+  flipV: boolean
+): Crop => ({
+  unit: '%',
+  ...(cropPercent
+    ? mapSourceCropToDisplay(cropPercent, rotation, flipH, flipV)
+    : DEFAULT_CROP),
+});
 
 export default function MediaPreviewStage({
   mode = 'upload',
@@ -39,41 +53,38 @@ export default function MediaPreviewStage({
   actionLabel,
   onAction,
   mediaType = 'video',
-  currentTime = '00:04.2',
-  totalTime = '00:15.0',
-  progressPercent = 28,
-  overlayStatus = '正在选取片段',
+  currentTime,
+  totalTime,
+  progressPercent,
+  overlayStatus = '当前播放位置',
 }: MediaPreviewStageProps) {
   const firstFile = files[0];
   const { options, setOptions } = useAppStore();
   const [crop, setCrop] = useState<Crop>(DEFAULT_CROP);
-  const [videoPreviewPath, setVideoPreviewPath] = useState('');
-  const [videoPreviewFailed, setVideoPreviewFailed] = useState(false);
-  const [videoPreviewLoading, setVideoPreviewLoading] = useState(false);
   const [videoPlaybackFailed, setVideoPlaybackFailed] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const preview = useMediaPreview(firstFile?.path, mediaType);
+  const descriptor = preview.descriptor;
   const Icon = mode === 'timeline' ? Scissors : mode === 'waveform' ? Waves : mediaType === 'image' ? ImageIcon : CloudUpload;
-  const assetUrl = useMemo(() => (firstFile?.path ? convertFileSrc(firstFile.path) : ''), [firstFile?.path]);
-  const posterUrl = useMemo(() => (videoPreviewPath ? convertFileSrc(videoPreviewPath) : ''), [videoPreviewPath]);
+  const assetUrl = useMemo(
+    () => (descriptor?.playbackPath ? convertFileSrc(descriptor.playbackPath) : ''),
+    [descriptor?.playbackPath]
+  );
+  const posterUrl = useMemo(
+    () => (descriptor?.posterPath ? convertFileSrc(descriptor.posterPath) : ''),
+    [descriptor?.posterPath]
+  );
   const hasFile = Boolean(firstFile);
   const showPlayer = hasFile && mediaType === 'video' && (mode === 'preview' || mode === 'timeline' || mode === 'waveform' || mode === 'gif');
   const showImageEditor = hasFile && mediaType === 'image';
+  const duration = descriptor?.durationSecs ?? 0;
+  const actualProgress = duration > 0 ? (preview.playbackPosition / duration) * 100 : 0;
 
-  // CSS filter 预览 (brightness/contrast/saturation + flipH/flipV)
-  const cssFilter = useCssFilterPreview({
-    brightness: options.colorAdjust?.brightness ?? 0,
-    contrast: options.colorAdjust?.contrast ?? 0,
-    saturation: options.colorAdjust?.saturation ?? 0,
-  });
-
-  // 旋转角度转 transform
-  const rotateTransform = `rotate(${options.rotateDegrees}deg)`;
-  const flipTransform = [
-    options.flipH ? 'scaleX(-1)' : '',
-    options.flipV ? 'scaleY(-1)' : '',
-  ].filter(Boolean).join(' ');
-  // 合并 transform: 旋转 + 镜像。滤镜单独进入 filter，避免浏览器丢弃整段样式。
-  const combinedTransform = [rotateTransform, flipTransform].filter(Boolean).join(' ');
+  useEffect(() => {
+    if (descriptor?.state === 'ready' && descriptor.playbackPath) {
+      setVideoPlaybackFailed(false);
+    }
+  }, [descriptor?.playbackPath, descriptor?.state]);
 
   const syncCropToStore = useCallback(
     (nextCrop: Crop) => {
@@ -83,51 +94,33 @@ export default function MediaPreviewStage({
         typeof nextCrop.width === 'number' &&
         typeof nextCrop.height === 'number'
       ) {
-        setOptions({
-          cropPercent: {
-            x: Math.round(nextCrop.x),
-            y: Math.round(nextCrop.y),
-            width: Math.round(nextCrop.width),
-            height: Math.round(nextCrop.height),
-          },
-        });
+        const displayCrop = {
+          x: nextCrop.x,
+          y: nextCrop.y,
+          width: nextCrop.width,
+          height: nextCrop.height,
+        };
+        setOptions({ cropPercent: mapDisplayCropToSource(
+          displayCrop,
+          options.rotateDegrees,
+          Boolean(options.flipH),
+          Boolean(options.flipV)
+        ) });
       }
     },
-    [setOptions]
+    [options.flipH, options.flipV, options.rotateDegrees, setOptions]
   );
 
-  const createVideoPoster = useCallback(async () => {
-    if (!firstFile?.path) return;
-    setVideoPreviewLoading(true);
-    setVideoPreviewFailed(false);
-    setVideoPreviewPath('');
-    try {
-      const previewPath = await invoke<string>('create_video_preview', {
-        inputPath: firstFile.path,
-      });
-      setVideoPreviewPath(previewPath);
-    } catch {
-      setVideoPreviewFailed(true);
-    } finally {
-      setVideoPreviewLoading(false);
-    }
-  }, [firstFile?.path]);
-
   useEffect(() => {
-    setCrop(DEFAULT_CROP);
+    setCrop(cropFromOptions(
+      options.cropPercent,
+      options.rotateDegrees,
+      Boolean(options.flipH),
+      Boolean(options.flipV)
+    ));
     setImageError(false);
-    setVideoPreviewPath('');
-    setVideoPreviewFailed(false);
     setVideoPlaybackFailed(false);
-    setVideoPreviewLoading(false);
-
-    if (firstFile?.path && mediaType === 'video') {
-      void createVideoPoster();
-    }
-    if (mediaType === 'image') {
-      syncCropToStore(DEFAULT_CROP);
-    }
-  }, [firstFile?.path, mediaType, createVideoPoster, syncCropToStore]);
+  }, [firstFile?.path, mediaType, options.cropPercent, options.flipH, options.flipV, options.rotateDegrees]);
 
   return (
     <div className="bg-surface-container-lowest rounded-[18px] border border-outline-variant/10 shadow-[0px_10px_30px_rgba(0,0,0,0.04)] overflow-hidden">
@@ -138,15 +131,25 @@ export default function MediaPreviewStage({
             assetUrl={assetUrl}
             posterUrl={posterUrl}
             mode={mode as 'preview' | 'timeline' | 'waveform' | 'gif'}
-            currentTime={currentTime}
-            totalTime={totalTime}
-            progressPercent={progressPercent}
+            currentTime={currentTime ?? formatDuration(preview.playbackPosition)}
+            totalTime={totalTime ?? formatDuration(duration)}
+            progressPercent={progressPercent ?? actualProgress}
             overlayStatus={overlayStatus}
             videoPlaybackFailed={videoPlaybackFailed}
-            videoPreviewFailed={videoPreviewFailed}
-            videoPreviewLoading={videoPreviewLoading}
-            onVideoPlaybackFailed={() => setVideoPlaybackFailed(true)}
-            onVideoPreviewFailed={() => setVideoPreviewFailed(true)}
+            videoPreviewFailed={descriptor?.state === 'error' || descriptor?.state === 'cancelled'}
+            previewCancelled={descriptor?.state === 'cancelled'}
+            videoPreviewLoading={descriptor?.state === 'probing' || descriptor?.state === 'generating'}
+            previewProgress={preview.progress}
+            previewError={descriptor?.error?.message}
+            onRetryPreview={preview.retry}
+            onCancelPreview={() => void preview.cancel()}
+            onVideoPlaybackFailed={() => {
+              setVideoPlaybackFailed(true);
+              preview.forceProxy();
+            }}
+            onVideoPreviewFailed={() => setVideoPlaybackFailed(true)}
+            initialTime={preview.playbackPosition}
+            onPlaybackTime={preview.setPlaybackPosition}
             title={title}
             subtitle={subtitle}
           />
@@ -154,17 +157,30 @@ export default function MediaPreviewStage({
           <ImagePreviewStage
             file={firstFile}
             assetUrl={assetUrl}
-            fallbackSrc={firstFile?.path}
-            cssFilter={cssFilter}
-            combinedTransform={combinedTransform}
+            rotation={options.rotateDegrees}
+            flipH={Boolean(options.flipH)}
+            flipV={Boolean(options.flipV)}
+            color={options.colorAdjust ?? { brightness: 0, contrast: 0, saturation: 0, sharpness: 0 }}
+            opacityPercent={options.opacityPercent}
+            resizeTargetW={options.resizeTargetW}
+            resizeTargetH={options.resizeTargetH}
             crop={crop}
             onCropChange={setCrop}
             onCropComplete={syncCropToStore}
-            imageError={imageError}
+            imageError={imageError || descriptor?.state === 'error'}
+            loading={descriptor?.state === 'probing' || descriptor?.state === 'generating'}
+            progress={preview.progress}
+            errorMessage={descriptor?.error?.message}
+            onRetry={preview.retry}
+            onCancel={() => void preview.cancel()}
             onImageError={() => setImageError(true)}
             onImageLoad={() => {
-              setCrop(DEFAULT_CROP);
-              syncCropToStore(DEFAULT_CROP);
+              setCrop(cropFromOptions(
+                options.cropPercent,
+                options.rotateDegrees,
+                Boolean(options.flipH),
+                Boolean(options.flipV)
+              ));
             }}
           />
         ) : (

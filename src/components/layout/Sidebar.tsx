@@ -1,7 +1,7 @@
-import { Film, Settings, ArrowDownToLine, Scissors, ArrowRightLeft, Music, ImageDown } from 'lucide-react';
+import { Film, Settings, Download, Scissors, ImageDown } from 'lucide-react';
 
 type Nav = 'home' | 'workspace';
-type WorkspaceTab = 'image' | 'video' | 'gif' | 'trim' | 'convert' | 'audio';
+type WorkspaceTab = 'image' | 'video' | 'gif' | 'trim';
 
 interface SidebarProps {
   activeNav: Nav;
@@ -15,7 +15,7 @@ export default function Sidebar({ activeNav, onNavChange, activeTab, onTabChange
   const isImageMode = activeTab === 'image';
   const subtitle = isImageMode ? '专业图像工具集' : '批量处理引擎';
 
-  return (<aside className="w-64 shrink-0 flex flex-col h-screen py-8 border-r border-outline-variant/20 bg-surface-container-low">
+  return (<aside className="h-full w-[clamp(184px,18vw,224px)] shrink-0 flex flex-col py-6 border-r border-outline-variant/20 bg-surface-container-low">
     <div className="px-6 mb-12">
       <h1 className="text-on-surface font-semibold text-2xl leading-8">
         TinyPix Pro
@@ -34,7 +34,7 @@ export default function Sidebar({ activeNav, onNavChange, activeTab, onTabChange
           <button onClick={() => { onNavChange('workspace'); onTabChange?.('image'); }} className={`w-full flex items-center gap-3 px-4 py-3 mx-2 rounded-full transition-opacity ${activeNav === 'workspace' ? 'bg-secondary-container text-on-secondary-container font-semibold' : 'text-on-surface-variant hover:opacity-60'}`}>
             <ImageDown size={24}/>
             <span className="flex-1 text-left text-sm font-semibold">
-              图片导出
+              图片处理
             </span>
           </button>
         </div>
@@ -45,11 +45,9 @@ export default function Sidebar({ activeNav, onNavChange, activeTab, onTabChange
         </p>
         <div className="space-y-1">
           {[
-            { id: 'video' as WorkspaceTab, label: '视频压缩', icon: ArrowDownToLine },
-            { id: 'gif' as WorkspaceTab, label: '视频转 GIF', icon: Film },
-            { id: 'convert' as WorkspaceTab, label: '视频格式转换', icon: ArrowRightLeft },
+            { id: 'video' as WorkspaceTab, label: '视频输出', icon: Download },
+            { id: 'gif' as WorkspaceTab, label: 'GIF 制作', icon: Film },
             { id: 'trim' as WorkspaceTab, label: '视频剪辑', icon: Scissors },
-            { id: 'audio' as WorkspaceTab, label: '提取音频', icon: Music },
           ].map((item) => {
             const Icon = item.icon;
             const isActive = activeNav === 'workspace' && activeTab === item.id;

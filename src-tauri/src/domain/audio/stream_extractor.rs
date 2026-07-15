@@ -34,9 +34,8 @@ pub struct FfmpegStreamExtractor;
 
 impl AudioStreamExtractor for FfmpegStreamExtractor {
     fn extract(&self, ctx: ExtractContext) -> Result<AudioOperationResult, String> {
-        let ffmpeg = get_ffmpeg_path().ok_or_else(|| {
-            FFmpegError::NotFound("ffmpeg 未找到".to_string()).to_string()
-        })?;
+        let ffmpeg = get_ffmpeg_path()
+            .ok_or_else(|| FFmpegError::NotFound("ffmpeg 未找到".to_string()).to_string())?;
 
         let start = std::time::Instant::now();
         let original_size = std::fs::metadata(ctx.input_path)

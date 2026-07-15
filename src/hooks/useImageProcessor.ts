@@ -111,6 +111,18 @@ export function useImageProcessor() {
         width: number;
         height: number;
       };
+      preserveTransparency?: boolean;
+      opacityPercent?: number;
+      resizeTargetW?: number;
+      resizeTargetH?: number;
+      colorAdjust?: {
+        brightness: number;
+        contrast: number;
+        saturation: number;
+        sharpness: number;
+      };
+      flipH?: boolean;
+      flipV?: boolean;
     }) => {
       if (files.length === 0) return;
       const targetFiles = files.filter(
@@ -137,9 +149,20 @@ export function useImageProcessor() {
           output_dir: options.outputDir,
           rotate_degrees: options.rotateDegrees ?? 0,
           crop_percent: options.cropPercent,
+          preserve_transparency: options.preserveTransparency ?? true,
+          opacity_percent: options.opacityPercent ?? 100,
+          resize_target_width: options.resizeTargetW,
+          resize_target_height: options.resizeTargetH,
+          color_adjust: options.colorAdjust ?? {
+            brightness: 0,
+            contrast: 0,
+            saturation: 0,
+            sharpness: 0,
+          },
+          flip_h: options.flipH ?? false,
+          flip_v: options.flipV ?? false,
         },
       }).catch((err) => {
-        console.error('process_images error:', err);
         targetFiles.forEach((f) =>
           updateFile(f.id, { status: 'error', error: String(err) })
         );

@@ -4,7 +4,9 @@ pub mod format_converter;
 pub mod inspector;
 pub mod stream_extractor;
 
-pub use format_converter::{AudioFormatConverter, ConvertConfig, ConvertContext, FfmpegFormatConverter};
+pub use format_converter::{
+    AudioFormatConverter, ConvertConfig, ConvertContext, FfmpegFormatConverter,
+};
 pub use inspector::{AudioInspector, AudioSourceInfo, FfprobeAudioInspector};
 pub use stream_extractor::{AudioStreamExtractor, ExtractContext, FfmpegStreamExtractor};
 

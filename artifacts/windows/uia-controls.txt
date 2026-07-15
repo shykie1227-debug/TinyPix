@@ -1,0 +1,2 @@
+﻿ControlType.Pane		TinyPix Pro v3.5
+ControlType.Pane		TinyPix Pro v3.5 - Web 内容

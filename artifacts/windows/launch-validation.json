@@ -1,0 +1,50 @@
+﻿{
+    "generatedAt":  "2026-07-15T15:44:56.5166794+08:00",
+    "ordinaryUser":  "F1B7\\huashu",
+    "offline":  true,
+    "exePath":  "C:\\Users\\huashu\\Desktop\\tiny\\TinyPix-Pro-3.5.1-Windows-x64-Portable.exe",
+    "exeBytes":  223229440,
+    "exeSha256":  "fb3bd79fa9cfa207ef8dd6f46c0e5d0d650a5d720fbce6d48b63d2225af7db70",
+    "coldStartMilliseconds":  4797,
+    "engineExtractionMilliseconds":  15493,
+    "secondStartMilliseconds":  428,
+    "firstWindowResponsive":  true,
+    "cacheReady":  true,
+    "engineFiles":  [
+                        {
+                            "path":  "C:\\Users\\huashu\\AppData\\Local\\TinyPix\\engine\\5fa735fa6fd2321f7f174385a619c85ec3a0c4d2a4db601172e716a73faef8a0\\ffmpeg.exe",
+                            "bytes":  101897728,
+                            "sha256":  "1326dde4c84ff1f96fe6b8916c5bed29e163e9b5dccf995f6f3db069d143ec5e"
+                        },
+                        {
+                            "path":  "C:\\Users\\huashu\\AppData\\Local\\TinyPix\\engine\\5fa735fa6fd2321f7f174385a619c85ec3a0c4d2a4db601172e716a73faef8a0\\ffprobe.exe",
+                            "bytes":  101692928,
+                            "sha256":  "b49ccc7c6547b141ad5a2f6ec69cc04323d7133d7704d70b331b904c63eecb07"
+                        }
+                    ],
+    "tcpConnections":  [
+
+                       ],
+    "registryBefore":  [
+                           "TinyPix Pro"
+                       ],
+    "registryAfter":  [
+                          "TinyPix Pro"
+                      ],
+    "registryUnchanged":  true,
+    "servicesBefore":  [
+
+                       ],
+    "servicesAfter":  [
+
+                      ],
+    "servicesUnchanged":  true,
+    "scheduledTasksBefore":  [
+                                 "\\|TinyPixUITest"
+                             ],
+    "scheduledTasksAfter":  [
+                                "\\|TinyPixUITest"
+                            ],
+    "scheduledTasksUnchanged":  true,
+    "passed":  true
+}

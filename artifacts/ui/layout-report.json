@@ -1,0 +1,338 @@
+[
+  {
+    "route": "video-output",
+    "configuration": "1200x800-100",
+    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/video-output-1200x800-100.png",
+    "primaryActionVisible": true,
+    "viewport": [
+      1200,
+      800
+    ],
+    "document": [
+      1200,
+      800
+    ],
+    "horizontalOverflow": false,
+    "clippedText": [],
+    "errors": []
+  },
+  {
+    "route": "gif-maker",
+    "configuration": "1200x800-100",
+    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/gif-maker-1200x800-100.png",
+    "primaryActionVisible": true,
+    "viewport": [
+      1200,
+      800
+    ],
+    "document": [
+      1200,
+      800
+    ],
+    "horizontalOverflow": false,
+    "clippedText": [],
+    "errors": []
+  },
+  {
+    "route": "video-trimmer",
+    "configuration": "1200x800-100",
+    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/video-trimmer-1200x800-100.png",
+    "primaryActionVisible": true,
+    "viewport": [
+      1200,
+      800
+    ],
+    "document": [
+      1200,
+      800
+    ],
+    "horizontalOverflow": false,
+    "clippedText": [],
+    "errors": []
+  },
+  {
+    "route": "image-workbench",
+    "configuration": "1200x800-100",
+    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/image-workbench-1200x800-100.png",
+    "primaryActionVisible": true,
+    "viewport": [
+      1200,
+      800
+    ],
+    "document": [
+      1200,
+      800
+    ],
+    "horizontalOverflow": false,
+    "clippedText": [],
+    "errors": []
+  },
+  {
+    "route": "settings",
+    "configuration": "1200x800-100",
+    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/settings-1200x800-100.png",
+    "viewport": [
+      1200,
+      800
+    ],
+    "document": [
+      1200,
+      800
+    ],
+    "horizontalOverflow": false,
+    "clippedText": [],
+    "errors": []
+  },
+  {
+    "route": "video-output",
+    "configuration": "900x600-100",
+    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/video-output-900x600-100.png",
+    "primaryActionVisible": true,
+    "viewport": [
+      900,
+      600
+    ],
+    "document": [
+      900,
+      600
+    ],
+    "horizontalOverflow": false,
+    "clippedText": [],
+    "errors": []
+  },
+  {
+    "route": "gif-maker",
+    "configuration": "900x600-100",
+    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/gif-maker-900x600-100.png",
+    "primaryActionVisible": true,
+    "viewport": [
+      900,
+      600
+    ],
+    "document": [
+      900,
+      600
+    ],
+    "horizontalOverflow": false,
+    "clippedText": [],
+    "errors": []
+  },
+  {
+    "route": "video-trimmer",
+    "configuration": "900x600-100",
+    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/video-trimmer-900x600-100.png",
+    "primaryActionVisible": true,
+    "viewport": [
+      900,
+      600
+    ],
+    "document": [
+      900,
+      600
+    ],
+    "horizontalOverflow": false,
+    "clippedText": [],
+    "errors": []
+  },
+  {
+    "route": "image-workbench",
+    "configuration": "900x600-100",
+    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/image-workbench-900x600-100.png",
+    "primaryActionVisible": true,
+    "viewport": [
+      900,
+      600
+    ],
+    "document": [
+      900,
+      600
+    ],
+    "horizontalOverflow": false,
+    "clippedText": [],
+    "errors": []
+  },
+  {
+    "route": "settings",
+    "configuration": "900x600-100",
+    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/settings-900x600-100.png",
+    "viewport": [
+      900,
+      600
+    ],
+    "document": [
+      900,
+      600
+    ],
+    "horizontalOverflow": false,
+    "clippedText": [],
+    "errors": []
+  },
+  {
+    "route": "video-output",
+    "configuration": "900x600-125",
+    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/video-output-900x600-125.png",
+    "primaryActionVisible": true,
+    "viewport": [
+      720,
+      480
+    ],
+    "document": [
+      720,
+      480
+    ],
+    "horizontalOverflow": false,
+    "clippedText": [],
+    "errors": []
+  },
+  {
+    "route": "gif-maker",
+    "configuration": "900x600-125",
+    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/gif-maker-900x600-125.png",
+    "primaryActionVisible": true,
+    "viewport": [
+      720,
+      480
+    ],
+    "document": [
+      720,
+      480
+    ],
+    "horizontalOverflow": false,
+    "clippedText": [],
+    "errors": []
+  },
+  {
+    "route": "video-trimmer",
+    "configuration": "900x600-125",
+    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/video-trimmer-900x600-125.png",
+    "primaryActionVisible": true,
+    "viewport": [
+      720,
+      480
+    ],
+    "document": [
+      720,
+      480
+    ],
+    "horizontalOverflow": false,
+    "clippedText": [],
+    "errors": []
+  },
+  {
+    "route": "image-workbench",
+    "configuration": "900x600-125",
+    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/image-workbench-900x600-125.png",
+    "primaryActionVisible": true,
+    "viewport": [
+      720,
+      480
+    ],
+    "document": [
+      720,
+      480
+    ],
+    "horizontalOverflow": false,
+    "clippedText": [],
+    "errors": []
+  },
+  {
+    "route": "settings",
+    "configuration": "900x600-125",
+    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/settings-900x600-125.png",
+    "viewport": [
+      720,
+      480
+    ],
+    "document": [
+      720,
+      480
+    ],
+    "horizontalOverflow": false,
+    "clippedText": [],
+    "errors": []
+  },
+  {
+    "route": "video-output",
+    "configuration": "900x600-150",
+    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/video-output-900x600-150.png",
+    "primaryActionVisible": true,
+    "viewport": [
+      600,
+      400
+    ],
+    "document": [
+      600,
+      400
+    ],
+    "horizontalOverflow": false,
+    "clippedText": [],
+    "errors": []
+  },
+  {
+    "route": "gif-maker",
+    "configuration": "900x600-150",
+    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/gif-maker-900x600-150.png",
+    "primaryActionVisible": true,
+    "viewport": [
+      600,
+      400
+    ],
+    "document": [
+      600,
+      400
+    ],
+    "horizontalOverflow": false,
+    "clippedText": [],
+    "errors": []
+  },
+  {
+    "route": "video-trimmer",
+    "configuration": "900x600-150",
+    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/video-trimmer-900x600-150.png",
+    "primaryActionVisible": true,
+    "viewport": [
+      600,
+      400
+    ],
+    "document": [
+      600,
+      400
+    ],
+    "horizontalOverflow": false,
+    "clippedText": [],
+    "errors": []
+  },
+  {
+    "route": "image-workbench",
+    "configuration": "900x600-150",
+    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/image-workbench-900x600-150.png",
+    "primaryActionVisible": true,
+    "viewport": [
+      600,
+      400
+    ],
+    "document": [
+      600,
+      400
+    ],
+    "horizontalOverflow": false,
+    "clippedText": [],
+    "errors": []
+  },
+  {
+    "route": "settings",
+    "configuration": "900x600-150",
+    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/settings-900x600-150.png",
+    "viewport": [
+      600,
+      400
+    ],
+    "document": [
+      600,
+      400
+    ],
+    "horizontalOverflow": false,
+    "clippedText": [],
+    "errors": []
+  }
+]

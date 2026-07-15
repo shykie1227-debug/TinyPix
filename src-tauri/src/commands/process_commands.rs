@@ -1,8 +1,8 @@
 use crate::domain::exif_processor::{read_exif, strip_exif as strip_exif_file, ExifData};
 use crate::domain::image_engine::{
     cancel_batch, crop_center, crop_image, decode_image, encode_to_format, process_images_batch,
-    reset_cancel, resize_image, resize_to_max_edge, rotate_image, ImageProcessItem, ProcessResult,
-    ImageCropPercent, SizeEstimate,
+    reset_cancel, resize_image, resize_to_max_edge, rotate_image, ImageColorAdjust,
+    ImageCropPercent, ImageProcessItem, ProcessResult, SizeEstimate,
 };
 use crate::infrastructure::error::TinyPixError;
 use crate::AppState;
@@ -64,9 +64,16 @@ pub async fn process_images(
             } else {
                 None
             },
+            resize_target_width: options.resize_target_width,
+            resize_target_height: options.resize_target_height,
             strip_exif: options.strip_exif,
+            preserve_transparency: options.preserve_transparency,
             rotate_degrees: options.rotate_degrees.unwrap_or(0),
             crop_percent: options.crop_percent.clone(),
+            flip_h: options.flip_h,
+            flip_v: options.flip_v,
+            color_adjust: options.color_adjust.clone(),
+            opacity_percent: options.opacity_percent,
         })
         .collect();
 
@@ -164,10 +171,30 @@ pub struct ProcessOptions {
     pub quality: f64,
     pub resize_enabled: bool,
     pub resize_max_px: u32,
+    pub resize_target_width: Option<u32>,
+    pub resize_target_height: Option<u32>,
     pub strip_exif: bool,
+    #[serde(default = "default_preserve_transparency")]
+    pub preserve_transparency: bool,
     pub output_dir: Option<String>,
     pub rotate_degrees: Option<u16>,
     pub crop_percent: Option<ImageCropPercent>,
+    #[serde(default)]
+    pub flip_h: bool,
+    #[serde(default)]
+    pub flip_v: bool,
+    #[serde(default)]
+    pub color_adjust: ImageColorAdjust,
+    #[serde(default = "default_opacity_percent")]
+    pub opacity_percent: u8,
+}
+
+fn default_preserve_transparency() -> bool {
+    true
+}
+
+fn default_opacity_percent() -> u8 {
+    100
 }
 
 #[derive(Debug, serde::Deserialize)]

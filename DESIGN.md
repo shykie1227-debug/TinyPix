@@ -36,11 +36,11 @@ Letter spacing must be zero for large Chinese headings and modest only for small
 * **Buttons:** Primary commands use Apple pill shape (`border-radius: 980px`, `min-height: 44px`, `padding: 8px 22px`). Black fill with white text for primary actions. Transparent with black border for secondary. Hover uses `opacity: 0.8` (180ms ease), no scale transforms. Text links use `#0066cc` with underline on hover.
 * **Cards/Containers:** Main tool panels use white cards with 18px rounded corners and very soft shadows. Avoid nested card-on-card layouts unless the inner surface is a true control group.
 * **Inputs/Forms:** Use neutral filled surfaces, subtle borders, lime active state, and black or green slider thumbs. Focus uses `box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.3)`. Numeric and option controls must not shift layout while interacting.
-* **Navigation:** Keep the left rail grouped by 图片工具 and 视频工具. Video tools follow the latest `ui-to-dev-guide.md` and are exactly: 视频压缩, 视频转 GIF, 视频格式转换, 视频剪辑, 提取音频. Nav items use `opacity: 0.6` on hover (Apple style).
+* **Navigation:** Keep the left rail grouped by 图片工具 and 视频工具. Video tools are exactly: 视频输出, GIF 制作, 视频剪辑. Image tools contain one 图片处理 entry. Nav items use `opacity: 0.6` on hover (Apple style).
 * **Status:** Progress and local-engine feedback use lime accents and concise wording. Errors are short, visible, and local to the failing operation.
 
 ## 5. Layout Principles
-Use the provided demo structure: left function area, center drag/preview area, right parameter area, bottom status/execution area. The workbench should open directly to 视频压缩. Large desktop widths use a two-column center/right layout; narrower widths collapse without overlap. Settings is specifically for output path configuration. Runtime UI must remain fully offline with no remote fonts, images, APIs, telemetry, or update checks.
+Use the provided demo structure: 184–224px left function area, `minmax(0,1fr)` center drag/preview area, and 280–340px right parameter area. The workbench opens directly to 视频输出. Each column scrolls independently and the page must never scroll horizontally. Settings contains output path, engine status/cache cleanup, and licenses. Runtime UI must remain fully offline with no remote fonts, images, APIs, telemetry, or update checks.
 
 ## 6. Spacing & Radius System
 - **Base grid:** 8px
@@ -61,8 +61,8 @@ Use the provided demo structure: left function area, center drag/preview area, r
 
 ## 8. Media Preview & Mature Component Rules
 - A selected file must replace the empty drag zone with a real preview immediately.
-- Image tools use one 图片导出 workbench. Preview, crop, rotate, quality, format conversion, EXIF cleanup, and output path belong to the same flow.
+- Image tools use one 图片处理 workbench. Preview, crop, rotate, mirror, dimensions, color, quality, format conversion, EXIF cleanup, and output path belong to the same flow.
 - Image crop interaction uses `react-image-crop`, an offline React component with a permissive license; do not replace it with commercial SDKs or online editors.
-- Video tools share the same local preview stage. 视频压缩, 视频转 GIF, 视频格式转换, 视频剪辑, and 提取音频 must all keep the loaded video visible while their right panel changes.
+- Video tools share the same local preview stage. 视频输出, GIF 制作, and 视频剪辑 must all keep the loaded video visible while their right panel changes.
 - If a video codec cannot be played by the embedded browser, call local FFmpeg to generate a thumbnail fallback. The UI should say the embedded player cannot play this codec, while making clear that FFmpeg processing can continue.
 - Lime badges should not float in the main title area. Use lime for selected tools, active presets, progress, and concise bottom status feedback.

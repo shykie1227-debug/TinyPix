@@ -9,15 +9,21 @@ use crate::domain::audio::{
     FfprobeAudioInspector,
 };
 use crate::infrastructure::error::TinyPixError;
+use crate::infrastructure::validation::unique_output_path;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct AudioExtractionResult {
+    pub task_id: String,
+    pub stage: String,
+    pub percent: f64,
     pub output_path: String,
     pub original_size: u64,
     pub output_size: u64,
     pub saved_bytes: u64,
     pub processing_time_secs: f64,
     pub mode: String,
+    pub failure_type: Option<String>,
+    pub retryable: bool,
 }
 
 const FORMAT_CODEC_MAP: &[(&str, &str)] = &[
@@ -30,7 +36,9 @@ const FORMAT_CODEC_MAP: &[(&str, &str)] = &[
 
 fn validate_input_path(path: &str) -> Result<(), TinyPixError> {
     if !Path::new(path).exists() {
-        return Err(TinyPixError::InvalidParam(format!("输入文件不存在: {path}")));
+        return Err(TinyPixError::InvalidParam(format!(
+            "输入文件不存在: {path}"
+        )));
     }
     Ok(())
 }
@@ -72,6 +80,9 @@ pub async fn extract_audio(
 ) -> Result<AudioExtractionResult, String> {
     validate_input_path(&input_path).map_err(|e| e.to_string())?;
     validate_output_path(&output_path).map_err(|e| e.to_string())?;
+    let output_path = unique_output_path(Path::new(&output_path))
+        .to_string_lossy()
+        .to_string();
 
     let mode = mode.unwrap_or_else(|| "reencode".to_string());
     let inspector = FfprobeAudioInspector;
@@ -112,12 +123,17 @@ pub async fn extract_audio(
     }?;
 
     Ok(AudioExtractionResult {
+        task_id: uuid::Uuid::new_v4().to_string(),
+        stage: "completed".to_string(),
+        percent: 100.0,
         output_path: result.output_path,
         original_size: result.original_size,
         output_size: result.output_size,
         saved_bytes: result.saved_bytes,
         processing_time_secs: result.processing_time_secs,
         mode,
+        failure_type: None,
+        retryable: false,
     })
 }
 

@@ -1,0 +1,15 @@
+{
+  "project": "TinyPix Pro",
+  "version": "3.5.0",
+  "platform": "Windows 10 x64 (10.0.19045)",
+  "artifact": "/Users/huashu/Desktop/tiny/TinyPix-Pro-3.5.0-Windows-x64-Portable.exe",
+  "bytes": 223005696,
+  "sizeMiB": 212.67,
+  "sha256": "c999007cd3b01752238cd29bb936b704b352462f0f7470b6ceec3a434e9a9759",
+  "sourceHead": "96eb987d7eda7a4e8995ed7d2d42bfc750c3dcf1",
+  "sourceState": "codex/tinypix-core-complete with uncommitted implementation changes",
+  "ffmpegVersion": "8.1.2-essentials_build-www.gyan.dev",
+  "ffmpegSha256": "1326dde4c84ff1f96fe6b8916c5bed29e163e9b5dccf995f6f3db069d143ec5e",
+  "windowsLaunchValidation": "passed",
+  "generatedAt": "2026-07-15T11:01:04+08:00"
+}

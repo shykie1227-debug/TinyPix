@@ -1,7 +1,7 @@
 import { useRef, useCallback } from 'react';
 
 interface VideoPlayerProps {
-  src: string;
+  src?: string;
   poster?: string;
   filter?: string;
   onTimeUpdate?: (currentTime: number) => void;
@@ -47,7 +47,7 @@ export default function VideoPlayer({
       key={src}
       data-testid="video-preview-player"
       className="absolute inset-0 w-full h-full object-contain"
-      src={src}
+      src={src || undefined}
       poster={poster}
       preload="metadata"
       playsInline

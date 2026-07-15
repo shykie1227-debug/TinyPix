@@ -27,3 +27,10 @@ export const withVideoSuffix = (
   }
   return `${path}${suffix}${dotExt}`;
 };
+
+export const getVideoOutputPath = (
+  path: string,
+  extension: string,
+  kind: 'video' | 'audio',
+  outputDir?: string
+) => withVideoSuffix(path, kind === 'audio' ? '_audio' : '_output', extension, outputDir);

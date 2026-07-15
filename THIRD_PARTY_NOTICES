@@ -1,0 +1,39 @@
+TinyPix Pro 3.5 - Third-Party Notices
+=====================================
+
+TinyPix source code
+-------------------
+License: MIT
+License text: bundled in the application and available in LICENSE.
+
+FFmpeg and FFprobe 8.1.2 Windows x64 static essentials build
+------------------------------------------------------------
+Upstream: https://ffmpeg.org/
+Windows build provider: https://www.gyan.dev/ffmpeg/builds/
+Source commit: https://github.com/FFmpeg/FFmpeg/commit/38b88335f9
+Binary package: ffmpeg-8.1.2-essentials_build.zip
+Package SHA-256: db580001caa24ac104c8cb856cd113a87b0a443f7bdf47d8c12b1d740584a2ec
+License: GPL version 3
+License information: https://ffmpeg.org/legal.html
+Corresponding source: https://github.com/FFmpeg/FFmpeg/tree/38b88335f9
+
+FFmpeg and FFprobe are embedded as unmodified executable byte resources and
+run as independent processes. They are not linked into TinyPix source code.
+On first use, TinyPix verifies the embedded bytes and extracts them to the
+current user's local TinyPix engine cache.
+
+react-image-crop
+----------------
+Upstream: https://github.com/dominictobias/react-image-crop
+License: ISC
+Use: local image crop interaction.
+
+Design and parameter references only - no source code copied
+-------------------------------------------------------------
+HandBrake official presets: https://handbrake.fr/docs/en/latest/technical/official-presets.html
+LosslessCut: https://github.com/mifi/lossless-cut (GPL-2.0)
+MarukoToolbox-Rewrite: https://github.com/arenascats/MarukoToolbox-Rewrite (Apache-2.0)
+StaxRip: https://github.com/staxrip/staxrip (MIT)
+
+Format Factory was used only as a product-experience comparison. No Format
+Factory source code or binary component is included.

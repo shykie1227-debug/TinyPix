@@ -1,0 +1,45 @@
+{
+  "generatedAt": "2026-07-15T08:51:43.847Z",
+  "exePath": "C:\\Users\\huashu\\Desktop\\tiny\\TinyPix-Pro-3.5.1-Windows-x64-Portable.exe",
+  "sampleVideo": "C:\\Users\\huashu\\AppData\\Local\\Temp\\TinyPixMediaMatrix\\output.webm",
+  "sampleImage": "C:\\Users\\huashu\\AppData\\Local\\Temp\\TinyPixMediaMatrix\\app-source.png",
+  "checks": [
+    {
+      "name": "embedded-engine-ready",
+      "passed": true
+    },
+    {
+      "name": "video-proxy-preview",
+      "passed": true,
+      "previewSrc": "http://asset.localhost/C%3A%5CUsers%5Chuashu%5CAppData%5CLocal%5CTinyPix%5Cpreviews%5Cvideos%5Ccb857682606de73c3e4365e8e37bea0451922bc10565dd4a70b7e4641a56db9b.mp4"
+    },
+    {
+      "name": "video-output-through-exe",
+      "passed": true,
+      "outputPath": "C:\\Users\\huashu\\AppData\\Local\\Temp\\TinyPixMediaMatrix\\output_output.mp4"
+    },
+    {
+      "name": "gif-through-exe",
+      "passed": true,
+      "outputPath": "C:\\Users\\huashu\\AppData\\Local\\Temp\\TinyPixMediaMatrix\\output.gif"
+    },
+    {
+      "name": "precise-video-edit-through-exe",
+      "passed": true,
+      "outputPath": "C:\\Users\\huashu\\AppData\\Local\\Temp\\TinyPixMediaMatrix\\output_edited.mp4"
+    }
+  ],
+  "screenshots": [
+    "C:\\Mac\\Home\\TinyPix\\3.5pro\\artifacts\\windows\\app-e2e\\video-output-loaded.png",
+    "C:\\Mac\\Home\\TinyPix\\3.5pro\\artifacts\\windows\\app-e2e\\gif-loaded.png",
+    "C:\\Mac\\Home\\TinyPix\\3.5pro\\artifacts\\windows\\app-e2e\\video-editor-loaded.png",
+    "C:\\Mac\\Home\\TinyPix\\3.5pro\\artifacts\\windows\\app-e2e\\failure.png"
+  ],
+  "consoleErrors": [
+    "pageerror: Failed to execute 'toDataURL' on 'HTMLCanvasElement': Tainted canvases may not be exported."
+  ],
+  "ipcLog": [],
+  "passed": false,
+  "error": "page.waitForFunction: SecurityError: Failed to execute 'toDataURL' on 'HTMLCanvasElement': Tainted canvases may not be exported.\n    at eval (eval at predicate (eval at evaluate (:302:30)), <anonymous>:3:91)\n    at predicate (eval at evaluate (:302:30), <anonymous>:7:23)\n    at next (eval at evaluate (:302:30), <anonymous>:29:29)\n    at eval (eval at evaluate (:302:30), <anonymous>:42:9)\n    at UtilityScript.evaluate (<anonymous>:304:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at psf\\Home\\TinyPix\\3.5pro\\scripts\\windows_app_e2e.mjs:178:14",
+  "failureBodyText": "TinyPix Pro\n\n专业图像工具集\n\n图片工具\n\n图片处理\n设置\n图片工具\n视频工具\n重置\n图片处理\n\n裁切、旋转、尺寸、色彩、格式与隐私清理一次完成\n\n裁切与旋转\n质量压缩\n格式转换\n\napp-source.png\n\nPNG · 25.9 KB\n\n就绪\n\napp-source.png\n\nPNG · 26 KB\n\n当前预览\n格式与质量\nJPG\nPNG\nWebP\nAVIF\nBMP\n质量\n85%\n裁切与方向\n\n在左侧预览中拖动裁切框；旋转和镜像会同步显示并写入成品。\n\n左旋\n右旋\n水平\n垂直\n旋转\n0°\n尺寸\n色彩调整\n隐私与透明度\n开始处理\nCPU 编码: 通用兼容\n引擎状态: 就绪"
+}

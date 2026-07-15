@@ -17,7 +17,7 @@ const createId = () =>
 
 export default function HomePage() {
   const { files, clearFiles, addFiles } = useAppStore();
-  const [version] = useState('3.5.0');
+  const [version] = useState('3.5.1');
 
   const handleAdd = async () => {
     try {
@@ -27,8 +27,8 @@ export default function HomePage() {
           {
             name: 'All Media',
             extensions: [
-              'jpg', 'jpeg', 'png', 'webp', 'avif', 'gif', 'bmp', 'tiff',
-              'mp4', 'mov', 'avi', 'mkv', 'webm', 'flv', 'wmv',
+              'jpg', 'jpeg', 'png', 'webp', 'avif', 'bmp', 'tiff', 'tif', 'psd',
+              'mp4', 'mov', 'avi', 'mkv', 'webm',
             ],
           },
         ],

@@ -1,8 +1,15 @@
 use crate::domain::metadata::{self, FileMetadata};
 use crate::infrastructure::error::TinyPixError;
+use tauri::Manager;
 
 #[tauri::command]
-pub fn read_file_metadata(path: String) -> Result<FileMetadata, TinyPixError> {
+pub fn read_file_metadata(
+    app: tauri::AppHandle,
+    path: String,
+) -> Result<FileMetadata, TinyPixError> {
+    app.asset_protocol_scope()
+        .allow_file(&path)
+        .map_err(|error| TinyPixError::FileRead(format!("无法授权本地媒体预览: {error}")))?;
     metadata::read_metadata(&path).map_err(TinyPixError::FileRead)
 }
 
@@ -12,8 +19,8 @@ pub fn get_supported_formats() -> Vec<String> {
         "jpg".to_string(),
         "jpeg".to_string(),
         "png".to_string(),
-        "gif".to_string(),
         "webp".to_string(),
+        "avif".to_string(),
         "bmp".to_string(),
         "tiff".to_string(),
         "tif".to_string(),
@@ -85,14 +92,10 @@ mod tests {
     fn test_get_supported_formats_contains_all_expected() {
         let formats = get_supported_formats();
         let expected = vec![
-            "jpg", "jpeg", "png", "gif", "webp", "bmp", "tiff", "tif", "psd",
+            "jpg", "jpeg", "png", "webp", "avif", "bmp", "tiff", "tif", "psd",
         ];
         for fmt in expected {
-            assert!(
-                formats.contains(&fmt.to_string()),
-                "缺少格式: {}",
-                fmt
-            );
+            assert!(formats.contains(&fmt.to_string()), "缺少格式: {}", fmt);
         }
     }
 

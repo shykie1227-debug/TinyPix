@@ -19,13 +19,13 @@ export default function RotateFlipBar({
   const normalizedRotation = normalizeRotation(rotation);
 
   return (
-    <div className="flex items-center gap-3 bg-surface-container-lowest rounded-[18px] p-4 border border-outline-variant/10">
-      <div className="flex gap-2">
+    <div className="flex min-w-0 flex-wrap items-center gap-3 rounded-[18px] border border-outline-variant/10 bg-surface-container-lowest p-3">
+      <div className="grid w-full grid-cols-2 gap-2 min-[310px]:grid-cols-4">
         <button
           type="button"
           onClick={() => onRotationChange((normalizedRotation + 270) % 360)}
           aria-label="左旋 90°"
-          className="flex items-center gap-1.5 px-3 py-2 bg-surface-container-low rounded-[12px] hover:bg-surface-container-high transition-colors no-scale text-on-surface-variant"
+          className="flex min-h-10 min-w-0 items-center justify-center gap-1 rounded-[12px] bg-surface-container-low px-2 text-on-surface-variant transition-colors hover:bg-surface-container-high no-scale"
           title="左旋 90°"
         >
           <RotateCcw size={18} />
@@ -35,7 +35,7 @@ export default function RotateFlipBar({
           type="button"
           onClick={() => onRotationChange((normalizedRotation + 90) % 360)}
           aria-label="右旋 90°"
-          className="flex items-center gap-1.5 px-3 py-2 bg-surface-container-low rounded-[12px] hover:bg-surface-container-high transition-colors no-scale text-on-surface-variant"
+          className="flex min-h-10 min-w-0 items-center justify-center gap-1 rounded-[12px] bg-surface-container-low px-2 text-on-surface-variant transition-colors hover:bg-surface-container-high no-scale"
           title="右旋 90°"
         >
           <RotateCw size={18} />
@@ -45,7 +45,7 @@ export default function RotateFlipBar({
           type="button"
           onClick={onFlipH}
           aria-label="水平镜像"
-          className="flex items-center gap-1.5 px-3 py-2 bg-surface-container-low rounded-[12px] hover:bg-surface-container-high transition-colors no-scale text-on-surface-variant"
+          className="flex min-h-10 min-w-0 items-center justify-center gap-1 rounded-[12px] bg-surface-container-low px-2 text-on-surface-variant transition-colors hover:bg-surface-container-high no-scale"
           title="水平镜像"
         >
           <FlipHorizontal size={18} />
@@ -55,7 +55,7 @@ export default function RotateFlipBar({
           type="button"
           onClick={onFlipV}
           aria-label="垂直镜像"
-          className="flex items-center gap-1.5 px-3 py-2 bg-surface-container-low rounded-[12px] hover:bg-surface-container-high transition-colors no-scale text-on-surface-variant"
+          className="flex min-h-10 min-w-0 items-center justify-center gap-1 rounded-[12px] bg-surface-container-low px-2 text-on-surface-variant transition-colors hover:bg-surface-container-high no-scale"
           title="垂直镜像"
         >
           <FlipVertical size={18} />
@@ -63,11 +63,9 @@ export default function RotateFlipBar({
         </button>
       </div>
 
-      <div className="w-px h-8 bg-outline-variant/30" />
-
-      <div className="flex-grow flex items-center gap-3 ml-4">
+      <div className="flex min-w-0 w-full items-center gap-3">
         <span className="text-[10px] font-bold text-on-surface-variant whitespace-nowrap">旋转</span>
-        <div className="flex-grow">
+        <div className="min-w-0 flex-grow">
           <CustomSlider
             min={0}
             max={270}

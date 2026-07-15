@@ -8,8 +8,11 @@ use crate::infrastructure::error::{TinyPixError, TinyPixResult};
 use crate::infrastructure::ffmpeg_manager::{
     check_ffmpeg_version, get_ffmpeg_path, parse_video_probe, VideoProbeInfo,
 };
+use crate::infrastructure::ffmpeg_runner::request_video_cancel;
 use crate::infrastructure::ffmpeg_runner::FFmpegRunner;
-use crate::infrastructure::validation::{validate_output_path, validate_time_range, validate_video_path};
+use crate::infrastructure::validation::{
+    unique_output_path, validate_output_path, validate_time_range, validate_video_path,
+};
 
 /// FFmpeg 安装状态
 #[derive(Debug, Serialize)]
@@ -22,11 +25,16 @@ pub struct FFmpegStatus {
 /// 视频压缩结果
 #[derive(Debug, Serialize)]
 pub struct VideoResult {
+    pub task_id: String,
+    pub stage: String,
+    pub percent: f64,
     pub output_path: String,
     pub original_size: u64,
     pub output_size: u64,
     pub saved_bytes: u64,
     pub processing_time_secs: f64,
+    pub failure_type: Option<String>,
+    pub retryable: bool,
 }
 
 /// 视频信息
@@ -37,8 +45,15 @@ pub struct VideoInfo {
     pub height: u32,
     pub bitrate_kbps: u32,
     pub fps: f64,
+    /// Kept for existing frontends; equivalent to `video_codec`.
     pub codec: String,
+    /// Kept for existing frontends; equivalent to `container`.
     pub format: String,
+    pub container: String,
+    pub video_codec: String,
+    pub audio_codec: Option<String>,
+    pub has_audio: bool,
+    pub rotation: i32,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -70,6 +85,11 @@ pub async fn check_ffmpeg() -> TinyPixResult<FFmpegStatus> {
     })
 }
 
+#[tauri::command]
+pub fn cancel_video_tasks() {
+    request_video_cancel();
+}
+
 /// 获取视频信息
 #[tauri::command]
 pub async fn get_video_info(_app: tauri::AppHandle, path: String) -> TinyPixResult<VideoInfo> {
@@ -86,7 +106,8 @@ pub async fn get_video_info(_app: tauri::AppHandle, path: String) -> TinyPixResu
         ])
         .await?;
 
-    let info: VideoProbeInfo = parse_video_probe(&json).map_err(|e| TinyPixError::Processing(e.to_string()))?;
+    let info: VideoProbeInfo =
+        parse_video_probe(&json).map_err(|e| TinyPixError::Processing(e.to_string()))?;
 
     Ok(VideoInfo {
         duration_secs: info.duration_secs,
@@ -96,6 +117,11 @@ pub async fn get_video_info(_app: tauri::AppHandle, path: String) -> TinyPixResu
         fps: info.fps,
         codec: info.codec,
         format: info.format,
+        container: info.container,
+        video_codec: info.video_codec,
+        audio_codec: info.audio_codec,
+        has_audio: info.has_audio,
+        rotation: info.rotation,
     })
 }
 
@@ -110,6 +136,11 @@ pub async fn compress_video(
     scale: Option<String>,
 ) -> TinyPixResult<VideoResult> {
     let runner = FFmpegRunner::new()?;
+    validate_video_path(&input_path)?;
+    validate_output_path(&output_path)?;
+    let output_path = unique_output_path(&PathBuf::from(output_path))
+        .to_string_lossy()
+        .to_string();
     let _input_p = PathBuf::from(&input_path);
     let original_size = std::fs::metadata(&input_path).map(|m| m.len()).unwrap_or(0);
 
@@ -144,7 +175,15 @@ pub async fn compress_video(
     args.push(String::from("128k"));
     args.push(output_path.clone());
 
-    execute_with_progress(&app, &runner, &args, total_secs, original_size, &output_path).await
+    execute_with_progress(
+        &app,
+        &runner,
+        &args,
+        total_secs,
+        original_size,
+        &output_path,
+    )
+    .await
 }
 
 /// 从视频生成 GIF
@@ -154,19 +193,29 @@ pub async fn create_gif(
     input_path: String,
     output_path: String,
     fps: u32,
-    width: u32,
+    width: Option<u32>,
     quality: Option<u8>,
     start_secs: Option<f64>,
     end_secs: Option<f64>,
+    loop_count: Option<u32>,
 ) -> TinyPixResult<VideoResult> {
     let runner = FFmpegRunner::new()?;
     validate_video_path(&input_path)?;
     validate_output_path(&output_path)?;
+    let output_path = unique_output_path(&PathBuf::from(output_path))
+        .to_string_lossy()
+        .to_string();
 
     let original_size = std::fs::metadata(&input_path).map(|m| m.len()).unwrap_or(0);
     let fps = fps.clamp(5, 30);
-    let width = width.clamp(160, 1920);
+    let width = width.map(|value| value.clamp(160, 1920));
     let quality = quality.unwrap_or(2).clamp(1, 3);
+    let loop_count = loop_count.unwrap_or(0);
+    if loop_count > 100 {
+        return Err(TinyPixError::InvalidParam(
+            "GIF 循环次数不能超过 100".to_string(),
+        ));
+    }
 
     // 验证时间范围
     if let (Some(s), Some(e)) = (start_secs, end_secs) {
@@ -185,6 +234,11 @@ pub async fn create_gif(
     } else {
         runner.probe_duration(&input_path).await.unwrap_or(0.0)
     };
+    if total_duration > 60.0 {
+        return Err(TinyPixError::InvalidParam(
+            "GIF 片段最长 60 秒，请设置更短的起止时间".to_string(),
+        ));
+    }
 
     // 质量参数映射
     let (stats_mode, max_colors, dither) = match quality {
@@ -197,10 +251,7 @@ pub async fn create_gif(
     // 构建两阶段调色板 GIF 滤镜
     // 第一阶段：fps + scale + palettegen
     // 第二阶段：paletteuse
-    let palettegen_filter = format!(
-        "fps={},scale={}:-1:flags=lanczos,split[a][b];[a]palettegen=stats_mode={}:max_colors={}[p];[b][p]paletteuse=dither={}",
-        fps, width, stats_mode, max_colors, dither
-    );
+    let palettegen_filter = build_gif_palette_filter(fps, width, stats_mode, max_colors, dither);
 
     // 构建 FFmpeg 参数
     let mut args: Vec<String> = vec![String::from("-y")];
@@ -223,10 +274,33 @@ pub async fn create_gif(
     args.push(String::from("-filter_complex"));
     args.push(palettegen_filter);
     args.push(String::from("-loop"));
-    args.push(String::from("0"));
+    args.push(loop_count.to_string());
     args.push(output_path.clone());
 
-    execute_with_progress(&app, &runner, &args, total_duration, original_size, &output_path).await
+    execute_with_progress(
+        &app,
+        &runner,
+        &args,
+        total_duration,
+        original_size,
+        &output_path,
+    )
+    .await
+}
+
+fn build_gif_palette_filter(
+    fps: u32,
+    width: Option<u32>,
+    stats_mode: &str,
+    max_colors: u32,
+    dither: &str,
+) -> String {
+    let scale = width
+        .map(|value| format!(",scale={}:-1:flags=lanczos", value))
+        .unwrap_or_default();
+    format!(
+        "fps={fps}{scale},split[a][b];[a]palettegen=stats_mode={stats_mode}:max_colors={max_colors}[p];[b][p]paletteuse=dither={dither}"
+    )
 }
 
 fn safe_preview_name(path: &str) -> String {
@@ -279,7 +353,10 @@ pub async fn extract_frame(
         output_path,
     ];
 
-    runner.run_simple(&args).await.map_err(|e| TinyPixError::Processing(format!("提取帧失败: {}", e)))?;
+    runner
+        .run_simple(&args)
+        .await
+        .map_err(|e| TinyPixError::Processing(format!("提取帧失败: {}", e)))?;
     Ok(())
 }
 
@@ -318,11 +395,16 @@ async fn execute_with_progress(
     );
     let output_size = std::fs::metadata(output_path).map(|m| m.len()).unwrap_or(0);
     Ok(VideoResult {
+        task_id: uuid::Uuid::new_v4().to_string(),
+        stage: "completed".to_string(),
+        percent: 100.0,
         output_path: output_path.to_string(),
         original_size,
         output_size,
         saved_bytes: original_size.saturating_sub(output_size),
         processing_time_secs: start.elapsed().as_secs_f64(),
+        failure_type: None,
+        retryable: false,
     })
 }
 
@@ -403,7 +485,9 @@ pub async fn create_video_preview(input_path: String) -> TinyPixResult<String> {
         return Ok(output_path.to_string_lossy().to_string());
     }
 
-    Err(TinyPixError::Processing("无法生成视频预览图，但文件仍可继续使用 FFmpeg 处理".to_string()))
+    Err(TinyPixError::Processing(
+        "无法生成视频预览图，但文件仍可继续使用 FFmpeg 处理".to_string(),
+    ))
 }
 
 /// 导出视频缩略图
@@ -442,7 +526,10 @@ pub async fn export_thumbnail(
     args.push("-y".to_string());
     args.push(output_path);
 
-    runner.run_simple(&args).await.map_err(|e| TinyPixError::Processing(format!("导出缩略图失败: {}", e)))?;
+    runner
+        .run_simple(&args)
+        .await
+        .map_err(|e| TinyPixError::Processing(format!("导出缩略图失败: {}", e)))?;
     Ok(())
 }
 
@@ -454,10 +541,14 @@ pub async fn trim_video(
     output_path: String,
     start_secs: f64,
     end_secs: f64,
+    precise: Option<bool>,
 ) -> TinyPixResult<VideoResult> {
     let runner = FFmpegRunner::new()?;
     validate_video_path(&input_path)?;
     validate_output_path(&output_path)?;
+    let output_path = unique_output_path(&PathBuf::from(output_path))
+        .to_string_lossy()
+        .to_string();
 
     let total_secs = runner.probe_duration(&input_path).await.unwrap_or(0.0);
     validate_time_range(start_secs, end_secs, total_secs)?;
@@ -465,7 +556,11 @@ pub async fn trim_video(
     let original_size = std::fs::metadata(&input_path).map(|m| m.len()).unwrap_or(0);
     let duration = end_secs - start_secs;
 
-    let args = build_trim_args(&input_path, &output_path, start_secs, end_secs, None);
+    let args = if precise.unwrap_or(false) {
+        build_trim_args(&input_path, &output_path, start_secs, end_secs, None)
+    } else {
+        build_lossless_trim_args(&input_path, &output_path, start_secs, end_secs)
+    };
 
     execute_with_progress(&app, &runner, &args, duration, original_size, &output_path).await
 }
@@ -485,7 +580,12 @@ pub async fn mirror_video(
     let filter = match direction.as_str() {
         "horizontal" => "hflip",
         "vertical" => "vflip",
-        _ => return Err(TinyPixError::InvalidParam(format!("不支持的翻转方向: {}，可选: horizontal, vertical", direction))),
+        _ => {
+            return Err(TinyPixError::InvalidParam(format!(
+                "不支持的翻转方向: {}，可选: horizontal, vertical",
+                direction
+            )))
+        }
     };
 
     let original_size = std::fs::metadata(&input_path).map(|m| m.len()).unwrap_or(0);
@@ -502,7 +602,15 @@ pub async fn mirror_video(
         output_path.clone(),
     ];
 
-    execute_with_progress(&app, &runner, &args, total_secs, original_size, &output_path).await
+    execute_with_progress(
+        &app,
+        &runner,
+        &args,
+        total_secs,
+        original_size,
+        &output_path,
+    )
+    .await
 }
 
 /// 旋转视频
@@ -521,7 +629,12 @@ pub async fn rotate_video(
         90 => "transpose=1",
         180 => "transpose=1,transpose=1",
         270 => "transpose=2",
-        _ => return Err(TinyPixError::InvalidParam(format!("不支持的旋转角度: {}，可选: 90, 180, 270", degrees))),
+        _ => {
+            return Err(TinyPixError::InvalidParam(format!(
+                "不支持的旋转角度: {}，可选: 90, 180, 270",
+                degrees
+            )))
+        }
     };
 
     let original_size = std::fs::metadata(&input_path).map(|m| m.len()).unwrap_or(0);
@@ -538,7 +651,15 @@ pub async fn rotate_video(
         output_path.clone(),
     ];
 
-    execute_with_progress(&app, &runner, &args, total_secs, original_size, &output_path).await
+    execute_with_progress(
+        &app,
+        &runner,
+        &args,
+        total_secs,
+        original_size,
+        &output_path,
+    )
+    .await
 }
 
 /// 修改视频播放速度
@@ -554,7 +675,10 @@ pub async fn change_video_speed(
     validate_output_path(&output_path)?;
 
     if speed <= 0.0 || speed > 100.0 {
-        return Err(TinyPixError::InvalidParam(format!("不支持的速度倍率: {}，范围: (0, 100]", speed)));
+        return Err(TinyPixError::InvalidParam(format!(
+            "不支持的速度倍率: {}，范围: (0, 100]",
+            speed
+        )));
     }
 
     let original_size = std::fs::metadata(&input_path).map(|m| m.len()).unwrap_or(0);
@@ -578,7 +702,15 @@ pub async fn change_video_speed(
         output_path.clone(),
     ];
 
-    execute_with_progress(&app, &runner, &args, total_secs, original_size, &output_path).await
+    execute_with_progress(
+        &app,
+        &runner,
+        &args,
+        total_secs,
+        original_size,
+        &output_path,
+    )
+    .await
 }
 
 /// 构建 atempo 链式滤镜（atempo 范围 [0.5, 2.0]）
@@ -617,10 +749,14 @@ pub async fn merge_videos(
     validate_output_path(&output_path)?;
 
     if input_paths.is_empty() {
-        return Err(TinyPixError::InvalidParam("输入视频列表不能为空".to_string()));
+        return Err(TinyPixError::InvalidParam(
+            "输入视频列表不能为空".to_string(),
+        ));
     }
     if input_paths.len() > 100 {
-        return Err(TinyPixError::InvalidParam("最多支持合并 100 个视频".to_string()));
+        return Err(TinyPixError::InvalidParam(
+            "最多支持合并 100 个视频".to_string(),
+        ));
     }
 
     // 验证所有输入路径
@@ -683,11 +819,16 @@ pub async fn merge_videos(
     );
 
     Ok(VideoResult {
+        task_id: uuid::Uuid::new_v4().to_string(),
+        stage: "completed".to_string(),
+        percent: 100.0,
         output_path,
         original_size,
         output_size,
         saved_bytes: original_size.saturating_sub(output_size),
         processing_time_secs: start.elapsed().as_secs_f64(),
+        failure_type: None,
+        retryable: false,
     })
 }
 
@@ -709,19 +850,32 @@ pub async fn convert_video_format(
     let runner = FFmpegRunner::new()?;
     validate_video_path(&input_path)?;
     validate_output_path(&output_path)?;
+    let output_path = unique_output_path(&PathBuf::from(output_path))
+        .to_string_lossy()
+        .to_string();
 
     // 视频编码器映射（在 build_convert_args 内部完成）
     // 仅做基本的合法性校验
     if let Some(vc) = video_codec.as_deref() {
         match vc {
-            "h264" | "h265" | "av1" | "vp9" | "prores" => {}
-            _ => return Err(TinyPixError::InvalidParam(format!("不支持的视频编码器: {}", vc))),
+            "h264" | "h265" | "av1" | "vp9" | "prores" | "mpeg4" => {}
+            _ => {
+                return Err(TinyPixError::InvalidParam(format!(
+                    "不支持的视频编码器: {}",
+                    vc
+                )))
+            }
         }
     }
     if let Some(ac) = audio_codec.as_deref() {
         match ac {
             "aac" | "mp3" | "opus" | "flac" | "ac3" => {}
-            _ => return Err(TinyPixError::InvalidParam(format!("不支持的音频编码器: {}", ac))),
+            _ => {
+                return Err(TinyPixError::InvalidParam(format!(
+                    "不支持的音频编码器: {}",
+                    ac
+                )))
+            }
         }
     }
 
@@ -745,7 +899,15 @@ pub async fn convert_video_format(
         None,
     );
 
-    execute_with_progress(&app, &runner, &args, total_secs, original_size, &output_path).await
+    execute_with_progress(
+        &app,
+        &runner,
+        &args,
+        total_secs,
+        original_size,
+        &output_path,
+    )
+    .await
 }
 
 /// 一站式视频编辑导出（裁切 + 速度 + 音量 + 亮度/对比度）
@@ -786,16 +948,28 @@ pub async fn edit_and_export_video(
     let format_val = format.unwrap_or_else(|| "mp4".to_string());
 
     if speed_val <= 0.0 || speed_val > 100.0 {
-        return Err(TinyPixError::InvalidParam(format!("不支持的速度倍率: {}，范围: (0, 100]", speed_val)));
+        return Err(TinyPixError::InvalidParam(format!(
+            "不支持的速度倍率: {}，范围: (0, 100]",
+            speed_val
+        )));
     }
     if volume_val < 0.0 || volume_val > 10.0 {
-        return Err(TinyPixError::InvalidParam(format!("不支持的音量倍率: {}，范围: [0, 10]", volume_val)));
+        return Err(TinyPixError::InvalidParam(format!(
+            "不支持的音量倍率: {}，范围: [0, 10]",
+            volume_val
+        )));
     }
     if brightness_val < -1.0 || brightness_val > 1.0 {
-        return Err(TinyPixError::InvalidParam(format!("不支持的亮度值: {}，范围: [-1.0, 1.0]", brightness_val)));
+        return Err(TinyPixError::InvalidParam(format!(
+            "不支持的亮度值: {}，范围: [-1.0, 1.0]",
+            brightness_val
+        )));
     }
     if contrast_val < -1.0 || contrast_val > 1.0 {
-        return Err(TinyPixError::InvalidParam(format!("不支持的对比度值: {}，范围: [-1.0, 1.0]", contrast_val)));
+        return Err(TinyPixError::InvalidParam(format!(
+            "不支持的对比度值: {}，范围: [-1.0, 1.0]",
+            contrast_val
+        )));
     }
 
     // 构建 FFmpeg 参数
@@ -882,8 +1056,34 @@ pub fn video_encoder_name(codec: &str) -> &str {
         "av1" => "libsvtav1",
         "vp9" => "libvpx-vp9",
         "prores" => "prores_ks",
+        "mpeg4" => "mpeg4",
         _ => "libx264",
     }
+}
+
+/// 无损剪辑采用流复制，因此边界可能对齐到邻近关键帧。
+pub fn build_lossless_trim_args(
+    input_path: &str,
+    output_path: &str,
+    start_secs: f64,
+    end_secs: f64,
+) -> Vec<String> {
+    vec![
+        "-y".to_string(),
+        "-i".to_string(),
+        input_path.to_string(),
+        "-ss".to_string(),
+        format!("{:.3}", start_secs),
+        "-t".to_string(),
+        format!("{:.3}", end_secs - start_secs),
+        "-map".to_string(),
+        "0".to_string(),
+        "-c".to_string(),
+        "copy".to_string(),
+        "-avoid_negative_ts".to_string(),
+        "make_zero".to_string(),
+        output_path.to_string(),
+    ]
 }
 
 /// 音频编码器名称映射（短名 → FFmpeg 编码器名）
@@ -910,9 +1110,7 @@ pub fn build_trim_args(
     hw_encoder: Option<HwEncoder>,
 ) -> Vec<String> {
     let duration = end_secs - start_secs;
-    let video_codec = hw_encoder
-        .map(|e| e.ffmpeg_name())
-        .unwrap_or("libx264");
+    let video_codec = hw_encoder.map(|e| e.ffmpeg_name()).unwrap_or("libx264");
 
     let mut args: Vec<String> = vec![
         String::from("-y"),
@@ -960,7 +1158,10 @@ pub fn build_convert_args(
 ) -> Vec<String> {
     // 解析编码器
     let (video_codec_name, audio_codec_name) = match video_codec {
-        Some(vc) => (video_encoder_name(vc).to_string(), audio_encoder_name(audio_codec.unwrap_or("aac")).to_string()),
+        Some(vc) => (
+            video_encoder_name(vc).to_string(),
+            audio_encoder_name(audio_codec.unwrap_or("aac")).to_string(),
+        ),
         None => {
             let v = match target_format {
                 "mp4" | "mov" => "libx264",
@@ -1171,14 +1372,7 @@ mod tests {
 
     #[test]
     fn test_build_compress_args_default_uses_libx264() {
-        let args = build_compress_args(
-            "/input.mp4",
-            "/output.mp4",
-            "standard",
-            26,
-            None,
-            None,
-        );
+        let args = build_compress_args("/input.mp4", "/output.mp4", "standard", 26, None, None);
 
         // 必须包含输入输出
         assert!(args.contains(&"-i".to_string()));
@@ -1217,14 +1411,7 @@ mod tests {
 
     #[test]
     fn test_build_compress_args_preset_light_uses_ultrafast() {
-        let args = build_compress_args(
-            "/in.mp4",
-            "/out.mp4",
-            "light",
-            20,
-            None,
-            None,
-        );
+        let args = build_compress_args("/in.mp4", "/out.mp4", "light", 20, None, None);
 
         assert!(args.contains(&"ultrafast".to_string()));
         assert!(args.contains(&"20".to_string()));
@@ -1232,14 +1419,7 @@ mod tests {
 
     #[test]
     fn test_build_compress_args_preset_extreme_uses_slow() {
-        let args = build_compress_args(
-            "/in.mp4",
-            "/out.mp4",
-            "extreme",
-            34,
-            None,
-            None,
-        );
+        let args = build_compress_args("/in.mp4", "/out.mp4", "extreme", 34, None, None);
 
         assert!(args.contains(&"slow".to_string()));
         assert!(args.contains(&"34".to_string()));
@@ -1402,7 +1582,44 @@ mod tests {
         assert_eq!(video_encoder_name("av1"), "libsvtav1");
         assert_eq!(video_encoder_name("vp9"), "libvpx-vp9");
         assert_eq!(video_encoder_name("prores"), "prores_ks");
+        assert_eq!(video_encoder_name("mpeg4"), "mpeg4");
         assert_eq!(video_encoder_name("unknown"), "libx264"); // fallback
+    }
+
+    #[test]
+    fn test_build_lossless_trim_args_uses_stream_copy_and_output_seek() {
+        let args = build_lossless_trim_args("/in.mp4", "/out.mp4", 2.5, 8.0);
+        assert_eq!(
+            args,
+            vec![
+                "-y",
+                "-i",
+                "/in.mp4",
+                "-ss",
+                "2.500",
+                "-t",
+                "5.500",
+                "-map",
+                "0",
+                "-c",
+                "copy",
+                "-avoid_negative_ts",
+                "make_zero",
+                "/out.mp4",
+            ]
+        );
+    }
+
+    #[test]
+    fn test_unique_output_path_keeps_free_name_and_suffixes_existing_name() {
+        let root =
+            std::env::temp_dir().join(format!("tinypix-video-output-{}", uuid::Uuid::new_v4()));
+        std::fs::create_dir_all(&root).unwrap();
+        let requested = root.join("演示.mp4");
+        assert_eq!(unique_output_path(&requested), requested);
+        std::fs::write(&requested, b"existing").unwrap();
+        assert_eq!(unique_output_path(&requested), root.join("演示 (1).mp4"));
+        let _ = std::fs::remove_dir_all(root);
     }
 
     // ============================================================
@@ -1412,8 +1629,7 @@ mod tests {
     #[test]
     fn test_build_convert_args_default_mp4() {
         let args = build_convert_args(
-            "/in.mp4", "/out.mp4", "mp4",
-            None, None, None, None, 23, None, None, None,
+            "/in.mp4", "/out.mp4", "mp4", None, None, None, None, 23, None, None, None,
         );
 
         // mp4 默认 h264/aac
@@ -1428,8 +1644,17 @@ mod tests {
     #[test]
     fn test_build_convert_args_webm_uses_vp9() {
         let args = build_convert_args(
-            "/in.mp4", "/out.webm", "webm",
-            None, None, None, None, 30, None, None, None,
+            "/in.mp4",
+            "/out.webm",
+            "webm",
+            None,
+            None,
+            None,
+            None,
+            30,
+            None,
+            None,
+            None,
         );
 
         assert!(args.contains(&"libvpx-vp9".to_string()));
@@ -1442,8 +1667,17 @@ mod tests {
     #[test]
     fn test_build_convert_args_with_resolution() {
         let args = build_convert_args(
-            "/in.mp4", "/out.mp4", "mp4",
-            None, Some(1920), Some(1080), None, 23, None, None, None,
+            "/in.mp4",
+            "/out.mp4",
+            "mp4",
+            None,
+            Some(1920),
+            Some(1080),
+            None,
+            23,
+            None,
+            None,
+            None,
         );
 
         assert!(args.contains(&"-vf".to_string()));
@@ -1453,8 +1687,17 @@ mod tests {
     #[test]
     fn test_build_convert_args_with_fps() {
         let args = build_convert_args(
-            "/in.mp4", "/out.mp4", "mp4",
-            None, None, None, Some(60), 23, None, None, None,
+            "/in.mp4",
+            "/out.mp4",
+            "mp4",
+            None,
+            None,
+            None,
+            Some(60),
+            23,
+            None,
+            None,
+            None,
         );
 
         assert!(args.contains(&"-r".to_string()));
@@ -1464,8 +1707,17 @@ mod tests {
     #[test]
     fn test_build_convert_args_with_audio_bitrate() {
         let args = build_convert_args(
-            "/in.mp4", "/out.mp4", "mp4",
-            None, None, None, None, 23, Some("aac"), Some(192000), None,
+            "/in.mp4",
+            "/out.mp4",
+            "mp4",
+            None,
+            None,
+            None,
+            None,
+            23,
+            Some("aac"),
+            Some(192000),
+            None,
         );
 
         assert!(args.contains(&"-b:a".to_string()));
@@ -1475,8 +1727,16 @@ mod tests {
     #[test]
     fn test_build_convert_args_explicit_h264_with_nvenc_override() {
         let args = build_convert_args(
-            "/in.mp4", "/out.mp4", "mp4",
-            Some("h264"), None, None, None, 25, Some("aac"), Some(128000),
+            "/in.mp4",
+            "/out.mp4",
+            "mp4",
+            Some("h264"),
+            None,
+            None,
+            None,
+            25,
+            Some("aac"),
+            Some(128000),
             Some(HwEncoder::Nvenc),
         );
 
@@ -1488,5 +1748,18 @@ mod tests {
         assert!(!args.contains(&"libx264".to_string()));
         assert!(args.contains(&"aac".to_string()));
         assert!(args.contains(&"128k".to_string()));
+    }
+
+    #[test]
+    fn gif_palette_filter_omits_scale_for_original_dimensions() {
+        let filter = build_gif_palette_filter(15, None, "diff", 128, "sierra2_4a");
+        assert!(filter.starts_with("fps=15,split"));
+        assert!(!filter.contains("scale="));
+    }
+
+    #[test]
+    fn gif_palette_filter_scales_only_when_width_is_selected() {
+        let filter = build_gif_palette_filter(15, Some(720), "diff", 128, "sierra2_4a");
+        assert!(filter.contains("fps=15,scale=720:-1:flags=lanczos,split"));
     }
 }

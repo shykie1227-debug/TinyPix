@@ -8,11 +8,11 @@ describe('isVideoFormat', () => {
     expect(isVideoFormat('avi')).toBe(true);
     expect(isVideoFormat('mkv')).toBe(true);
     expect(isVideoFormat('webm')).toBe(true);
-    expect(isVideoFormat('flv')).toBe(true);
-    expect(isVideoFormat('wmv')).toBe(true);
-    expect(isVideoFormat('gif')).toBe(true);
-    expect(isVideoFormat('m4v')).toBe(true);
-    expect(isVideoFormat('3gp')).toBe(true);
+    expect(isVideoFormat('flv')).toBe(false);
+    expect(isVideoFormat('wmv')).toBe(false);
+    expect(isVideoFormat('gif')).toBe(false);
+    expect(isVideoFormat('m4v')).toBe(false);
+    expect(isVideoFormat('3gp')).toBe(false);
   });
 
   it('不区分大小写', () => {
@@ -39,15 +39,15 @@ describe('isImageFormat', () => {
     expect(isImageFormat('jpg')).toBe(true);
     expect(isImageFormat('jpeg')).toBe(true);
     expect(isImageFormat('png')).toBe(true);
-    expect(isImageFormat('gif')).toBe(true);
+    expect(isImageFormat('gif')).toBe(false);
     expect(isImageFormat('webp')).toBe(true);
     expect(isImageFormat('bmp')).toBe(true);
     expect(isImageFormat('tiff')).toBe(true);
     expect(isImageFormat('tif')).toBe(true);
     expect(isImageFormat('avif')).toBe(true);
-    expect(isImageFormat('ico')).toBe(true);
+    expect(isImageFormat('ico')).toBe(false);
     expect(isImageFormat('psd')).toBe(true);
-    expect(isImageFormat('heic')).toBe(true);
+    expect(isImageFormat('heic')).toBe(false);
   });
 
   it('不区分大小写', () => {
@@ -67,8 +67,8 @@ describe('isImageFormat', () => {
     expect(isImageFormat('')).toBe(false);
   });
 
-  it('GIF 同时被识别为视频和图片格式', () => {
-    expect(isVideoFormat('gif')).toBe(true);
-    expect(isImageFormat('gif')).toBe(true);
+  it('GIF 不作为本版图片或视频工具输入', () => {
+    expect(isVideoFormat('gif')).toBe(false);
+    expect(isImageFormat('gif')).toBe(false);
   });
 });

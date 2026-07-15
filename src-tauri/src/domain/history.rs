@@ -5,10 +5,10 @@ use std::path::PathBuf;
 #[derive(Serialize, Deserialize, Clone)]
 pub struct HistoryEntry {
     pub id: String,
-    pub timestamp: String,  // ISO 8601
+    pub timestamp: String, // ISO 8601
     pub input_path: String,
     pub output_path: String,
-    pub operation: String,  // "compress" / "rotate" / "crop" / "trim" / etc.
+    pub operation: String, // "compress" / "rotate" / "crop" / "trim" / etc.
     pub original_size: u64,
     pub output_size: u64,
     pub success: bool,
@@ -34,7 +34,10 @@ pub fn load_history() -> Vec<HistoryEntry> {
 
 pub fn save_history(entries: &[HistoryEntry]) {
     let path = get_history_path();
-    let _ = fs::write(&path, serde_json::to_string_pretty(entries).unwrap_or_default());
+    let _ = fs::write(
+        &path,
+        serde_json::to_string_pretty(entries).unwrap_or_default(),
+    );
 }
 
 pub fn add_entry(entry: HistoryEntry) {

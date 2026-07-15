@@ -1,0 +1,110 @@
+﻿{
+    "generatedAt":  "2026-07-14T22:43:00.5199270+08:00",
+    "ffmpeg":  "ffmpeg version 8.1.2-essentials_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers",
+    "engineSha256":  "1326dde4c84ff1f96fe6b8916c5bed29e163e9b5dccf995f6f3db069d143ec5e",
+    "outputDirectory":  "C:\\Users\\huashu\\AppData\\Local\\Temp\\TinyPixMediaMatrix",
+    "passed":  true,
+    "results":  [
+                    {
+                        "name":  "video-mp4",
+                        "path":  "C:\\Users\\huashu\\AppData\\Local\\Temp\\TinyPixMediaMatrix\\输出 output.mp4",
+                        "bytes":  302293,
+                        "format":  "mov,mp4,m4a,3gp,3g2,mj2",
+                        "duration":  3.008,
+                        "passed":  true
+                    },
+                    {
+                        "name":  "video-mov",
+                        "path":  "C:\\Users\\huashu\\AppData\\Local\\Temp\\TinyPixMediaMatrix\\output.mov",
+                        "bytes":  302344,
+                        "format":  "mov,mp4,m4a,3gp,3g2,mj2",
+                        "duration":  3.008,
+                        "passed":  true
+                    },
+                    {
+                        "name":  "video-mkv",
+                        "path":  "C:\\Users\\huashu\\AppData\\Local\\Temp\\TinyPixMediaMatrix\\output.mkv",
+                        "bytes":  301226,
+                        "format":  "matroska,webm",
+                        "duration":  3.029,
+                        "passed":  true
+                    },
+                    {
+                        "name":  "video-avi",
+                        "path":  "C:\\Users\\huashu\\AppData\\Local\\Temp\\TinyPixMediaMatrix\\output.avi",
+                        "bytes":  223228,
+                        "format":  "avi",
+                        "duration":  3.048,
+                        "passed":  true
+                    },
+                    {
+                        "name":  "video-webm",
+                        "path":  "C:\\Users\\huashu\\AppData\\Local\\Temp\\TinyPixMediaMatrix\\output.webm",
+                        "bytes":  293258,
+                        "format":  "matroska,webm",
+                        "duration":  3.016,
+                        "passed":  true
+                    },
+                    {
+                        "name":  "audio-mp3",
+                        "path":  "C:\\Users\\huashu\\AppData\\Local\\Temp\\TinyPixMediaMatrix\\audio.mp3",
+                        "bytes":  24724,
+                        "format":  "mp3",
+                        "duration":  3.008,
+                        "passed":  true
+                    },
+                    {
+                        "name":  "audio-wav",
+                        "path":  "C:\\Users\\huashu\\AppData\\Local\\Temp\\TinyPixMediaMatrix\\audio.wav",
+                        "bytes":  288846,
+                        "format":  "wav",
+                        "duration":  3.008,
+                        "passed":  true
+                    },
+                    {
+                        "name":  "audio-aac",
+                        "path":  "C:\\Users\\huashu\\AppData\\Local\\Temp\\TinyPixMediaMatrix\\audio.aac",
+                        "bytes":  27284,
+                        "format":  "aac",
+                        "duration":  3.002448,
+                        "passed":  true
+                    },
+                    {
+                        "name":  "audio-flac",
+                        "path":  "C:\\Users\\huashu\\AppData\\Local\\Temp\\TinyPixMediaMatrix\\audio.flac",
+                        "bytes":  168638,
+                        "format":  "flac",
+                        "duration":  3.008,
+                        "passed":  true
+                    },
+                    {
+                        "name":  "gif",
+                        "path":  "C:\\Users\\huashu\\AppData\\Local\\Temp\\TinyPixMediaMatrix\\动画.gif",
+                        "bytes":  321332,
+                        "passed":  true
+                    },
+                    {
+                        "name":  "lossless-trim",
+                        "path":  "C:\\Users\\huashu\\AppData\\Local\\Temp\\TinyPixMediaMatrix\\lossless-trim.mp4",
+                        "bytes":  14025,
+                        "passed":  true
+                    },
+                    {
+                        "name":  "precise-trim",
+                        "path":  "C:\\Users\\huashu\\AppData\\Local\\Temp\\TinyPixMediaMatrix\\precise-trim.mp4",
+                        "bytes":  148481,
+                        "passed":  true
+                    },
+                    {
+                        "name":  "no-audio-input",
+                        "path":  "C:\\Users\\huashu\\AppData\\Local\\Temp\\TinyPixMediaMatrix\\no-audio.mp4",
+                        "bytes":  2270,
+                        "passed":  true
+                    },
+                    {
+                        "name":  "corrupt-rejected",
+                        "path":  "C:\\Users\\huashu\\AppData\\Local\\Temp\\TinyPixMediaMatrix\\corrupt.mp4",
+                        "passed":  true
+                    }
+                ]
+}

@@ -14,13 +14,13 @@
 ## UI Rules
 - Keep the app as a desktop tool, not a marketing page.
 - Preserve the structure: left feature rail, center drag/preview workspace, right parameter panel, bottom status/execution area.
-- The first screen must be the video compression workbench.
-- Video tools follow the latest `.trae/documents/ui-to-dev-guide.md` and are limited to five entries: 视频压缩, 视频转 GIF, 视频格式转换, 视频剪辑, 提取音频.
-- The sidebar is contextual: video mode shows only the five video tools; image mode shows the single 图片导出 workbench entry.
+- The first screen must be the unified 视频输出 workbench.
+- Video navigation has exactly three entries: 视频输出, GIF 制作, 视频剪辑.
+- Image mode has exactly one 图片处理 workbench entry; do not restore edit/export dual panels.
 - After any supported file is added, the center area must show a real preview or a clear local fallback, never the empty drag prompt.
 - If WebView cannot play a video codec, use local FFmpeg thumbnail fallback and avoid wording that implies FFmpeg cannot process the file.
 - Image editing uses the offline `react-image-crop` dependency for crop interaction; do not introduce commercial or online image editors.
-- Settings is output path configuration.
+- Settings contains output path, embedded engine status/cache cleanup, and open-source notices.
 - Use the TinyPix design tokens: black primary actions, lime active/progress states, off-white workspace, white rounded cards, restrained shadows.
 - Do not reintroduce the old brown `pro-green` palette or remote Stitch/Google font dependencies.
 
@@ -33,7 +33,7 @@
 ## Testing Rules
 - Follow TDD for behavior changes: write or update the test first, verify the failure, then implement the minimum fix.
 - Before claiming completion, run the targeted Vitest suite, Python build-script tests, TypeScript check, Vite build, and Rust `cargo check`.
-- For UI changes, verify the local preview in a browser and check the first screen, five video tools, image tools, and output path settings.
+- For UI changes, verify 1200×800 and 900×600 at 100%, 125%, and 150% zoom; check all three video tools, the single image workbench, settings, focus, overflow, and status states.
 
 ## Figma / Design Translation Rules
 - Treat Figma or generated design output as reference, not final code style.

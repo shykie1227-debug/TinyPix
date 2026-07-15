@@ -3,6 +3,7 @@ import { CheckCircle2, XCircle, Loader2, Circle } from 'lucide-react';
 import { convertFileSrc } from '@tauri-apps/api/core';
 import { useAppStore } from '../../stores/appStore';
 import type { FileItem } from '../../stores/appStore';
+import { isImageFormat } from '../../utils/mediaFormat';
 
 interface FileListItemProps {
   file: FileItem;
@@ -13,9 +14,6 @@ const formatFileSize = (bytes: number): string => {
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 };
-
-const isImageFile = (format: string) =>
-  /^(jpg|jpeg|png|gif|webp|bmp|tiff|avif|ico)$/i.test(format);
 
 export default function FileListItem({ file }: FileListItemProps) {
   const [imgError, setImgError] = useState(false);
@@ -36,7 +34,7 @@ export default function FileListItem({ file }: FileListItemProps) {
     }
   };
 
-  const showThumbnail = isImageFile(file.format) && file.path && !imgError;
+  const showThumbnail = isImageFormat(file.format) && file.path && !imgError;
   const thumbnailSrc = showThumbnail ? convertFileSrc(file.path) : null;
 
   return (

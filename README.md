@@ -1,77 +1,48 @@
-# TinyPix Pro v3.5
+# TinyPix Pro 3.5
 
-> 面向普通办公用户的本地媒体处理工具
+TinyPix 是面向普通 Windows 用户的本地图片与视频处理工具。成品是一个免安装的 Windows x64 EXE；运行时不联网、不上传、不需要账号、不写注册表，也不包含遥测或自动更新。
 
-## 📖 产品介绍
+## 当前功能
 
-**TinyPix Pro** 是一个完全本地运行的媒体处理工具，不需要联网，不需要账号，所有处理都在你的电脑上完成。
+- 视频输出：MP4、MOV、MKV、AVI、WebM，以及 MP3、WAV、AAC、FLAC 音频输出；批量任务单项失败不会中断队列。
+- GIF 制作：起止时间、尺寸、帧率、循环和质量，使用 FFmpeg 调色板滤镜降低色带。
+- 视频剪辑：默认无损快速剪辑；需要精确边界时切换为 CPU 重编码。
+- 图片处理：JPG/JPEG、PNG、WebP、AVIF、BMP、TIFF/TIF、PSD 输入；JPG、PNG、WebP、AVIF、BMP 输出；支持裁切、旋转、镜像、尺寸、色彩、透明度和 EXIF 清理。
 
-- 🚫 **无联网** • **无上传** • **无账号** • **无遥测** • **无数据收集**
-- ✅ 解压即用 • 单 EXE • 绿色版
-- 🎯 针对普通用户设计 - 打开就能用，不需要懂专业参数
-- 🎨 现代 Windows 11 Fluent Design 风格
+准确格式和参数见 [媒体能力契约](docs/MEDIA_CAPABILITIES.md)。
 
-## ✨ 功能
+## 开发验证
 
-### 🖼️ 图片工具
-- 图片压缩
-- 格式转换 (PNG/JPG/WebP/AVIF/BMP/GIF/HEIC/PSD)
-- 尺寸调整
-- 裁切
-- 旋转
-- EXIF 清理
-- 批量处理
-- 实时预估输出大小
-
-### 🎬 视频工具
-- 视频压缩
-- 视频转 GIF
-- 视频截图
-- 视频格式转换
-- 视频剪辑
-- 视频提取音频
-
-
-## 🛠️ 开发 & 构建
-
-### 环境要求
-- Windows 10 / Windows 11
-- Python 3.10+
-- Node.js / Rust / FFmpeg 可由 `build.py` 在构建期检查或准备
-
-### 非专业用户一键构建
-把整个 `3.5pro` 文件夹复制到 Windows 本地目录后，双击：
-
-```text
-一键构建Windows版.bat
-```
-
-脚本会自动调用 `build.py`。第一次构建通常需要 10-30 分钟，构建日志在 `logs/` 目录。
-
-构建完成后优先查看：
-
-```text
-logs/build_info.json
-```
-
-里面会记录最终 EXE 路径和大小。不要使用 `build-windows-local-fixed.bat`，那是旧 v3.0 遗留脚本。
-
-### 开发者命令
-- Python 3.10+
-- Windows 10 / Windows 11
-
-构建 EXE：
 ```bash
+npm ci
+npm test
+npm run build
+cd src-tauri && cargo test --lib && cargo check && cargo fmt --check
+cd .. && python3 -m pytest -q
+```
+
+## Windows 单 EXE 构建
+
+在 Windows 10/11 x64 普通用户环境运行：
+
+```text
+C:\3.5pro\BUILD_WINDOWS.cmd
+```
+
+`BUILD_WINDOWS.cmd` 是纯 ASCII + Windows CRLF 的入口，避免中文批处理文件名或编码导致 `python build.py` 被解析成 `ython` / `ld.py` 等错误。也可以在 `C:\3.5pro` 目录手动运行：
+
+```text
 python build.py
 ```
 
-构建完成后，`logs/build_info.json` 会记录最终 EXE 位置。常见位置是 Tauri 的 `src-tauri/target/release/` 或 `src-tauri/target/release/bundle/` 目录。
+构建脚本下载固定的 Gyan FFmpeg 8.1.2 essentials 包并验证固定 SHA-256，然后把 FFmpeg/FFprobe 作为字节资源编入 Tauri 主程序。最终唯一交付物为：
 
-## 🎨 设计源文件
-- `/Users/huashu/Downloads/UI设计   设计demo源文件
+```text
+TinyPix-Pro-3.5.1-Windows-x64-Portable.exe
+```
 
-## 🔒 隐私承诺
-所有文件处理**完全本地运行**，不会上传任何数据到任何服务器。
+构建日志和产物元数据写入 `logs/`。发布前仍必须在 Windows 普通用户、断网环境执行冷启动、二次启动、图片/视频主流程和缓存重建测试。
 
-## 📄 许可证
-[你自己决定]
+## 许可证
+
+TinyPix 使用 [MIT License](LICENSE)。FFmpeg 等第三方组件的版本、许可证、构建来源和源码获取方式见 [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES)，同样内置于应用设置页。

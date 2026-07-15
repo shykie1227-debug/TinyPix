@@ -13,11 +13,18 @@ interface VideoPreviewStageProps {
   overlayStatus?: string;
   videoPlaybackFailed: boolean;
   videoPreviewFailed: boolean;
+  previewCancelled?: boolean;
   videoPreviewLoading: boolean;
+  previewProgress?: number;
+  previewError?: string;
+  onRetryPreview?: () => void;
+  onCancelPreview?: () => void;
   onVideoPlaybackFailed: () => void;
   onVideoPreviewFailed: () => void;
   title?: string;
   subtitle?: string;
+  initialTime?: number;
+  onPlaybackTime?: (value: number) => void;
 }
 
 export default function VideoPreviewStage({
@@ -31,11 +38,18 @@ export default function VideoPreviewStage({
   overlayStatus = '正在选取片段',
   videoPlaybackFailed,
   videoPreviewFailed,
+  previewCancelled = false,
   videoPreviewLoading,
+  previewProgress = 0,
+  previewError,
+  onRetryPreview,
+  onCancelPreview,
   onVideoPlaybackFailed,
   onVideoPreviewFailed,
   title,
   subtitle,
+  initialTime = 0,
+  onPlaybackTime,
 }: VideoPreviewStageProps) {
   const Icon = mode === 'timeline' ? Scissors : mode === 'waveform' ? Waves : Play;
 
@@ -76,7 +90,7 @@ export default function VideoPreviewStage({
       >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,#2a2a2a_0%,#121212_72%)]" />
 
-        {!videoPlaybackFailed && (
+        {!videoPlaybackFailed && assetUrl && (
           <video
             data-testid="video-preview-player"
             key={assetUrl}
@@ -87,6 +101,12 @@ export default function VideoPreviewStage({
             preload="metadata"
             playsInline
             onError={onVideoPlaybackFailed}
+            onLoadedMetadata={(event) => {
+              if (initialTime > 0 && initialTime < event.currentTarget.duration) {
+                event.currentTarget.currentTime = initialTime;
+              }
+            }}
+            onTimeUpdate={(event) => onPlaybackTime?.(event.currentTarget.currentTime)}
           />
         )}
 
@@ -106,26 +126,40 @@ export default function VideoPreviewStage({
             </div>
             <p className="text-base font-bold">正在生成预览...</p>
             <p className="mt-2 max-w-sm text-xs leading-5 text-white/75">
-              正在提取视频帧，请稍候
+              正在生成本地可播放代理，已完成 {Math.round(previewProgress)}%
             </p>
+            {onCancelPreview && (
+              <button type="button" onClick={onCancelPreview} className="mt-4 min-h-10 rounded-full bg-white/10 px-5 text-xs font-semibold text-white hover:bg-white/15">
+                取消预览
+              </button>
+            )}
           </div>
         )}
 
-        {videoPlaybackFailed && !videoPreviewLoading && (
+        {(videoPlaybackFailed || videoPreviewFailed) && !videoPreviewLoading && (
           <div className="relative z-20 flex flex-col items-center justify-center p-8 text-center">
             {!posterUrl && (
               <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white/10 backdrop-blur">
                 <Play size={26} className="text-secondary-fixed" fill="currentColor" />
               </div>
             )}
-            <p className="text-base font-bold">内嵌播放器暂不支持此编码</p>
+            <p className="text-base font-bold">
+              {previewCancelled ? '预览生成已取消' : videoPreviewFailed ? '视频预览生成失败' : '正在切换兼容预览'}
+            </p>
             <p className="mt-2 max-w-sm text-xs leading-5 text-white/75">
-              {videoPreviewFailed
-                ? '当前视频无法生成缩略图，但 FFmpeg 本地处理仍可继续。'
+              {previewCancelled
+                ? '可以随时重新生成本地预览。'
+                : videoPreviewFailed
+                ? previewError || '当前视频无法生成可播放代理，请重试。'
                 : posterUrl
                   ? 'FFmpeg 本地处理仍可继续'
                   : '正在生成缩略图...'}
             </p>
+            {(videoPreviewFailed || previewCancelled) && onRetryPreview && (
+              <button type="button" onClick={onRetryPreview} className="mt-4 min-h-10 rounded-full bg-secondary-fixed px-5 text-xs font-semibold text-on-secondary-fixed">
+                重试预览
+              </button>
+            )}
             {!posterUrl && file && (
               <div className="mt-4 rounded-xl bg-white/5 px-4 py-3 text-left">
                 <p className="text-xs font-medium text-white/90 truncate max-w-[240px]">{file.name}</p>
@@ -144,11 +178,11 @@ export default function VideoPreviewStage({
       {mode === 'timeline' && (
         <div className="absolute left-5 right-5 bottom-5 z-20 rounded-[12px] bg-black/70 p-3 backdrop-blur">
           <div className="h-1.5 rounded-full bg-white/20 overflow-hidden">
-            <div className="h-full w-2/5 bg-secondary-fixed rounded-full" />
+            <div className="h-full bg-secondary-fixed rounded-full" style={{ width: `${progressPercent}%` }} />
           </div>
           <div className="flex justify-between text-white/70 text-[10px] mt-2 font-mono">
             <span>00:00</span>
-            <span>拖动时间点后导出</span>
+            <span>{currentTime} / {totalTime}</span>
           </div>
         </div>
       )}

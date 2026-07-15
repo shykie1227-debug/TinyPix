@@ -1,6 +1,6 @@
 [package]
 name = "tinypix"
-version = "3.5.0"
+version = "3.5.1"
 edition = "2021"
 build = "build.rs"
 
@@ -25,20 +25,29 @@ OriginalFilename = "TinyPix Pro.exe"
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
-tauri = { version = "2", features = [] }
+tauri = { version = "2", features = ["protocol-asset"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 tauri-plugin-dialog = "2"
 image = "0.25"
+webp = "=0.3.1"
 zune-psd = "0.4"
 zune-core = "0.4"
 rayon = "1.10"
 thiserror = "2"
 which = "5"
-tokio = { version = "1", features = ["process", "io-util", "rt-multi-thread", "time"] }
+tokio = { version = "1", features = ["process", "io-util", "rt-multi-thread", "time", "macros"] }
 dirs = "5"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 kamadak-exif = "0.6"
 
 uuid = { version = "1", features = ["v4"] }
+sha2 = "0.10"
+hex = "0.4"
+
+# The portable binary embeds two large, pre-verified media-engine executables.
+# Opt-level 2 keeps release performance while avoiding LLVM memory spikes when
+# those byte resources are linked on a 6 GB Windows build VM.
+[profile.release]
+opt-level = 2

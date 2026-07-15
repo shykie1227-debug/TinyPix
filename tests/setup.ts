@@ -63,3 +63,29 @@ if (typeof globalThis.DOMRect === 'undefined') {
     configurable: true,
   });
 }
+
+if (typeof globalThis.HTMLCanvasElement !== 'undefined') {
+  Object.defineProperty(globalThis.HTMLCanvasElement.prototype, 'getContext', {
+    configurable: true,
+    value: function getContext(this: HTMLCanvasElement) {
+      return {
+        canvas: this,
+        filter: 'none',
+        globalAlpha: 1,
+        save() {},
+        restore() {},
+        clearRect() {},
+        translate() {},
+        rotate() {},
+        scale() {},
+        drawImage() {},
+        getImageData: (_x: number, _y: number, width: number, height: number) => ({
+          data: new Uint8ClampedArray(width * height * 4),
+          width,
+          height,
+        }),
+        putImageData() {},
+      };
+    },
+  });
+}

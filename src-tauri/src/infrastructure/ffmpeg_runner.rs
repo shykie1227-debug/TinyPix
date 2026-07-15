@@ -1,12 +1,23 @@
 use std::path::PathBuf;
 use std::process::Stdio;
-use tokio::io::AsyncBufReadExt;
+use std::sync::atomic::{AtomicBool, Ordering};
+use tokio::io::{AsyncBufReadExt, AsyncReadExt};
 use tokio::process::Command;
 
 use crate::infrastructure::error::{TinyPixError, TinyPixResult};
 use crate::infrastructure::ffmpeg_manager::{
     get_ffmpeg_path, get_ffprobe_path, parse_duration_from_probe, parse_progress,
 };
+
+static CANCEL_REQUESTED: AtomicBool = AtomicBool::new(false);
+
+pub fn request_video_cancel() {
+    CANCEL_REQUESTED.store(true, Ordering::SeqCst);
+}
+
+fn reset_video_cancel() {
+    CANCEL_REQUESTED.store(false, Ordering::SeqCst);
+}
 
 /// 进度快照
 #[derive(Debug, Clone)]
@@ -38,7 +49,12 @@ impl FFmpegRunner {
     pub async fn probe_duration(&self, input_path: &str) -> TinyPixResult<f64> {
         let json = self
             .run_ffprobe(&[
-                "-v", "quiet", "-print_format", "json", "-show_format", input_path,
+                "-v",
+                "quiet",
+                "-print_format",
+                "json",
+                "-show_format",
+                input_path,
             ])
             .await?;
         parse_duration_from_probe(&json)
@@ -58,6 +74,7 @@ impl FFmpegRunner {
     where
         F: FnMut(ProgressSnapshot),
     {
+        reset_video_cancel();
         let mut child = Command::new(&self.ffmpeg)
             .args(args)
             .stdout(Stdio::piped())
@@ -70,7 +87,22 @@ impl FFmpegRunner {
         let mut last_progress = 0.0;
         let mut full_stderr = String::new();
 
-        while let Ok(Some(line)) = reader.next_line().await {
+        let mut cancel_poll = tokio::time::interval(std::time::Duration::from_millis(100));
+        loop {
+            let line = tokio::select! {
+                line = reader.next_line() => line,
+                _ = cancel_poll.tick() => {
+                    if CANCEL_REQUESTED.load(Ordering::SeqCst) {
+                        let _ = child.kill().await;
+                        let _ = child.wait().await;
+                        return Err(TinyPixError::Processing("任务已取消".to_string()));
+                    }
+                    continue;
+                }
+            };
+            let Some(line) = line.map_err(|error| TinyPixError::Io(error.to_string()))? else {
+                break;
+            };
             full_stderr.push_str(&line);
             full_stderr.push('\n');
 
@@ -91,10 +123,16 @@ impl FFmpegRunner {
             }
         }
 
-        let status = child.wait().await.map_err(|e| TinyPixError::Io(e.to_string()))?;
+        let status = child
+            .wait()
+            .await
+            .map_err(|e| TinyPixError::Io(e.to_string()))?;
 
         if !status.success() {
-            return Err(TinyPixError::Processing(format!("FFmpeg 执行失败: {}", status)));
+            return Err(TinyPixError::Processing(format!(
+                "FFmpeg 执行失败: {}",
+                status
+            )));
         }
 
         Ok(())
@@ -102,11 +140,50 @@ impl FFmpegRunner {
 
     /// 简单执行 FFmpeg（无进度追踪），返回完整输出
     pub async fn run_simple(&self, args: &[String]) -> TinyPixResult<std::process::Output> {
-        let output = Command::new(&self.ffmpeg)
+        reset_video_cancel();
+        let mut child = Command::new(&self.ffmpeg)
             .args(args)
-            .output()
-            .await
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .spawn()
             .map_err(|e| TinyPixError::Processing(format!("FFmpeg 执行失败: {}", e)))?;
+
+        let mut stdout = child.stdout.take();
+        let mut stderr = child.stderr.take();
+        let stdout_task = tokio::spawn(async move {
+            let mut bytes = Vec::new();
+            if let Some(stream) = stdout.as_mut() {
+                let _ = stream.read_to_end(&mut bytes).await;
+            }
+            bytes
+        });
+        let stderr_task = tokio::spawn(async move {
+            let mut bytes = Vec::new();
+            if let Some(stream) = stderr.as_mut() {
+                let _ = stream.read_to_end(&mut bytes).await;
+            }
+            bytes
+        });
+        let mut cancel_poll = tokio::time::interval(std::time::Duration::from_millis(100));
+        let status = loop {
+            tokio::select! {
+                result = child.wait() => {
+                    break result.map_err(|error| TinyPixError::Io(error.to_string()))?;
+                }
+                _ = cancel_poll.tick() => {
+                    if CANCEL_REQUESTED.load(Ordering::SeqCst) {
+                        let _ = child.kill().await;
+                        let _ = child.wait().await;
+                        return Err(TinyPixError::Processing("任务已取消".to_string()));
+                    }
+                }
+            }
+        };
+        let output = std::process::Output {
+            status,
+            stdout: stdout_task.await.unwrap_or_default(),
+            stderr: stderr_task.await.unwrap_or_default(),
+        };
 
         if !output.status.success() {
             return Err(TinyPixError::Processing(format!(
