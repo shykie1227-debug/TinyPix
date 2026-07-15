@@ -2927,6 +2927,18 @@ AudioExtractor.tsx (编排器 UI)
 
 <!-- 每次修改请在此上方添加新记录 -->
 
+### 2026-07-15 GIF 预览播放控件去重
+
+- 根因确认：GIF 预览同时启用 `<video controls>` 原生播放条和 `VideoPreviewStage` 的自定义播放条，造成截图中的两条进度线。
+- 方案依据：MDN 的 HTML video 控件说明、Ezgif 的起止时间工作流，以及 Kapwing/OpenShot/ScreenToGif 等工具对单一时间轴/裁剪范围的做法。
+- 改动：GIF 模式关闭原生 `controls`，改用单一 TinyPix 自定义播放栏，包含播放/暂停、时间显示和可拖动进度条；普通预览模式继续使用原生控件。
+- 新增 `VideoPreviewStage` 回归测试，锁定 GIF/普通预览的控件差异和拖动行为。
+
+参考：
+- https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/video
+- https://ezgif.com/help/how-to-make-gif
+- https://www.kapwing.com/help/timeline-tutorial/amp/
+
 **未使用的组件文件:**
 - `src/components/TopNav.tsx` - 未被 App.tsx 使用 (TopNavBar 在 App.tsx 内联定义)
 - `src/components/VideoControls.tsx` - 未被使用

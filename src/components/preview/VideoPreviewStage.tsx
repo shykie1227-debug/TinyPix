@@ -1,4 +1,5 @@
-import { Play, Scissors, Waves } from 'lucide-react';
+import { Pause, Play, Scissors, Waves } from 'lucide-react';
+import { useRef, useState } from 'react';
 import type { FileItem } from '../../stores/appStore';
 import { formatBytes } from '../../utils/formatBytes';
 
@@ -52,6 +53,25 @@ export default function VideoPreviewStage({
   onPlaybackTime,
 }: VideoPreviewStageProps) {
   const Icon = mode === 'timeline' ? Scissors : mode === 'waveform' ? Waves : Play;
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [playbackSeconds, setPlaybackSeconds] = useState(0);
+  const [durationSeconds, setDurationSeconds] = useState(0);
+
+  const togglePlayback = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (video.paused) void video.play();
+    else video.pause();
+  };
+
+  const seek = (value: number) => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.currentTime = value;
+    setPlaybackSeconds(value);
+    onPlaybackTime?.(value);
+  };
 
   if (mode === 'waveform') {
     return (
@@ -92,21 +112,29 @@ export default function VideoPreviewStage({
 
         {!videoPlaybackFailed && assetUrl && (
           <video
+            ref={videoRef}
             data-testid="video-preview-player"
             key={assetUrl}
             className="absolute inset-0 z-10 h-full w-full bg-black object-contain"
             src={assetUrl}
             poster={posterUrl || undefined}
-            controls
+            controls={mode !== 'gif'}
             preload="metadata"
             playsInline
             onError={onVideoPlaybackFailed}
             onLoadedMetadata={(event) => {
+              setDurationSeconds(Number.isFinite(event.currentTarget.duration) ? event.currentTarget.duration : 0);
               if (initialTime > 0 && initialTime < event.currentTarget.duration) {
                 event.currentTarget.currentTime = initialTime;
               }
             }}
-            onTimeUpdate={(event) => onPlaybackTime?.(event.currentTarget.currentTime)}
+            onTimeUpdate={(event) => {
+              const nextTime = event.currentTarget.currentTime;
+              setPlaybackSeconds(nextTime);
+              onPlaybackTime?.(nextTime);
+            }}
+            onPlay={() => setIsPlaying(true)}
+            onPause={() => setIsPlaying(false)}
           />
         )}
 
@@ -187,15 +215,29 @@ export default function VideoPreviewStage({
         </div>
       )}
       {mode === 'gif' && (
-        <div className="absolute bottom-6 left-6 right-6 z-20 bg-white/10 backdrop-blur-md rounded-[18px] p-4 border border-white/20">
+        <div className="absolute bottom-6 left-6 right-6 z-20 rounded-[18px] border border-white/20 bg-black/70 p-4 backdrop-blur-md">
           <div className="flex items-center justify-between font-mono-status text-[10px] text-white mb-2">
             <span>{currentTime} / {totalTime}</span>
             <span className="text-secondary-fixed">{overlayStatus}</span>
           </div>
-          <div className="w-full h-1 bg-white/20 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-secondary-fixed rounded-full transition-all duration-300"
-              style={{ width: `${progressPercent}%` }}
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              aria-label={isPlaying ? '暂停' : '播放'}
+              onClick={togglePlayback}
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-secondary-fixed text-on-secondary-fixed transition-opacity hover:opacity-80 active:opacity-70"
+            >
+              {isPlaying ? <Pause size={14} fill="currentColor" /> : <Play size={14} fill="currentColor" />}
+            </button>
+            <input
+              aria-label="GIF 预览进度"
+              type="range"
+              min={0}
+              max={durationSeconds || 1}
+              step={0.01}
+              value={Math.min(playbackSeconds, durationSeconds || 1)}
+              onChange={(event) => seek(Number(event.target.value))}
+              className="min-w-0 flex-1 accent-secondary-fixed"
             />
           </div>
         </div>
