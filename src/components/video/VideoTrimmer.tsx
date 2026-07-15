@@ -353,9 +353,9 @@ export default function VideoTrimmer() {
 
   if (!firstVideo) {
     return (
-      <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_clamp(280px,30vw,340px)] gap-5" role="region" aria-label="视频剪辑工作区">
-        <DropZone onFilesAdded={addFiles} mediaType="video" />
-        <aside className="min-w-0 rounded-[18px] border border-outline-variant/10 bg-surface-container-lowest p-5">
+      <div className="grid min-w-0 grid-cols-1 gap-5 sm:grid-cols-[minmax(0,1fr)_clamp(280px,30vw,340px)]" role="region" aria-label="视频剪辑工作区">
+        <DropZone onFilesAdded={addFiles} mediaType="video" compact className="min-h-[160px] p-3" />
+        <aside className="hidden min-w-0 rounded-[18px] border border-outline-variant/10 bg-surface-container-lowest p-5 sm:block">
           <h2 className="flex items-center gap-2 text-sm font-semibold text-on-surface"><Scissors size={18} />片段设置</h2>
           <p className="mt-3 text-sm leading-6 text-on-surface-variant">添加一个视频后可分割、删除片段、逐帧定位并合并导出。</p>
         </aside>

@@ -181,7 +181,195 @@
       480
     ],
     "horizontalOverflow": false,
-    "clippedText": [],
+    "clippedText": [
+      {
+        "text": "MP4",
+        "client": [
+          25,
+          20
+        ],
+        "scroll": [
+          30,
+          20
+        ]
+      },
+      {
+        "text": "通用视频",
+        "client": [
+          25,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      },
+      {
+        "text": "MOV",
+        "client": [
+          25,
+          20
+        ],
+        "scroll": [
+          33,
+          20
+        ]
+      },
+      {
+        "text": "剪辑交换",
+        "client": [
+          25,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      },
+      {
+        "text": "MKV",
+        "client": [
+          25,
+          20
+        ],
+        "scroll": [
+          32,
+          20
+        ]
+      },
+      {
+        "text": "归档封装",
+        "client": [
+          25,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      },
+      {
+        "text": "传统设备",
+        "client": [
+          25,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      },
+      {
+        "text": "WebM",
+        "client": [
+          25,
+          20
+        ],
+        "scroll": [
+          42,
+          20
+        ]
+      },
+      {
+        "text": "网页视频",
+        "client": [
+          25,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      },
+      {
+        "text": "MP3",
+        "client": [
+          25,
+          20
+        ],
+        "scroll": [
+          30,
+          20
+        ]
+      },
+      {
+        "text": "通用音频",
+        "client": [
+          25,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      },
+      {
+        "text": "WAV",
+        "client": [
+          25,
+          20
+        ],
+        "scroll": [
+          32,
+          20
+        ]
+      },
+      {
+        "text": "无损音频",
+        "client": [
+          25,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      },
+      {
+        "text": "AAC",
+        "client": [
+          25,
+          20
+        ],
+        "scroll": [
+          29,
+          20
+        ]
+      },
+      {
+        "text": "移动音频",
+        "client": [
+          25,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      },
+      {
+        "text": "FLAC",
+        "client": [
+          25,
+          20
+        ],
+        "scroll": [
+          36,
+          20
+        ]
+      },
+      {
+        "text": "无损压缩",
+        "client": [
+          25,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      }
+    ],
     "errors": []
   },
   {
@@ -232,7 +420,19 @@
       480
     ],
     "horizontalOverflow": false,
-    "clippedText": [],
+    "clippedText": [
+      {
+        "text": "裁切、旋转、尺寸、色彩、格式与隐私清理一次完成",
+        "client": [
+          188,
+          16
+        ],
+        "scroll": [
+          276,
+          16
+        ]
+      }
+    ],
     "errors": []
   },
   {
@@ -248,7 +448,195 @@
       480
     ],
     "horizontalOverflow": false,
-    "clippedText": [],
+    "clippedText": [
+      {
+        "text": "MP4",
+        "client": [
+          25,
+          20
+        ],
+        "scroll": [
+          30,
+          20
+        ]
+      },
+      {
+        "text": "通用视频",
+        "client": [
+          25,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      },
+      {
+        "text": "MOV",
+        "client": [
+          25,
+          20
+        ],
+        "scroll": [
+          33,
+          20
+        ]
+      },
+      {
+        "text": "剪辑交换",
+        "client": [
+          25,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      },
+      {
+        "text": "MKV",
+        "client": [
+          25,
+          20
+        ],
+        "scroll": [
+          32,
+          20
+        ]
+      },
+      {
+        "text": "归档封装",
+        "client": [
+          25,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      },
+      {
+        "text": "传统设备",
+        "client": [
+          25,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      },
+      {
+        "text": "WebM",
+        "client": [
+          25,
+          20
+        ],
+        "scroll": [
+          42,
+          20
+        ]
+      },
+      {
+        "text": "网页视频",
+        "client": [
+          25,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      },
+      {
+        "text": "MP3",
+        "client": [
+          25,
+          20
+        ],
+        "scroll": [
+          30,
+          20
+        ]
+      },
+      {
+        "text": "通用音频",
+        "client": [
+          25,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      },
+      {
+        "text": "WAV",
+        "client": [
+          25,
+          20
+        ],
+        "scroll": [
+          32,
+          20
+        ]
+      },
+      {
+        "text": "无损音频",
+        "client": [
+          25,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      },
+      {
+        "text": "AAC",
+        "client": [
+          25,
+          20
+        ],
+        "scroll": [
+          29,
+          20
+        ]
+      },
+      {
+        "text": "移动音频",
+        "client": [
+          25,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      },
+      {
+        "text": "FLAC",
+        "client": [
+          25,
+          20
+        ],
+        "scroll": [
+          36,
+          20
+        ]
+      },
+      {
+        "text": "无损压缩",
+        "client": [
+          25,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      }
+    ],
     "errors": []
   },
   {
@@ -265,7 +653,228 @@
       400
     ],
     "horizontalOverflow": false,
-    "clippedText": [],
+    "clippedText": [
+      {
+        "text": "MP4",
+        "client": [
+          9,
+          20
+        ],
+        "scroll": [
+          30,
+          20
+        ]
+      },
+      {
+        "text": "通用视频",
+        "client": [
+          9,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      },
+      {
+        "text": "MOV",
+        "client": [
+          9,
+          20
+        ],
+        "scroll": [
+          33,
+          20
+        ]
+      },
+      {
+        "text": "剪辑交换",
+        "client": [
+          9,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      },
+      {
+        "text": "MKV",
+        "client": [
+          9,
+          20
+        ],
+        "scroll": [
+          32,
+          20
+        ]
+      },
+      {
+        "text": "归档封装",
+        "client": [
+          9,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      },
+      {
+        "text": "AVI",
+        "client": [
+          9,
+          20
+        ],
+        "scroll": [
+          24,
+          20
+        ]
+      },
+      {
+        "text": "传统设备",
+        "client": [
+          9,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      },
+      {
+        "text": "WebM",
+        "client": [
+          9,
+          20
+        ],
+        "scroll": [
+          42,
+          20
+        ]
+      },
+      {
+        "text": "网页视频",
+        "client": [
+          9,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      },
+      {
+        "text": "MP3",
+        "client": [
+          9,
+          20
+        ],
+        "scroll": [
+          30,
+          20
+        ]
+      },
+      {
+        "text": "通用音频",
+        "client": [
+          9,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      },
+      {
+        "text": "WAV",
+        "client": [
+          9,
+          20
+        ],
+        "scroll": [
+          32,
+          20
+        ]
+      },
+      {
+        "text": "无损音频",
+        "client": [
+          9,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      },
+      {
+        "text": "AAC",
+        "client": [
+          9,
+          20
+        ],
+        "scroll": [
+          29,
+          20
+        ]
+      },
+      {
+        "text": "移动音频",
+        "client": [
+          9,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      },
+      {
+        "text": "FLAC",
+        "client": [
+          9,
+          20
+        ],
+        "scroll": [
+          36,
+          20
+        ]
+      },
+      {
+        "text": "无损压缩",
+        "client": [
+          9,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      },
+      {
+        "text": "输出目录",
+        "client": [
+          44,
+          80
+        ],
+        "scroll": [
+          50,
+          80
+        ]
+      },
+      {
+        "text": "高级设置",
+        "client": [
+          44,
+          80
+        ],
+        "scroll": [
+          50,
+          80
+        ]
+      }
+    ],
     "errors": []
   },
   {
@@ -306,7 +915,7 @@
     "route": "image-workbench",
     "configuration": "900x600-150",
     "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/image-workbench-900x600-150.png",
-    "primaryActionVisible": true,
+    "primaryActionVisible": false,
     "viewport": [
       600,
       400
@@ -316,7 +925,30 @@
       400
     ],
     "horizontalOverflow": false,
-    "clippedText": [],
+    "clippedText": [
+      {
+        "text": "图片处理",
+        "client": [
+          68,
+          28
+        ],
+        "scroll": [
+          80,
+          28
+        ]
+      },
+      {
+        "text": "裁切、旋转、尺寸、色彩、格式与隐私清理一次完成",
+        "client": [
+          68,
+          16
+        ],
+        "scroll": [
+          276,
+          16
+        ]
+      }
+    ],
     "errors": []
   },
   {
@@ -332,7 +964,228 @@
       400
     ],
     "horizontalOverflow": false,
-    "clippedText": [],
+    "clippedText": [
+      {
+        "text": "MP4",
+        "client": [
+          9,
+          20
+        ],
+        "scroll": [
+          30,
+          20
+        ]
+      },
+      {
+        "text": "通用视频",
+        "client": [
+          9,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      },
+      {
+        "text": "MOV",
+        "client": [
+          9,
+          20
+        ],
+        "scroll": [
+          33,
+          20
+        ]
+      },
+      {
+        "text": "剪辑交换",
+        "client": [
+          9,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      },
+      {
+        "text": "MKV",
+        "client": [
+          9,
+          20
+        ],
+        "scroll": [
+          32,
+          20
+        ]
+      },
+      {
+        "text": "归档封装",
+        "client": [
+          9,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      },
+      {
+        "text": "AVI",
+        "client": [
+          9,
+          20
+        ],
+        "scroll": [
+          24,
+          20
+        ]
+      },
+      {
+        "text": "传统设备",
+        "client": [
+          9,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      },
+      {
+        "text": "WebM",
+        "client": [
+          9,
+          20
+        ],
+        "scroll": [
+          42,
+          20
+        ]
+      },
+      {
+        "text": "网页视频",
+        "client": [
+          9,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      },
+      {
+        "text": "MP3",
+        "client": [
+          9,
+          20
+        ],
+        "scroll": [
+          30,
+          20
+        ]
+      },
+      {
+        "text": "通用音频",
+        "client": [
+          9,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      },
+      {
+        "text": "WAV",
+        "client": [
+          9,
+          20
+        ],
+        "scroll": [
+          32,
+          20
+        ]
+      },
+      {
+        "text": "无损音频",
+        "client": [
+          9,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      },
+      {
+        "text": "AAC",
+        "client": [
+          9,
+          20
+        ],
+        "scroll": [
+          29,
+          20
+        ]
+      },
+      {
+        "text": "移动音频",
+        "client": [
+          9,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      },
+      {
+        "text": "FLAC",
+        "client": [
+          9,
+          20
+        ],
+        "scroll": [
+          36,
+          20
+        ]
+      },
+      {
+        "text": "无损压缩",
+        "client": [
+          9,
+          15
+        ],
+        "scroll": [
+          40,
+          15
+        ]
+      },
+      {
+        "text": "输出目录",
+        "client": [
+          44,
+          80
+        ],
+        "scroll": [
+          50,
+          80
+        ]
+      },
+      {
+        "text": "高级设置",
+        "client": [
+          44,
+          80
+        ],
+        "scroll": [
+          50,
+          80
+        ]
+      }
+    ],
     "errors": []
   }
 ]

@@ -32,6 +32,10 @@ Design and parameter references only - no source code copied
 -------------------------------------------------------------
 HandBrake official presets: https://handbrake.fr/docs/en/latest/technical/official-presets.html
 LosslessCut: https://github.com/mifi/lossless-cut (GPL-2.0)
+VidCutter: https://github.com/ozmartian/vidcutter (GPL-3.0)
+Shotcut: https://github.com/mltframework/shotcut (GPL-3.0)
+Olive: https://github.com/olive-editor/olive (GPL-3.0)
+Kdenlive: https://github.com/KDE/kdenlive (GPL-3.0)
 MarukoToolbox-Rewrite: https://github.com/arenascats/MarukoToolbox-Rewrite (Apache-2.0)
 StaxRip: https://github.com/staxrip/staxrip (MIT)
 

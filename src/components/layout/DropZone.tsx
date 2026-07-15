@@ -7,6 +7,8 @@ import type { FileItem } from '../../stores/appStore';
 interface DropZoneProps {
   onFilesAdded: (files: FileItem[]) => void;
   mediaType?: 'image' | 'video';
+  className?: string;
+  compact?: boolean;
   title?: string;
   subtitle?: string;
   acceptButton?: string;
@@ -90,6 +92,8 @@ function isTauriEnvironment(): boolean {
 export default function DropZone({
   onFilesAdded,
   mediaType = 'image',
+  className = '',
+  compact = false,
   title,
   subtitle,
   acceptButton,
@@ -242,26 +246,26 @@ export default function DropZone({
 
   return (
     <div
-      className={`tinypix-drop-zone bg-surface-container-lowest rounded-[18px] p-10 shadow-[0px_10px_30px_rgba(0,0,0,0.04)] flex flex-col items-center justify-center border-2 border-dashed border-outline-variant/40 hover:border-secondary-fixed transition-colors group min-h-[440px] ${isDragOver ? 'drop-zone-active' : ''}`}
+      className={`tinypix-drop-zone bg-surface-container-lowest rounded-[18px] p-10 shadow-[0px_10px_30px_rgba(0,0,0,0.04)] flex flex-col items-center justify-center border-2 border-dashed border-outline-variant/40 hover:border-secondary-fixed transition-colors group min-h-[440px] ${isDragOver ? 'drop-zone-active' : ''} ${className}`}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
       {/* Icon */}
-      <div className="tinypix-drop-zone-icon w-20 h-20 rounded-[18px] bg-surface-container-low flex items-center justify-center mb-6 group-hover:opacity-80 transition-opacity duration-180">
-        <CloudUpload size={40} className="text-on-surface" />
+      <div className={`tinypix-drop-zone-icon rounded-[18px] bg-surface-container-low flex items-center justify-center group-hover:opacity-80 transition-opacity duration-180 ${compact ? 'mb-2 h-10 w-10 rounded-lg' : 'mb-6 h-20 w-20'}`}>
+        <CloudUpload size={compact ? 22 : 40} className="text-on-surface" />
       </div>
 
       {/* Title */}
       <h3
-        className="text-on-surface mb-2 font-semibold text-2xl leading-8"
+        className={`text-on-surface font-semibold ${compact ? 'mb-1 text-base leading-5' : 'mb-2 text-2xl leading-8'}`}
       >
         {copy.title}
       </h3>
 
       {/* Subtitle */}
       <p
-        className="text-on-surface-variant text-center text-sm leading-5 opacity-70"
+        className={`text-on-surface-variant text-center text-sm leading-5 opacity-70 ${compact ? 'hidden' : ''}`}
       >
         {copy.subtitle}
       </p>
@@ -272,11 +276,11 @@ export default function DropZone({
       )}
 
       {/* Format chips */}
-      <div className="tinypix-drop-zone-formats flex gap-3 mt-8">
+      <div className={`tinypix-drop-zone-formats flex ${compact ? 'mt-2 gap-1' : 'mt-8 gap-3'}`}>
         {copy.formats.map((fmt) => (
           <div
             key={fmt}
-            className="px-4 py-2 bg-surface-container-low rounded-lg flex items-center gap-2 font-mono-status text-mono-status"
+            className={`bg-surface-container-low rounded-lg flex items-center font-mono-status text-mono-status ${compact ? 'gap-1 px-2 py-1 text-[9px]' : 'gap-2 px-4 py-2'}`}
           >
             <span className="w-1.5 h-1.5 rounded-full bg-secondary-fixed" />
             {fmt}
@@ -287,7 +291,7 @@ export default function DropZone({
       {/* Browse button */}
       <button
         onClick={handleBrowse}
-        className="tinypix-drop-zone-browse mt-10 min-h-11 px-8 py-3 bg-primary text-on-primary rounded-full hover:opacity-80 active:opacity-70 transition-opacity font-label-caps text-label-caps"
+        className={`tinypix-drop-zone-browse min-h-11 bg-primary text-on-primary rounded-full hover:opacity-80 active:opacity-70 transition-opacity font-label-caps text-label-caps ${compact ? 'mt-2 px-4 py-2 text-xs' : 'mt-10 px-8 py-3'}`}
       >
         {copy.acceptButton}
       </button>

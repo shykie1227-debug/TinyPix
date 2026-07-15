@@ -14,6 +14,18 @@
 - 参考 LosslessCut 的无损优先剪辑工作流；未复制其 GPL 源代码，许可证和来源记录见 `THIRD_PARTY_NOTICES`。
 - 验证：`tests/components/VideoTrimmer.test.tsx` 13 个测试通过。
 
+#### 开源方案比较与选型记录
+
+| 方案 | 许可证 | 适合借鉴的能力 | TinyPix 结论 |
+|---|---|---|---|
+| LosslessCut | GPL-2.0 | 无损优先、单轨片段、波形/缩略图、键盘定位 | 采用其工作流思路，不复制源码 |
+| VidCutter | GPL-3.0 | 极简剪切与拼接 | 参考“少设置、快导出” |
+| Shotcut | GPL-3.0 | 完整时间线和多轨编辑 | 功能成熟，但 Qt/MLT 过重 |
+| Olive | GPL-3.0 | 非线性编辑器布局和时间线交互 | 可参考布局，不适合直接嵌入 Tauri |
+| Kdenlive | GPL-3.0 | 专业多轨、效果和工程管理 | 对 TinyPix 当前目标过重 |
+
+选型结果：TinyPix 保留 Tauri + React + Rust + FFmpeg 的轻量离线架构，采用 LosslessCut/VidCutter 的快速单轨剪辑交互，并用现有精确 MP4 重编码补足关键帧之外的精确边界；未直接复制 GPL 源代码。
+
 ---
 
 ### 2026-07-15 Windows 构建入口修复（C:\3.5pro）
