@@ -1,5 +1,7 @@
 # TinyPix Pro 3.5
 
+> 当前主干正在迁移到 **TinyPix 4.0 WinUI**。本 README 下方内容描述受保护的 3.5.1 Tauri 行为基线；新开发、目录定位、测试和 Windows 门禁请先阅读 [PROJECT-INDEX.md](PROJECT-INDEX.md)。
+
 TinyPix 是面向普通 Windows 用户的本地图片与视频处理工具。成品是一个免安装的 Windows x64 EXE；运行时不联网、不上传、不需要账号、不写注册表，也不包含遥测或自动更新。
 
 ## 当前功能

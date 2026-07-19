@@ -131,3 +131,50 @@ def test_app_lock_excludes_unused_windows_sdk_components_and_vulnerable_sqlite()
         "Microsoft.WindowsAppSDK.Widgets",
         "Microsoft.Windows.AI.MachineLearning",
     }.intersection(packages)
+
+
+def test_project_has_a_stable_fast_retrieval_index() -> None:
+    index_path = ROOT / "PROJECT-INDEX.md"
+    assert index_path.is_file()
+
+    index = index_path.read_text(encoding="utf-8")
+    agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+    for marker in (
+        "60 秒开始",
+        "事实源优先级",
+        "任务到文件路由",
+        "TinyPix 4.0 WinUI",
+        "旧 Tauri",
+        "Windows 可行性门禁",
+        "Git 分支工作流",
+        "验证命令",
+    ):
+        assert marker in index
+
+    assert "PROJECT-INDEX.md" in agents
+    assert "design/TinyPix-4.0.pen" in agents
+    assert "旧 Tauri" in agents
+
+    for relative_dir in (
+        "src/TinyPix.Core/Jobs",
+        "src/TinyPix.Infrastructure/Settings",
+        "src/TinyPix.Infrastructure/History",
+        "src/TinyPix.Infrastructure/Portable",
+        "src/TinyPix.Media/Ffmpeg",
+    ):
+        assert f"`{relative_dir}" in index
+        assert (ROOT / relative_dir).is_dir()
+
+    assert (
+        "| 当前门禁 | 先修复设置弹窗设计冻结阻断项并重新导出/复审；"
+        "UI 冻结后再执行 Windows 可丢弃原型 |"
+    ) in index
+    assert "先修复设置弹窗设计冻结阻断项" in index
+    assert index.index("先修复设置弹窗设计冻结阻断项") < index.index(
+        "Windows 可行性门禁：UI 冻结后的入口"
+    )
+
+    assert (
+        "Legacy Tauri/WebView only:" in agents
+        and "The WinUI target must not add WebView UI." in agents
+    )
