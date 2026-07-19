@@ -166,12 +166,12 @@ def test_project_has_a_stable_fast_retrieval_index() -> None:
         assert (ROOT / relative_dir).is_dir()
 
     assert (
-        "| 当前门禁 | 先修复设置弹窗设计冻结阻断项并重新导出/复审；"
-        "UI 冻结后再执行 Windows 可丢弃原型 |"
+        "| 当前门禁 | 静态 UI 已冻结；立即执行 Windows 可丢弃原型，"
+        "真实运行验收仍未通过 |"
     ) in index
-    assert "先修复设置弹窗设计冻结阻断项" in index
-    assert index.index("先修复设置弹窗设计冻结阻断项") < index.index(
-        "Windows 可行性门禁：UI 冻结后的入口"
+    assert "设置弹窗静态冻结证据已通过" in index
+    assert index.index("Windows 可行性门禁：静态 UI 冻结后的入口") < index.index(
+        "设置弹窗静态冻结证据已通过"
     )
 
     assert (

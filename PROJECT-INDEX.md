@@ -24,7 +24,7 @@
 | 网络 | 运行时完全离线，无账号、遥测、更新检查或云服务 |
 | 迁移 | WinUI 骨架和核心合同已建立；正式 Shell、业务页、全部媒体 Handler 和 Portable 验收未完成 |
 | 旧 Tauri | `src/` React 与 `src-tauri/` Rust 仍是 3.5.1 行为事实基线，暂不删除 |
-| 当前门禁 | 先修复设置弹窗设计冻结阻断项并重新导出/复审；UI 冻结后再执行 Windows 可丢弃原型 |
+| 当前门禁 | 静态 UI 已冻结；立即执行 Windows 可丢弃原型，真实运行验收仍未通过 |
 
 完成边界以 [IMPLEMENTATION-STATUS.md](docs/architecture/IMPLEMENTATION-STATUS.md) 为准，不从目录存在推断功能已经完成。
 
@@ -130,9 +130,9 @@ cd src-tauri && cargo test --lib && cargo check
 6. 只有 `git merge-base --is-ancestor <branch> main` 成功后，才用 `git branch -d <branch>` 删除本地分支。
 7. 禁止未经明确授权执行 `reset --hard`、无范围 `clean`、强制推送或删除用户成果。
 
-## 8｜Windows 可行性门禁：UI 冻结后的入口
+## 8｜Windows 可行性门禁：静态 UI 冻结后的入口
 
-当前先修复设置弹窗设计冻结阻断项，重新导出并确认 Pencil、UI 规格、控件映射和审计证据一致。UI 冻结后，不再扩展静态页面，立即执行 [Windows 可行性门禁](docs/architecture/WINDOWS-FEASIBILITY-GATE.md)：
+设置弹窗静态冻结证据已通过：1200×800、900×600 和 High Contrast 使用同一弹窗语义，完整遮罩 `XamlRoot`，Pencil、UI 规格、控件映射和审计证据一致。现在不再扩展静态页面，立即执行 [Windows 可行性门禁](docs/architecture/WINDOWS-FEASIBILITY-GATE.md)：
 
 1. 在 Windows VM 重跑合同和 C# 测试。
 2. 在 `%TEMP%` 创建可丢弃 WinUI 原型，不复制原型 UI 到正式工程。

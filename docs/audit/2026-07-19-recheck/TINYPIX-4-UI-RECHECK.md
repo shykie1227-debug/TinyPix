@@ -3,7 +3,9 @@
 ## Scope and evidence
 
 - Source: repository `design/TinyPix-4.0.pen`, opened and read through Pencil MCP.
-- Inventory: 35 top-level frames and 25 reusable components.
+- Inventory: 36 top-level nodes (35 boards plus the root-level reusable
+  `SettingsDialog`) and 26 reusable components. Standard, compact,
+  and High Contrast settings all reference the single reusable `SettingsDialog`.
 - Current-run evidence: eight exported frames under `screenshots/`.
 - Structural scan: video output, wide/compact timeline, ID photo, wide/compact
   settings, high-contrast settings, and compact QR generator all returned
@@ -44,14 +46,20 @@
 
    ![Smart ID photo](screenshots/cQnR3.png)
 
-4. **Settings — blocking consistency defect.**
-   The standard and compact frames dim only the work area below the top
-   navigation. This contradicts `UI-SPEC.md` and
-   `WINUI-CONTROL-MAPPING.md`, which require one modal `SettingsDialog` whose
-   scrim covers the complete application `XamlRoot`, including navigation. The
-   high-contrast frame uses full-window modality, so the three evidence frames
-   do not currently describe one visual tree/state system. Correct the wide and
-   compact Pencil frames; do not create another settings page or ViewModel.
+4. **Settings — static design freeze passed.**
+   The corrected standard and compact frames use a complete-root scrim over the
+   application `XamlRoot`, including navigation. Together with the
+   high-contrast frame, they are instances of one reusable `SettingsDialog`: the wide state uses
+   a left category list, the compact state reflows categories across the top,
+   and High Contrast changes system colors and focus treatment without creating
+   another page, ViewModel, or save path. The compact state retains all three
+   settings, all switches include visible on/off text, close/cancel/save use
+   at least 44-pixel hit targets, and every evidence frame includes a visible
+   save-button focus treatment. Standard and compact use separated blue outer
+   focus rings; High Contrast uses a separated yellow outer focus ring so none
+   can merge into the button surface. Pencil layout scans report no problem for all
+   three frames. Runtime focus trapping and input blocking remain part
+   of the Windows prototype gate.
 
    ![Standard settings](screenshots/7VTHb.png)
    ![Compact settings](screenshots/78swl.png)
@@ -68,17 +76,18 @@
 
 ## Decision
 
-UI health is **yellow, not frozen**. The representative frames are internally
-clean enough to proceed after one source-of-truth correction, but the settings
-modal evidence is a release-blocking contradiction. Runtime UX remains gated by
-the disposable Windows prototype and must not be inferred from Pencil.
+Static UI design health is **green and frozen**. The repository Pencil source,
+UI specification, WinUI control mapping, and current exports agree on one
+responsive, theme-aware settings dialog. This static freeze does not claim that
+runtime UX has passed: keyboard, focus, Narrator, scaling, input blocking, media
+behavior, registry safety, and Portable behavior remain gated by the disposable
+Windows prototype and must not be inferred from Pencil.
 
 ## Required next action
 
-1. Update only the repository Pencil source so wide and compact settings use a
-   full-`XamlRoot` scrim, preserving the single dialog and responsive navigation.
-2. Re-export affected 1200×800 and 900×600 frames and rerun layout/contrast
-   review; update this report with the corrected evidence.
-3. Mark UI frozen only when Pencil, UI spec, control mapping, and exports agree.
-4. Create a new task branch from synchronized `main` for the disposable Windows
+1. Commit and synchronize the corrected Pencil source, exports, contracts, and
+   this audit as one UI-freeze change.
+2. Create a new task branch from synchronized `main` for the disposable Windows
    feasibility prototype; do not extend static pages while runtime gates remain.
+3. Reopen the Pencil freeze only if runtime evidence proves a usability defect
+   or a change to navigation, template structure, or the main task flow is needed.

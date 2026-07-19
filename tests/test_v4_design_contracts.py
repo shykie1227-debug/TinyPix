@@ -120,7 +120,25 @@ def test_video_navigation_reuses_one_editor_for_trim_split_and_merge() -> None:
 def test_ui_freeze_requires_evidence_not_expert_guessing() -> None:
     assert "经验只能产生待验证假设" in QUALITY_GATE
     assert "当前尚缺 Windows WinUI 原型" in QUALITY_GATE
-    assert "不得签署 UI 冻结" in QUALITY_GATE
+    assert "静态 UI 设计冻结已通过" in QUALITY_GATE
+    assert "不等于运行时 UX 验收通过" in QUALITY_GATE
+
+
+def test_settings_dialog_freeze_evidence_is_consistent() -> None:
+    audit = (ROOT / "docs/audit/2026-07-19-recheck/TINYPIX-4-UI-RECHECK.md").read_text()
+    status = (ROOT / "docs/architecture/IMPLEMENTATION-STATUS.md").read_text()
+
+    assert "Settings — static design freeze passed" in audit
+    assert "complete-root scrim" in audit
+    assert "single reusable `SettingsDialog`" in audit
+    assert "all switches include visible on/off text" in audit
+    assert "at least 44-pixel hit targets" in audit
+    assert "36 top-level nodes" in audit
+    assert "26 reusable components" in audit
+    assert "separated blue outer" in audit
+    assert "separated yellow outer" in audit
+    assert "Static UI design freeze: passed" in status
+    assert "runtime UX remains gated" in status
 
 
 def test_high_contrast_settings_dialog_has_system_semantics_and_full_modal_scope() -> None:

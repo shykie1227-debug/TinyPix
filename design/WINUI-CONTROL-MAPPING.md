@@ -82,7 +82,7 @@ Row 1:                    Task Queue（跨 3 列）
 - 任务队列：`ListView` 横向不滚动，任务行随宽度拉伸；大量任务依靠内建虚拟化。
 - 三栏分隔使用 `Grid` 列边界和单像素 `Border`；禁止“外卡片包内卡片”的重复表面。
 
-## 3. 25 个 Pencil 可复用组件映射
+## 3. 26 个 Pencil 可复用组件映射
 
 ### 3.1 操作与输入组件
 
@@ -123,6 +123,7 @@ Row 1:                    Task Queue（跨 3 列）
 | 23 | `Navigation/ToolEntry` | `NavigationViewItem`；页面内次级工具列表使用 `ListViewItem` | `Content`、`Icon`、`Tag=ToolId`、`IsSelected`、`IsEnabled` | `Name` 为工具名；方向键导航；Enter/Space 激活；禁用项说明原因 | Selected/PointerOver/Pressed/Disabled/Focused | 否 |
 | 24 | `Header/PageTitle` | `Grid` + `StackPanel` + `TextBlock` + 可选 `Button` | `Title`、`Subtitle`、`HelpCommand`、`FitToWindowCommand` | 标题 `HeadingLevel=Level1`；副标题不重复标题；帮助按钮有明确名称 | 默认、参数已修改、只读等状态由副标题/InfoBar 表达 | 否 |
 | 25 | `CommandBar/Editor` | `CommandBar` + `AppBarButton`、`AppBarToggleButton`、`AppBarSeparator` | Undo/Redo/Crop/Rotate/Delete/Zoom/Fit 等命令及 `IsEnabled` | 原生左右键与 Tab 行为；每项有 `Label`、`Icon`、`KeyboardAccelerator`；溢出项仍可键盘访问 | Normal/PointerOver/Pressed/Checked/Disabled/Focused；窄屏使用原生溢出 | 否；仅设样式和 DynamicOverflow，不拼装自定义工具条 |
+| 26 | `SettingsDialog` | 一个应用级 `ContentDialog` + 响应式内容 `UserControl` | `SettingsDialogViewModel`、`SaveSettingsCommand`、当前分类、校验状态；标准/紧凑/High Contrast 共用同一实例源 | 绑定根 `XamlRoot`；Tab 限制在弹窗内；Esc/取消关闭；保存失败聚焦首错；关闭后返回触发控件 | 标准为左侧分类；紧凑将同一分类重排至顶部；主题资源负责 Light/Dark/High Contrast；所有开关都有开/关文字，焦点框可见 | 否；用原生 `ContentDialog`、VisualState 和主题资源，不复制页面 |
 
 ## 4. 八类页面模板映射
 
@@ -372,7 +373,7 @@ View 不根据错误字符串猜测状态；应用服务返回错误代码、用
 
 - [ ] App Shell 使用原生 `NavigationView`、`Frame` 和单窗口结构。
 - [ ] 阶段 C 已验证 Top `NavigationView.PaneHeader` 在 1200×800、900×600、100%/125%/150% 显示缩放、200% 文本缩放及中英文下不挤压分类；验证失败时已经使用固定的独立原生 Header fallback，未自定义 NavigationView 模板。
-- [ ] 25 个 Pencil 组件均按本文件映射，未重复创建同义控件。
+- [ ] 26 个 Pencil 组件均按本文件映射，未重复创建同义控件。
 - [ ] grouped commands 使用 `CommandBar`，没有用松散 Button 行替代。
 - [ ] 文件卡、任务卡、预设卡使用可虚拟化集合容器；滚动所有权明确。
 - [ ] 只有时间轴、裁剪/选区、识别框和证件照辅助线使用必要的组合型自定义控件。
