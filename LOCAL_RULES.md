@@ -1,92 +1,89 @@
-# LOCAL_RULES.md - TinyPix 本仓库运行原则
+# LOCAL_RULES.md — TinyPix 4.0 本地运行底线
 
-> **本文件仅适用于本仓库（tinypix-pro）**
-> 用户（王萧铭）于 2026-06-01 16:35 明确声明：
-> **构建成功的 TinyPix.exe 在其他电脑运行时**，完全不联网、不上传、完全本地运行。
-> **开发期 / 构建期 / 本机测试期 允许联网**（npm install / cargo build / git push / 下载 Node.js/Rust 等都正常进行）。
+> 本文件适用于 TinyPix 仓库。开发、调研、构建和发布阶段允许联网；正式 Portable
+> 发行物在用户电脑运行时必须完全离线。
 
----
+## 1. 正式运行时零联网、零上传
 
-## 🔒 硬性约束（仅针对 exe 在其他电脑运行时）
+- 禁止 HTTP(S)、WebSocket、FTP、SMTP、Socket 外联和任何云 API。
+- 禁止上传用户文件、路径、参数、日志、崩溃信息、模型结果或使用数据。
+- 禁止遥测、埋点、崩溃上报、更新检查、许可证联网校验和远程功能开关。
+- 禁止远程字体、图标、图片、脚本、模型、语言包、编解码器和运行时下载。
+- 禁止云 OCR、云转码、云同步、账号登录和生成式 AI 服务。
+- Windows 防火墙阻断全部出站后，所有正式工具必须正常工作。
 
-### 1. exe 运行时不联网
+开发/构建期可以使用 NuGet、GitHub、官方源码站和其他依赖来源；进入发行目录的每个
+二进制、模型和数据文件必须已本地化、锁定版本并通过哈希与许可证门禁。
 
-- ❌ **打包后 exe 运行时** 禁止 访问任何 HTTP(S) / WebSocket / FTP / SMTP
-- ❌ **exe 运行时** 禁止 检查更新 / 报告使用数据 / 任何 telemetry
-- ❌ **exe 运行时** 禁止 自动从 CDN 下载字体/图标/JS bundle
-- ❌ **exe 运行时** 禁止 调用任何云端 API / 云服务
-- ✅ **开发/构建/测试期** 允许联网（pip install / npm install / curl / wget 等都正常）
+## 2. Portable 部署底线
 
-### 2. exe 运行时不上传
+- 正式版本只发布 `TinyPix-4.0-Windows-x64-Portable.zip`。
+- 使用 Unpackaged、self-contained 目录部署；不发布 MSIX、MSI、NSIS 或自解压安装器。
+- `PublishSingleFile=false`；不把首次释放依赖的单文件 EXE 当正式发行方式。
+- ZIP 内置 `portable.flag`、.NET/Windows App SDK 运行时、Engines、Models、Templates、
+  Licenses、第三方声明和构建清单；运行时不得下载缺失项。
+- 不要求管理员权限，不创建服务、计划任务、开始菜单项或文件关联。
+- 应用不得主动写注册表；窗口和用户设置保存到便携目录文件。
+- 软件目录不可写时阻止任务并提示用户把整个目录移动到可写位置，不静默改写
+  `AppData`、注册表或其他系统位置。
 
-- ❌ **exe 运行时** 禁止 上传任何用户文件/数据到云
-- ❌ **exe 运行时** 禁止 同步到云盘 / 云存储
-- ✅ **开发/构建/测试期** 允许上传（git push / gh release / 任何代码托管）
+## 3. 原文件与用户数据保护
 
-### 3. exe 运行时无外联（V4.6.1 承诺清单）
+- 添加、最近文件、历史和预览只读取源文件；不为内部存档复制、覆盖、移动、改名或删除原文件。用户明确执行导出、转换、保存或“创建重命名副本”时，才可在用户指定输出目录创建结果文件。
+- “批量重命名”在 4.0 中表示向用户指定输出目录创建重命名副本，原文件路径保持不变。
+- 所有输出服务必须拒绝与任一输入文件相同的规范化路径；该保护不可通过确认框绕过。
+- 正式输出只写用户指定目录；同名冲突自动添加 ` (n)`，序列输出使用 `_001`。
+- 取消只清理当前任务创建且尚未完成的临时文件，不删除原文件、其他任务缓存或已成功输出。
+- 允许的可变数据仅限：
+  - `Config/settings.json`
+  - `Data/tinypix.db`
+  - `Cache/`
+  - `Logs/`
+  - 用户明确选择的输出目录
+- SQLite 只保存路径、参数、任务状态、输出路径和自定义预设；不保存原媒体副本。
 
-打包后的 TinyPix.exe 在其他电脑运行时：
-- ✅ 无任何云端 API 调用代码
-- ✅ 无任何 telemetry / 埋点代码
-- ✅ 无任何自动更新 / 版本检查代码
-- ✅ 所有图标、字体、图片、Vite bundle 内嵌
-- ✅ 所有依赖打包在 exe 内（无运行时下载）
+## 4. 固定技术与设计边界
 
-### 🔍 代码审计检查清单（Tauri + React + Rust）
+- TinyPix 4.0 正式 UI 使用 C#、.NET 10、WinUI 3、Windows App SDK 2.2.0。
+- 架构为单进程模块化单体；不建立本地 Web 服务器、Web API 或独立后端服务。
+- 禁止 WebView、HTML/CSS/JavaScript UI 和第三方 UI 框架。
+- Pencil 与设计规格是正式 UI 的先行门槛；用户确认设计冻结前不得编写正式 WinUI 业务页面。
+- 旧 Tauri/React/Rust 代码保留为 3.5.1 行为基线，达到功能等价前不得删除。
+- 设计与依赖事实源见根 `DESIGN.md`。
 
-前端 (React/TypeScript)：
-- ❌ `fetch()` / `XMLHttpRequest` 调外网 URL
-- ❌ `axios` / `swr` / `react-query` 等请求外网
-- ❌ `<img src="https://...">` 远程图片
-- ❌ Google Fonts / 任何 CDN
-- ❌ Sentry / LogRocket / Mixpanel 等埋点 SDK
+## 5. 引擎、模型与许可证
 
-### 🗓 审计日志
+- PDF 栅格化只使用已冻结的 PDFtoImage/PDFium/SkiaSharp 组合；不得静默切换为其他渲染器。
+- 证件照与背景移除只使用已冻结且哈希匹配的 YuNet/MODNet；不下载新模型，不建立身份库。
+- OCR 只使用随包的 Tesseract 与固定中英 `tessdata_fast`。
+- 二维码与条形码使用 ZXing.Net。
+- FFmpeg 8.1.2 只允许受控 LGPL 构建，禁止 GPL、nonfree、x264、x265 和 fdk-aac。
+- 依赖、模型、语言数据和原生 DLL 的版本、哈希、许可证与内存边界以
+  `design/DEPENDENCY-BASELINE.md` 为准。
+- 来源、商用权利或再分发许可不明确的代码、模型和资产不得进入发行包。
 
-- **2026-06-02** — 移除 `index.html` 中 3 行 Google Fonts `<link>`（Hanken Grotesk / Manrope / Geist），收紧 `tauri.conf.json` CSP（移除 `fonts.googleapis.com` 与 `fonts.gstatic.com` 白名单），扩展 `src/index.css` 字体回退链到 `Segoe UI Variable / Inter / Microsoft YaHei UI / PingFang SC / Noto Sans CJK SC / system-ui`。提交前已 grep 全仓库确认无其他 `googleapis` / `gstatic` / `cdn.` 引用。
+## 6. 运行时代码审计
 
-后端 (Rust/Tauri)：
-- ❌ `reqwest` / `hyper` / `surf` 等联网库
-- ❌ `ureq` / `attohttpc` / `isahc` 等
-- ❌ `tokio::net` / `std::net` 直接 socket 通讯外网
-- ❌ 系统命令调用 `curl` / `wget`
-- ❌ 文件系统监控后向远程 POST 报告
+正式 C# 项目与发行目录必须检查并阻断：
 
-依赖审计：
-- ❌ `package.json` 引入含 telemetry 的 npm 包
-- ❌ `Cargo.toml` 引入含联网代码的 crate
+- `HttpClient`、`WebClient`、`HttpWebRequest`、网络 `Socket`、邮件客户端等运行时外联。
+- Sentry、App Center、Application Insights、Mixpanel 等遥测 SDK。
+- 远程 URI、CDN、在线字体、在线帮助页和启动时下载逻辑。
+- 自动更新器、后台服务、计划任务、注册表设置存储和文件关联注册。
+- 未登记的 EXE、DLL、模型、训练数据和许可证文件。
 
-### ✅ 开发/构建/测试期允许的操作
+构建脚本可以联网取得锁定依赖，但必须写入可复核的下载来源、版本和 SHA-256；正式构建
+应支持从受控离线缓存重复生成发行目录。
 
-- ✅ `npm install` 安装前端依赖（联网拉 npm registry 正常）
-- ✅ `cargo build` / `cargo tauri build` 编译 Rust 依赖（联网拉 crates.io 正常）
-- ✅ `curl` / `wget` 下载构建工具（Node.js / Rust / 7zip / NSIS 等）
-- ✅ `git push` 推送代码到 GitHub / 任何 Git 远程
-- ✅ `gh release create` 发布 Release
-- ✅ 开发本机手动运行 exe 调试（仅测试）
-- ✅ 开发者本机手动发邮件/上传测试数据
+## 7. 完成与验收门槛
 
----
+- 原文件处理前后 SHA-256 一致。
+- 防火墙阻断出站后全部工具正常。
+- Process Monitor 与注册表快照确认应用无主动注册表写入和隐式系统目录写入。
+- Windows 10 22H2、Windows 11 x64 普通用户 VM 解压后可启动，不依赖系统安装 .NET、
+  WebView2、Python、FFmpeg 或数据库。
+- 1200×800、900×600、100%/125%/150% 显示缩放、200% 文本缩放、浅色、深色和高对比均可完成主流程。
+- 普通文字对比度至少 4.5:1，功能图标和控件边界至少 3:1；酸橙背景使用近黑前景，浅色按钮不得使用低对比酸橙功能图标。
+- SBOM、第三方许可证、引擎/模型版本、构建清单与 SHA-256 同时生成。
 
-## 🚨 误操作修复指引
-
-如果 AI 不小心做了以下事情：
-1. **在 exe 运行时引入了联网代码** → 立刻告知用户，提供 git revert 指引
-2. **打包了含 `reqwest` / `fetch(外网)` 的代码到 exe** → 立刻告知用户，重新打包
-3. **在 exe 中加入了 telemetry 埋点** → 立刻告知用户
-
----
-
-## 🛡 与 SOUL.md 的优先级关系
-
-- SOUL.md 说「不轻易求助」「不需每步确认」「自主决策」是默认模式
-- 本 LOCAL_RULES.md 的「exe 运行时禁止联网」是**例外**——必须先确认
-- 冲突时，**本规则优先**（保护用户数据 > 自动化效率）
-
----
-
-## 📅 原则确立时间
-
-- 2026-06-01 16:35 由用户（王萧铭）口头声明（修正 outlook-img-slicer 过度收紧版本）
-- 已同步至 MEMORY.md（永久记录）
-- 本规则永久生效，除非用户主动撤销
+任何改动违反本文件时必须停止发布；不能用“后续版本再补”绕过底线。

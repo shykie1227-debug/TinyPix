@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>TinyPix.Infrastructure</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../TinyPix.Core/TinyPix.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" />
+    <PackageReference Include="Microsoft.Extensions.Logging" />
+    <!-- Pin the patched native SQLite build instead of the vulnerable transitive 2.1.11 asset. -->
+    <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" />
+  </ItemGroup>
+</Project>

@@ -1,6 +1,9 @@
 node_modules/
 dist/
 build/
+!build/
+!build/*.ps1
+!build/*.md
 .env
 .env.local
 .env.development.local
@@ -21,12 +24,15 @@ src-tauri/target/
 src-tauri/gen/
 logs/
 .trae/
+.superpowers/
 .build-backups/
 __pycache__/
 .pytest_cache/
 coverage/
 *.dmg
 *.app
+!src/TinyPix.App/
+!src/TinyPix.App/**
 *.pkg
 *.icns
 *.dylib
@@ -46,6 +52,7 @@ coverage/
 *.vcxproj.filters
 *.vcxproj
 *.sln
+!TinyPix.sln
 *.nupkg
 *.msi
 *.exe
@@ -56,3 +63,10 @@ src-tauri/target/release/*.exe
 *.zip
 TinyPixBuild/
 TinyPixBuildCache/
+**/bin/
+**/obj/
+artifacts/TinyPix-4.0/
+artifacts/TinyPix-4.0-Windows-x64-Portable.zip
+artifacts/TinyPix-4.0-Windows-x64-Portable.zip.sha256
+!assets/Portable/Logs/
+!assets/Portable/Logs/.gitkeep

@@ -1,68 +1,148 @@
-# Design System: TinyPix 3.5 Pro
-**Project ID:** Local UI reference set in `/Users/huashu/TinyPix/3.5pro/UI设计`
+# TinyPix 4.0 Design System
 
-## 1. Visual Theme & Atmosphere
-TinyPix 3.5 Pro uses a precise, tactile desktop-tool aesthetic inspired by Apple's design language: calm off-white workspaces, crisp black primary actions in pill-shaped buttons, soft layered control cards with 18px rounded corners, and a vivid lime accent for active states and progress. The interface should feel efficient and local-first rather than promotional. The first screen is the actual media workbench, not a landing page.
+## 1. 设计事实源
 
-## 2. Color Palette & Roles
-- **Pitch Black (#000000):** Primary action buttons, key headings, and strong command emphasis.
-- **Vibrant Lime (#B4F400):** Active selections, progress, success emphasis, and high-confidence affordances.
-- **Deep Utility Green (#4B6700):** Text or icon color on lime surfaces when stronger contrast is needed.
-- **Apple Gray (#F5F5F7):** Main app background and large content surfaces (aligned to Apple background-200).
-- **Card White (#FFFFFF):** Primary parameter panels and focused work cards.
-- **Sidebar Surface (#F2F2F7):** Left sidebar background (aligned to Apple background-200).
-- **Neutral Tier (#E5E5EA):** Inactive controls, hover states, status bar background, and dividers (aligned to Apple background-300).
-- **Ink Black (#1D1D1F):** Body text and labels (aligned to Apple text-800).
-- **Muted Graphite (#6E6E73):** Supporting copy, status notes, and secondary metadata (aligned to Apple text-500).
-- **Outline (#D1D1D6):** Subtle borders and disabled control outlines (aligned to Apple background-400).
-- **Error Red (#BA1A1A):** Failure states only.
+TinyPix 4.0 的界面与交互事实源按以下顺序解释：
 
-## 3. Typography Rules
-Use local system font stack only: `-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI Variable", "Segoe UI", "Microsoft YaHei UI", "PingFang SC", system-ui, sans-serif`. Do not add remote font links. Monospace uses `SF Mono, Menlo, Consolas, Monaco, monospace`.
+1. `design/TinyPix-4.0.pen`：页面结构、组件、布局和视觉变量。
+2. `design/UI-SPEC.md`：交互、响应式、状态、键盘和无障碍规则。
+3. `design/FEATURE-MATRIX.md`：每个工具的输入、参数、预览、输出与错误边界。
+4. `design/WINUI-CONTROL-MAPPING.md`：Pencil 到 WinUI 3 原生控件的实现映射。
+5. `design/DEPENDENCY-BASELINE.md`：媒体引擎、模型、哈希与许可证门禁。
 
-**Type scale (aligned to Apple UI Kit):**
-| Level | Size | Weight | Line-height | Letter-spacing |
-|-------|------|--------|-------------|----------------|
-| Display | 48px | 600 | 1.05 | -0.015em |
-| Headline | 24px | 600 | 1.14 | 0.007em |
-| Body | 16px | 400 | 1.47 | -0.022em |
-| Caption | 14px | 400 | 1.43 | -0.016em |
-| Label | 12px | 600 | 1.33 | -0.01em |
-| Status | 11px | 500 | 1.33 | -0.01em |
+PNG 导出只用于设计评审，不替代 `.pen` 和规格文档。改变导航、八类模板、主流程、
+全局状态或无障碍顺序时，必须先更新 Pencil 与规格，再实现代码。
 
-Letter spacing must be zero for large Chinese headings and modest only for small technical labels.
+## 2. 产品与平台边界
 
-## 4. Component Stylings
-* **Buttons:** Primary commands use Apple pill shape (`border-radius: 980px`, `min-height: 44px`, `padding: 8px 22px`). Black fill with white text for primary actions. Transparent with black border for secondary. Hover uses `opacity: 0.8` (180ms ease), no scale transforms. Text links use `#0066cc` with underline on hover.
-* **Cards/Containers:** Main tool panels use white cards with 18px rounded corners and very soft shadows. Avoid nested card-on-card layouts unless the inner surface is a true control group.
-* **Inputs/Forms:** Use neutral filled surfaces, subtle borders, lime active state, and black or green slider thumbs. Focus uses `box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.3)`. Numeric and option controls must not shift layout while interacting.
-* **Navigation:** Keep the left rail grouped by 图片工具 and 视频工具. Video tools are exactly: 视频输出, GIF 制作, 视频剪辑. Image tools contain one 图片处理 entry. Nav items use `opacity: 0.6` on hover (Apple style).
-* **Status:** Progress and local-engine feedback use lime accents and concise wording. Errors are short, visible, and local to the failing operation.
+- 产品：TinyPix 4.0，简体中文默认，代码支持本地化。
+- 平台：Windows 10 22H2、Windows 11，x64。
+- UI：C#、.NET 10、WinUI 3、Windows App SDK 2.2.0。
+- 发布：Unpackaged、自包含 Portable ZIP，解压即用。
+- 运行：完全离线、不写注册表、不要求管理员权限、不安装系统服务、不自动更新。
+- 数据：只记录文件路径、参数、处理状态和输出路径；不为历史、数据库、缓存或内部存档复制、覆盖、移动或修改原媒体。用户明确执行导出、转换、保存或“创建重命名副本”时生成的文件属于用户请求的输出，只能写入用户指定目录。
+- 界面禁止 WebView、HTML/CSS、远程字体、远程图片、在线预览和运行时资源下载。
 
-## 5. Layout Principles
-Use the provided demo structure: 184–224px left function area, `minmax(0,1fr)` center drag/preview area, and 280–340px right parameter area. The workbench opens directly to 视频输出. Each column scrolls independently and the page must never scroll horizontally. Settings contains output path, engine status/cache cleanup, and licenses. Runtime UI must remain fully offline with no remote fonts, images, APIs, telemetry, or update checks.
+## 3. 信息架构与固定布局
 
-## 6. Spacing & Radius System
-- **Base grid:** 8px
-- **Container padding:** 32px
-- **Card gap:** 24px
-- **Card internal padding:** 24px (standardized)
-- **Control stack:** 12px
-- **Card/container radius:** 18px
-- **Input/select radius:** 12px
-- **Button radius:** 980px (pill)
-- **Small chip/tag radius:** 980px (pill)
+顶部一级分类固定为：`图片工具 / 视频工具 / 工具箱 / 设置`。
 
-## 7. Interaction Standards
-- **Hover:** `opacity: 0.6` for navigation links, `opacity: 0.8` for primary buttons (180ms ease)
-- **Active/Pressed:** `opacity: 0.7` for all interactive elements
-- **Focus:** Blue ring `box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.3)` on inputs
-- **No scale transforms** on any interactive element (removed per Apple design language)
+工作台使用四区桌面结构：
 
-## 8. Media Preview & Mature Component Rules
-- A selected file must replace the empty drag zone with a real preview immediately.
-- Image tools use one 图片处理 workbench. Preview, crop, rotate, mirror, dimensions, color, quality, format conversion, EXIF cleanup, and output path belong to the same flow.
-- Image crop interaction uses `react-image-crop`, an offline React component with a permissive license; do not replace it with commercial SDKs or online editors.
-- Video tools share the same local preview stage. 视频输出, GIF 制作, and 视频剪辑 must all keep the loaded video visible while their right panel changes.
-- If a video codec cannot be played by the embedded browser, call local FFmpeg to generate a thumbnail fallback. The UI should say the embedded player cannot play this codec, while making clear that FFmpeg processing can continue.
-- Lime badges should not float in the main title area. Use lime for selected tools, active presets, progress, and concise bottom status feedback.
+```text
+顶部：分类导航与设置
+主体：文件栏 | 本地预览/编辑工作台 | 参数栏
+底部：Task Queue
+```
+
+- 文件栏：184–224px，负责添加、最近路径、历史入口和批量入口。
+- 中央区：最小宽度为零的弹性区域，文件加入后必须显示真实本地预览或明确的本地兜底。
+- 参数栏：280–340px，包含参数、输出目录、预估与主操作。
+- 任务队列：跨三列，始终保留进度、取消、失败隔离、重试和输出入口。
+- 页面和应用根节点禁止水平滚动；每个栏位独立处理纵向溢出。
+
+## 4. 八类页面模板
+
+1. 转换/压缩工作台。
+2. 时间轴编辑工作台。
+3. 图片编辑工作台。
+4. 智能证件照工作台。
+5. PDF 页面管理工作台。
+6. OCR/二维码识别工作台。
+7. 生成器与文件工具工作台。
+8. 设置、历史和缓存管理页面。
+
+实际工具必须映射到其中一种模板；不得为相同流程复制新的页面骨架。差异参数写入
+`FEATURE-MATRIX.md`，通用交互写入 `UI-SPEC.md`。
+
+## 5. 视觉变量
+
+所有颜色、间距、圆角、字号和控件高度由 Pencil Variables 与 WinUI
+`ThemeResource` 管理，页面内不得重复硬编码。
+
+| 语义 | 浅色 | 深色 | 高对比参考 |
+|---|---|---|---|
+| canvas | #F5F5F7 | #111214 | 系统 Window |
+| surface | #FFFFFF | #1C1C1E | 系统 Window |
+| surface-muted | #F8F8FA | #2C2C2E | 系统 Window |
+| ink | #1D1D1F | #F5F5F7 | 系统 WindowText |
+| muted | #6E6E73 | #B0B0B5 | 系统 GrayText |
+| border | #D1D1D6 | #48484A | 系统 WindowText |
+| control-border | #8A8A8F | #6E6E73 | 系统 WindowText |
+| media-stage | #15161A | #15161A | 系统 Window |
+| on-media | #FFFFFF | #FFFFFF | 系统 WindowText |
+| lime | #B4F400 | #B4F400 | 系统 Highlight |
+| on-lime | #1D1D1F | #1D1D1F | 系统 HighlightText |
+| action-primary | #1D1D1F | #1D1D1F | 系统 ButtonFace |
+| on-action-primary | #B4F400 | #B4F400 | 系统 ButtonText |
+| on-danger | #FFFFFF | #1D1D1F | 系统 ButtonText |
+| danger | #D93232 | #FF6961 | 系统高对比错误语义 |
+| focus | #0067C0 | #60CDFF | 系统焦点色 |
+
+高对比模式由系统颜色接管，不强制品牌酸橙，不使用阴影、透明度或颜色作为唯一状态信息。
+普通文字对比度不得低于 4.5:1，功能图标与控件边界不得低于 3:1。酸橙色表面必须使用
+`on-lime` 近黑前景；白色或浅色按钮中的功能图标不得使用低对比酸橙色。酸橙图标只允许
+出现在满足 3:1 的深色底或具有足够对比描边/容器的场景。
+`border` 只用于不承担交互识别的卡片分层和分隔线；其 Light 1.52:1、Dark 1.86:1
+不足以表示控件边界。输入、次按钮、可选择卡片及拖放目标必须使用 `control-border`，
+Light 3.44:1、Dark 3.36:1，满足非文本 3:1 门槛。
+主按钮必须使用 `action-primary` + `on-action-primary`：浅色和普通深色均保持深色底、酸橙文字/图标；高对比使用系统按钮资源，禁止页面硬编码。
+危险按钮必须使用 `danger` + `on-danger`，高对比模式交由系统按钮资源接管。
+视频画布、时间轴和波形舞台上的时间码、刻度与功能图标必须使用 `on-media`，不得继承
+页面 `ink`；这样深色主题切换时不会把近黑文字放到固定深色媒体舞台上。
+
+## 6. 字体、间距与圆角
+
+- UI 字体：`Segoe UI Variable`；中文回退 `Microsoft YaHei UI`。
+- 技术数值：本地等宽系统字体。
+- 字号：标题 24、章节 16、正文 14、标签 12、状态 11。
+- 基础间距：4/8/12/16/20/24/32。
+- 圆角：6/10/14/18；按钮按 WinUI 控件语义设置，不使用网页式超大胶囊值。
+- 最小指针命中区域 44×44；键盘焦点使用 WinUI 原生 FocusVisual。
+- 禁止远程字体和依赖字体加载完成后才稳定的布局。
+
+## 7. 组件规则
+
+Pencil 中 25 个 `reusable` 组件是共享组件目录，包括按钮、输入、路径选择器、文件卡、
+任务卡、参数组、预设卡、四类 InfoBar、空状态、三块 Shell、工具入口、页面标题和
+CommandBar。
+
+- 优先映射 WinUI 3 原生控件与组合型 `UserControl`。
+- 不引入第三方 UI 框架，不用 WebView 模拟桌面控件。
+- 每个交互控件必须具备 Normal、Hover、Pressed、Focused、Disabled 及业务状态。
+- 图标按钮必须同时提供 ToolTip 和 `AutomationProperties.Name`。
+- 错误、成功、选中和进度必须同时使用文本或图标，不能只靠颜色。
+
+## 8. 响应式与缩放
+
+- 标准评审尺寸：1200×800。
+- 最小可用客户区：900×600。
+- 900×600 保留三栏与任务队列，收紧间距，隐藏重复说明和非关键预设卡；主操作、
+  参数、文件、进度和取消不得隐藏。
+- 支持 100%/125%/150% 显示缩放与 200% 文本缩放。
+- 窗口低于 900×600 时阻止继续缩小，不通过压扁或裁切控件维持布局。
+
+## 9. 预览、状态与离线安全
+
+- 文件添加后立即显示本地预览；视频原生播放失败时生成 FFmpeg 本地缩略图并明确
+  “预览不可播放，但仍可处理”。
+- PDF 页面由批准的本地 PDFium 管线栅格化；OCR、证件照和背景移除只调用本地模型。
+- 全局状态固定覆盖：无文件、文件就绪、多文件、参数修改、等待/执行/取消、成功、
+  单项失败、部分失败、不支持格式、原文件不存在、目录不可写、磁盘不足、引擎/模型异常、
+  缓存与许可证提示。
+- 取消只清理当前任务未完成的临时文件，不删除原文件、其他任务缓存或已成功输出。
+- 历史删除只删除记录；缓存清理只删除可再生成的预览和中间文件。
+
+## 10. 设计冻结门槛
+
+进入正式 WinUI 业务页面前必须同时满足：
+
+- 八类模板、关键代表页、900×600 示例和全局状态矩阵一致。
+- 参数、默认值、输出命名和错误恢复无模糊占位。
+- Pencil 顶层画板布局检查无重叠或裁切。
+- 浅色、深色和高对比的 token 与系统映射明确。
+- 键盘顺序、快捷键、焦点、Narrator 名称和高对比规则完成。
+- 用户确认主框架、八类模板和智能证件照流程。
+
+设计冻结后，修复可用性问题可以直接更新；改变导航、模板或主流程必须回到 Pencil
+重新评审。

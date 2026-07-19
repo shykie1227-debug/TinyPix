@@ -1,0 +1,5 @@
+TinyPix 4.0 third-party notices are assembled from the repository root
+THIRD_PARTY_NOTICES file and the audited Licenses directory during release.
+
+No release is valid when this file, an applicable license, or an SBOM entry is
+missing from the generated portable directory.
