@@ -1,0 +1,10 @@
+﻿2026-07-19T17:08:31.4759627+08:00 TOP name=C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe class=ConsoleWindowClass type=ControlType.Window id=Console Window
+2026-07-19T17:08:31.4759627+08:00 TOP name=TinyPix.WinUIGate class=WinUIDesktopWin32WindowClass type=ControlType.Window id=
+2026-07-19T17:08:31.5247390+08:00 TOP name=Program Manager class=Progman type=ControlType.Pane id=
+2026-07-19T17:08:36.3858317+08:00 PICKER path=%TEMP%\TinyPix-WinUI-Gate\Samples\sample-image.png preview=图片预览 offscreen=False
+2026-07-19T17:08:40.5335733+08:00 PICKER path=%TEMP%\TinyPix-WinUI-Gate\Samples\sample-video.mp4 preview=视频预览 offscreen=False
+2026-07-19T17:08:43.1871289+08:00 CANCEL enabledBefore=True
+2026-07-19T17:08:45.2723699+08:00 CANCEL ffmpegProcessCount=0 sourceUnchanged=True
+2026-07-19T17:08:57.7224910+08:00 SUCCESS outputExists=True outputBytes=1311616 sourceUnchanged=True ffmpegProcessCount=0
+2026-07-19T17:08:59.8204315+08:00 FAILURE isolated=True ffmpegProcessCount=0
+2026-07-19T17:08:59.9325467+08:00 MEDIA_UIA complete=true

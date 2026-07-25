@@ -1,6 +1,6 @@
 # TinyPix 4.0 implementation status
 
-Updated: 2026-07-19
+Updated: 2026-07-22
 
 ## Implemented and locally verified
 
@@ -30,6 +30,16 @@ Updated: 2026-07-19
   frontend production build, and Rust check passed.
 - 2026-07-19 retrieval/audit contract recheck: 24 focused Python contracts
   passed and `git diff --check` passed.
+- 2026-07-22 Windows 10 disposable WinUI gate: unpackaged/self-contained
+  launch, 100/125/150% display DPI, Light/Dark/High Contrast, settings dialog,
+  F6/Ctrl+J, Narrator-active focus walk, picker/drag-drop, image/video/FFmpeg
+  fallback, progress/cancel/failure isolation, source hashing, read-only root,
+  offline execution, registry classification, cold start, and 200% text scaling
+  passed. The gate UI is explicitly marked non-final and is not an implementation source.
+- Process Monitor final classification: 12 raw candidates, 11 existing-system-key
+  opens, zero new keys, zero TinyPix-owned writes, and one Windows BAM
+  execution-state value. Full raw evidence is retained locally and the compact
+  candidate/report evidence is in `artifacts/windows/winui-feasibility-gate/`.
 
 ## Gated, not claimed complete
 
@@ -37,11 +47,12 @@ Updated: 2026-07-19
   evidence now uses one responsive `SettingsDialog` with a complete-root scrim;
   the repository Pencil source, exports, UI specification, and control mapping
   agree. This static result does not prove runtime focus or input behavior.
-- WinUI shell and formal business pages: runtime UX remains gated by the
-  disposable Windows prototype.
-- App project restore/build, Portable ZIP, SBOM execution, startup, drag/drop,
-  preview, registry, firewall, Narrator, scaling, and cold-start evidence:
-  require the Windows 10/11 gate.
+- WinUI shell and formal business pages: not implemented. Windows 10 prototype
+  behavior passed, but the overall gate remains open until a clean Windows 11
+  x64 run exists.
+- App project restore/build and the disposable prototype build passed on the
+  configured Windows 10 VM. The formal App, Portable ZIP, SBOM execution, and
+  clean-machine runtime acceptance remain incomplete.
 - Media/OCR/PDF/model handlers and all 50 end-user workflows are contracts or
   catalog entries, not complete feature implementations yet.
 

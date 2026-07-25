@@ -1,0 +1,6 @@
+﻿2026-07-22T19:08:55.4088947+08:00 COLD_START iteration=1 milliseconds=747 pid=2700 handle=4391780
+2026-07-22T19:08:56.3308605+08:00 COLD_START iteration=2 milliseconds=530 pid=8416 handle=1835734
+2026-07-22T19:08:57.1908871+08:00 COLD_START iteration=3 milliseconds=500 pid=1616 handle=3671394
+2026-07-22T19:08:58.0971501+08:00 COLD_START iteration=4 milliseconds=530 pid=4168 handle=4588388
+2026-07-22T19:08:59.0502476+08:00 COLD_START iteration=5 milliseconds=593 pid=10556 handle=3933566
+2026-07-22T19:08:59.4253925+08:00 COLD_START_RESULT count=5 medianMilliseconds=530 maximumMilliseconds=747 targetMilliseconds=5000 passed=True

@@ -1,0 +1,6 @@
+﻿Invoke-Expression : 使用“1”个参数调用“FromHandle”时发生异常:“hwnd 不能为 IntPtr.Zero 或 null。”
+所在位置 \\Mac\Home\TinyPix\3.5pro\build\winui-gate-uia-wrapper.ps1:4 字符: 5
++     Invoke-Expression $script
++     ~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [Invoke-Expression], MethodInvocationException
+    + FullyQualifiedErrorId : ArgumentException,Microsoft.PowerShell.Commands.InvokeExpressionCommand

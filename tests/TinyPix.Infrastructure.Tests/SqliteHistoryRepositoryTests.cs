@@ -62,6 +62,22 @@ public sealed class SqliteHistoryRepositoryTests : IDisposable
         Assert.DoesNotContain(history, entry => entry.InputPaths[0].EndsWith("input-0.bin"));
     }
 
+    [Fact]
+    public async Task Completed_operations_release_the_database_file()
+    {
+        string databasePath = Path.Combine(_root, "Data", "tinypix.db");
+        var repository = Repository(recentLimit: 3, historyLimit: 4);
+
+        await repository.AddRecentFileAsync(new RecentFileEntry(
+            Path.Combine(_root, "input.mp4"),
+            "video.convert",
+            DateTimeOffset.UtcNow));
+
+        File.Delete(databasePath);
+
+        Assert.False(File.Exists(databasePath));
+    }
+
     public void Dispose()
     {
         if (Directory.Exists(_root))

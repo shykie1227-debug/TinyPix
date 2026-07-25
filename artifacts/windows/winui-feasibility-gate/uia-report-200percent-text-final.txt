@@ -1,0 +1,55 @@
+﻿2026-07-22T23:31:48.5270621+08:00 WINDOW name=TinyPix.WinUIGate width=1200 height=800 dpi=96 scale=1 pid=2768
+2026-07-22T23:31:48.5737665+08:00 INITIAL_WINDOW left=424 top=220 width=1200 height=800 screenLeft=0 screenTop=0 screenWidth=2048 screenHeight=1240 fitsScreen=True
+2026-07-22T23:31:48.9437592+08:00 BUTTON name=Minimize width=46 height=32 enabled=True
+2026-07-22T23:31:48.9437592+08:00 BUTTON name=Maximize width=46 height=32 enabled=True
+2026-07-22T23:31:48.9630434+08:00 BUTTON name=Close width=46 height=32 enabled=True
+2026-07-22T23:31:48.9765902+08:00 BUTTON name=图片工具 width=124 height=47 enabled=True
+2026-07-22T23:31:48.9906362+08:00 BUTTON name=视频工具 width=124 height=47 enabled=True
+2026-07-22T23:31:48.9906362+08:00 BUTTON name=工具箱 width=99 height=47 enabled=True
+2026-07-22T23:31:49.0069356+08:00 BUTTON name=打开设置 width=115 height=47 enabled=True
+2026-07-22T23:31:49.0310334+08:00 BUTTON name=添加媒体文件 width=215 height=47 enabled=True
+2026-07-22T23:31:49.0444371+08:00 BUTTON name=中央预览区域 width=361 height=47 enabled=True
+2026-07-22T23:31:49.0531363+08:00 BUTTON name=开始本地验证任务 width=229 height=47 enabled=True
+2026-07-22T23:31:49.0687617+08:00 BUTTON name=取消任务 width=229 height=47 enabled=False
+2026-07-22T23:31:49.0874005+08:00 BUTTON name=验证异常退出 width=229 height=47 enabled=True
+2026-07-22T23:31:49.1056392+08:00 BUTTON name=任务队列区域 width=124 height=47 enabled=True
+2026-07-22T23:31:49.9003750+08:00 DIALOG name=设置 type=ControlType.Window width=1184 height=791
+2026-07-22T23:31:49.9160028+08:00 DIALOG_BACKGROUND enabled=True focusable=True
+2026-07-22T23:31:50.2910494+08:00 DIALOG_BACKGROUND_CLICK dialogOpen=True focus=默认输出目录
+2026-07-22T23:31:50.3066255+08:00 DIALOG_BUTTON name=保存设置 width=245 height=44
+2026-07-22T23:31:50.3066255+08:00 DIALOG_BUTTON name=取消 width=245 height=44
+2026-07-22T23:31:50.5314827+08:00 DIALOG_TAB_1 name=取消 type=ControlType.Button
+2026-07-22T23:31:50.7324854+08:00 DIALOG_TAB_2 name=保存设置 type=ControlType.Button
+2026-07-22T23:31:50.9323340+08:00 DIALOG_TAB_3 name=默认输出目录 type=ControlType.Edit
+2026-07-22T23:31:51.1238415+08:00 DIALOG_TAB_4 name=取消 type=ControlType.Button
+2026-07-22T23:31:51.3534885+08:00 DIALOG_TAB_5 name=保存设置 type=ControlType.Button
+2026-07-22T23:31:51.5566683+08:00 DIALOG_TAB_6 name=默认输出目录 type=ControlType.Edit
+2026-07-22T23:31:52.0901563+08:00 SETTINGS_INVALID dialogOpen=True focus=默认输出目录
+2026-07-22T23:31:52.6739625+08:00 SETTINGS_VALID dialogOpen=False focus=打开设置
+2026-07-22T23:31:53.7932628+08:00 SETTINGS_ESCAPE dialogOpen=False focus=打开设置
+2026-07-22T23:31:54.4714800+08:00 F6_1 name=图片工具 type=ControlType.Button
+2026-07-22T23:31:54.8307742+08:00 F6_2 name=添加媒体文件 type=ControlType.Button
+2026-07-22T23:31:55.2802503+08:00 F6_3 name=中央预览区域 type=ControlType.Button
+2026-07-22T23:31:55.5736712+08:00 F6_4 name=输出格式 type=ControlType.ComboBox
+2026-07-22T23:31:55.9177791+08:00 F6_5 name=任务队列区域 type=ControlType.Button
+2026-07-22T23:31:56.3325611+08:00 CTRL_J name=任务队列区域 type=ControlType.Button
+2026-07-22T23:31:57.0827256+08:00 RESIZED width=900 height=600 effectiveWidth=900 effectiveHeight=600
+2026-07-22T23:31:57.1022342+08:00 COMPACT_ELEMENT name=输出目录 left=Infinity top=Infinity width=-Infinity height=-Infinity offscreen=True
+2026-07-22T23:31:57.1022342+08:00 COMPACT_INITIAL_OFFSCREEN_ALLOWED name=输出目录
+2026-07-22T23:31:57.1334673+08:00 COMPACT_ELEMENT name=开始本地验证任务 left=653 top=335 width=229 height=47 offscreen=False
+2026-07-22T23:31:57.1334673+08:00 COMPACT_WITHIN_WINDOW name=开始本地验证任务 passed=True
+2026-07-22T23:31:57.1540440+08:00 COMPACT_WITHIN_SCREEN name=开始本地验证任务 passed=True
+2026-07-22T23:31:57.1803446+08:00 COMPACT_ELEMENT name=取消任务 left=653 top=390 width=229 height=47 offscreen=False
+2026-07-22T23:31:57.1803446+08:00 COMPACT_WITHIN_WINDOW name=取消任务 passed=True
+2026-07-22T23:31:57.1803446+08:00 COMPACT_WITHIN_SCREEN name=取消任务 passed=True
+2026-07-22T23:31:57.2741048+08:00 COMPACT_ELEMENT name=验证异常退出 left=653 top=445 width=229 height=47 offscreen=False
+2026-07-22T23:31:57.2901082+08:00 COMPACT_WITHIN_WINDOW name=验证异常退出 passed=True
+2026-07-22T23:31:57.2901082+08:00 COMPACT_WITHIN_SCREEN name=验证异常退出 passed=True
+2026-07-22T23:31:57.8057778+08:00 COMPACT_OUTPUT_SCROLL_INTO_VIEW mode=ScrollItemPattern supported=True
+2026-07-22T23:31:57.8057778+08:00 COMPACT_OUTPUT_WITHIN_WINDOW passed=True
+2026-07-22T23:31:57.8216678+08:00 COMPACT_OUTPUT_WITHIN_SCREEN passed=True
+2026-07-22T23:31:57.8216678+08:00 COMPACT_OUTPUT_CONTROL height=46 minimumVisibleHeight=40 value=%TEMP%\TinyPix-WinUI-Gate\bin\Debug\net10.0-windows10.0.19041.0\win-x64\Output
+2026-07-22T23:31:57.8522137+08:00 COMPACT_OVERLAP outputDirectory/开始本地验证任务=False
+2026-07-22T23:31:57.8522137+08:00 COMPACT_OVERLAP outputDirectory/取消任务=False
+2026-07-22T23:31:57.8678356+08:00 COMPACT_OVERLAP outputDirectory/验证异常退出=False
+2026-07-22T23:31:58.0436870+08:00 CAPTURE file=28-compact-900x600-100percent.png width=2048 height=1280

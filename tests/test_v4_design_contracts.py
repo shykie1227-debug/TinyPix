@@ -138,7 +138,8 @@ def test_settings_dialog_freeze_evidence_is_consistent() -> None:
     assert "separated blue outer" in audit
     assert "separated yellow outer" in audit
     assert "Static UI design freeze: passed" in status
-    assert "runtime UX remains gated" in status
+    assert "overall gate remains open" in status
+    assert "clean Windows 11" in status
 
 
 def test_high_contrast_settings_dialog_has_system_semantics_and_full_modal_scope() -> None:

@@ -24,7 +24,7 @@
 | 网络 | 运行时完全离线，无账号、遥测、更新检查或云服务 |
 | 迁移 | WinUI 骨架和核心合同已建立；正式 Shell、业务页、全部媒体 Handler 和 Portable 验收未完成 |
 | 旧 Tauri | `src/` React 与 `src-tauri/` Rust 仍是 3.5.1 行为事实基线，暂不删除 |
-| 当前门禁 | 静态 UI 已冻结；立即执行 Windows 可丢弃原型，真实运行验收仍未通过 |
+| 当前门禁 | Windows 10 可丢弃原型已通过；Windows 11 干净 VM 尚未提供，整体门禁未完成 |
 
 完成边界以 [IMPLEMENTATION-STATUS.md](docs/architecture/IMPLEMENTATION-STATUS.md) 为准，不从目录存在推断功能已经完成。
 
@@ -132,15 +132,11 @@ cd src-tauri && cargo test --lib && cargo check
 
 ## 8｜Windows 可行性门禁：静态 UI 冻结后的入口
 
-设置弹窗静态冻结证据已通过：1200×800、900×600 和 High Contrast 使用同一弹窗语义，完整遮罩 `XamlRoot`，Pencil、UI 规格、控件映射和审计证据一致。现在不再扩展静态页面，立即执行 [Windows 可行性门禁](docs/architecture/WINDOWS-FEASIBILITY-GATE.md)：
+设置弹窗静态冻结证据已通过：1200×800、900×600 和 High Contrast 使用同一弹窗语义，完整遮罩 `XamlRoot`，Pencil、UI 规格、控件映射和审计证据一致。Windows 10 可丢弃原型已于 2026-07-22 通过（含 100/125/150% 显示缩放和 200% 文本缩放），证据见 [Windows 可行性门禁](docs/architecture/WINDOWS-FEASIBILITY-GATE.md)；该原型不是正式 UI，禁止复制其页面代码。当前入口是补齐 Windows 11：
 
-1. 在 Windows VM 重跑合同和 C# 测试。
-2. 在 `%TEMP%` 创建可丢弃 WinUI 原型，不复制原型 UI 到正式工程。
-3. 验证 Unpackaged/self-contained 启动、四区 Shell、唯一设置弹窗。
-4. 验证拖放、图片/视频预览、FFmpeg 进度/取消/异常退出。
-5. 验证 900×600、1200×800、Light/Dark/High Contrast、键盘和 Narrator。
-6. 验证 `portable.flag`、目录不可写、断网和无主动注册表写入。
-7. 输出证据报告；全部通过后才进入正式 WinUI Shell。
+1. 提供或创建干净 Windows 11 x64 VM。
+2. 在 Windows 11 重复启动、设置、主题、缩放、媒体、离线、注册表和 Portable 根目录门禁。
+3. 全部通过后才进入正式 WinUI Shell；正式页面必须从 Pencil 设计和 WinUI 原生组件重建。
 
 ## 9｜禁止误判
 

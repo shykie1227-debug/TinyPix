@@ -1,0 +1,24 @@
+﻿rawWriteCandidates=87
+successfulNonCreateMutations=1
+failedMutationAttempts=36
+createKeyCalls=50
+--- successful non-create mutations ---
+
+Operation   Path                                                                                                                                                                                                                                                       Result  Detail
+---------   ----                                                                                                                                                                                                                                                       ------  ------
+RegSetValue HKLM\System\CurrentControlSet\Services\bam\State\UserSettings\S-1-5-21-<redacted>\\Device\HarddiskVolume4\Users\<user>\AppData\Local\Temp\TinyPix-WinUI-Gate\bin\Debug\net10.0-windows10.0.19041.0\win-x64\TinyPix.WinUIGate.exe SUCCESS Type: REG_BINARY, Length: 24, Data: 4C 73 C1 91 E7 19 DD 01 00 00 00 00 00 00 00 00
+
+
+
+--- create-key calls grouped by path ---
+
+Count Name
+----- ----
+   36 HKU\S-1-5-21-<redacted>\Software\Microsoft\Spelling\Dictionaries
+    4 HKU\S-1-5-21-<redacted>\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.png\OpenWithList
+    2 HKU\S-1-5-21-<redacted>\Software\Microsoft\Spelling\Options
+    2 HKU\S-1-5-21-<redacted>\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize
+    2 HKU\S-1-5-21-<redacted>\Control Panel\Colors
+    2 HKU\S-1-5-21-<redacted>\Software\Microsoft\Windows\CurrentVersion\Explorer\Accent
+    1 HKCR\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\Deployment\Package\*\S-1-5-21-<redacted>\{715C67D1-8AF7-4A50-85E0-47A9B7766DF7}
+    1 HKU\S-1-5-21-<redacted>\Software\Microsoft\Spelling

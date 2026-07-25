@@ -290,6 +290,7 @@ public sealed class SqliteHistoryRepository : IHistoryRepository
             DataSource = _databasePath,
             Mode = SqliteOpenMode.ReadWriteCreate,
             Cache = SqliteCacheMode.Shared,
+            Pooling = false,
         }.ToString());
         await connection.OpenAsync(cancellationToken).ConfigureAwait(false);
         return connection;

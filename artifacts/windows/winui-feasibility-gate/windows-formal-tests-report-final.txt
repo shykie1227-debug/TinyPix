@@ -1,0 +1,6 @@
+﻿2026-07-22T23:08:20.2456328+08:00 COPY guestLocal=True exclusions=/XD bin obj
+2026-07-22T23:08:28.6220296+08:00 TEST project=tests\TinyPix.Core.Tests\TinyPix.Core.Tests.csproj result=0
+2026-07-22T23:08:34.4119787+08:00 TEST project=tests\TinyPix.Media.Tests\TinyPix.Media.Tests.csproj result=0
+2026-07-22T23:08:41.8349790+08:00 TEST project=tests\TinyPix.Infrastructure.Tests\TinyPix.Infrastructure.Tests.csproj result=0
+2026-07-22T23:08:44.5525942+08:00 RESTORE project=TinyPix.App.csproj locked=True result=0
+2026-07-22T23:08:44.5525942+08:00 WINDOWS_FORMAL_TESTS passed=True

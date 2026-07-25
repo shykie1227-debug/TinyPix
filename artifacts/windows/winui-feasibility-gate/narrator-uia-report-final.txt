@@ -1,0 +1,12 @@
+﻿2026-07-22T22:23:16.3927006+08:00 NARRATOR processActive=True pid=6220
+2026-07-22T22:23:18.3680460+08:00 NARRATOR_BASELINE name=图片工具 type=ControlType.Button expected=图片工具
+2026-07-22T22:23:19.2547155+08:00 NARRATOR_F6_1 name=图片工具 type=ControlType.Button expected=图片工具
+2026-07-22T22:23:20.1080106+08:00 NARRATOR_F6_2 name=添加媒体文件 type=ControlType.Button expected=添加媒体文件
+2026-07-22T22:23:20.9517054+08:00 NARRATOR_F6_3 name=中央预览区域 type=ControlType.Button expected=中央预览区域
+2026-07-22T22:23:21.8133737+08:00 NARRATOR_F6_4 name=输出格式 type=ControlType.ComboBox expected=输出格式
+2026-07-22T22:23:22.6591815+08:00 NARRATOR_F6_5 name=任务队列区域 type=ControlType.Button expected=任务队列区域
+2026-07-22T22:23:23.5526427+08:00 NARRATOR_CTRL_J name=任务队列区域 type=ControlType.Button expected=任务队列区域
+2026-07-22T22:23:25.4860566+08:00 NARRATOR_SETTINGS name=默认输出目录 type=ControlType.Edit expected=默认输出目录
+2026-07-22T22:23:26.3241468+08:00 NARRATOR_SETTINGS_RETURN name=打开设置 type=ControlType.Button expected=打开设置
+2026-07-22T22:23:26.3241468+08:00 NARRATOR processStillActive=True
+2026-07-22T22:23:26.4979067+08:00 NARRATOR_UIA complete=true

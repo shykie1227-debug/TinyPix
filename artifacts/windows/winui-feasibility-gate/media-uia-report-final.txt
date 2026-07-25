@@ -1,0 +1,16 @@
+﻿2026-07-22T22:15:38.2450211+08:00 TOP name= class=Shell_TrayWnd type=ControlType.Pane id=
+2026-07-22T22:15:38.2606601+08:00 TOP name=C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe class=ConsoleWindowClass type=ControlType.Window id=Console Window
+2026-07-22T22:15:38.2919208+08:00 TOP name=设置 class=ApplicationFrameWindow type=ControlType.Window id=
+2026-07-22T22:15:38.3147703+08:00 TOP name=TinyPix.WinUIGate class=WinUIDesktopWin32WindowClass type=ControlType.Window id=
+2026-07-22T22:15:38.3246905+08:00 TOP name=管理员: Windows PowerShell class=ConsoleWindowClass type=ControlType.Window id=
+2026-07-22T22:15:38.3592392+08:00 TOP name=Program Manager class=Progman type=ControlType.Pane id=
+2026-07-22T22:15:42.3317296+08:00 PICKER path=%TEMP%\TinyPix-WinUI-Gate\Samples\sample-image.png preview=图片预览 offscreen=False
+2026-07-22T22:15:45.9905449+08:00 PICKER path=%TEMP%\TinyPix-WinUI-Gate\Samples\sample-video.mp4 preview=视频预览 offscreen=False
+2026-07-22T22:15:48.4043989+08:00 CANCEL enabledBefore=True
+2026-07-22T22:15:50.4392235+08:00 CANCEL ffmpegProcessCount=0 sourceUnchanged=True
+2026-07-22T22:16:02.6357851+08:00 SUCCESS outputExists=True outputBytes=1311616 sourceUnchanged=True ffmpegProcessCount=0
+2026-07-22T22:16:04.7344927+08:00 FAILURE isolated=True ffmpegProcessCount=0
+2026-07-22T22:16:08.7075638+08:00 PICKER path=%TEMP%\TinyPix-WinUI-Gate\Samples\sample-video-ffv1.mkv preview=pending-fallback
+2026-07-22T22:16:09.4372115+08:00 VIDEO_FALLBACK systemDecodeFailureObserved=true uiaTransitionObserved=False
+2026-07-22T22:16:09.4465368+08:00 VIDEO_FALLBACK status=ready thumbnailExists=True previewOffscreen=False sourceUnchanged=True
+2026-07-22T22:16:09.5822083+08:00 MEDIA_UIA complete=true

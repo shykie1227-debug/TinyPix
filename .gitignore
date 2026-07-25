@@ -68,5 +68,7 @@ TinyPixBuildCache/
 artifacts/TinyPix-4.0/
 artifacts/TinyPix-4.0-Windows-x64-Portable.zip
 artifacts/TinyPix-4.0-Windows-x64-Portable.zip.sha256
+artifacts/windows/**/*.pml
+artifacts/windows/**/tinypix-registry-capture.csv
 !assets/Portable/Logs/
 !assets/Portable/Logs/.gitkeep

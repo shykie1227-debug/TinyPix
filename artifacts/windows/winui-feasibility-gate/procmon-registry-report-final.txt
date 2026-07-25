@@ -1,0 +1,21 @@
+﻿2026-07-22T22:50:04.3672878+08:00 PROCMON signature=Valid signer=CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US
+2026-07-22T22:50:06.5328501+08:00 PROCMON captureStarted=true pid=4188
+2026-07-22T22:50:13.2666391+08:00 GATE startedFor=settings-and-keyboard
+2026-07-22T22:50:34.9059864+08:00 TASK name=TinyPixWinUIGateUIA result=0
+2026-07-22T22:50:40.3518054+08:00 GATE startedFor=media-and-ffmpeg
+2026-07-22T22:51:14.9726166+08:00 TASK name=TinyPixWinUIGateMediaUIA result=0
+2026-07-22T22:51:16.0691871+08:00 PROCMON captureStopped=true
+2026-07-22T22:52:02.9924163+08:00 PROCMON tinyPixEvents=49348 registryEvents=33185 rawWriteCandidates=12 openedExistingKeys=11 failedMutations=0 systemManagedBamWrites=1 appOwnedWrites=0
+2026-07-22T22:52:02.9924163+08:00 REGISTRY_CANDIDATE operation=RegCreateKey path=HKU\S-1-5-21-<redacted>\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize result=SUCCESS detail=Desired Access: Notify, Disposition: REG_OPENED_EXISTING_KEY
+2026-07-22T22:52:03.0034735+08:00 REGISTRY_CANDIDATE operation=RegCreateKey path=HKU\S-1-5-21-<redacted>\Control Panel\Colors result=SUCCESS detail=Desired Access: Notify, Disposition: REG_OPENED_EXISTING_KEY
+2026-07-22T22:52:03.0200063+08:00 REGISTRY_CANDIDATE operation=RegCreateKey path=HKU\S-1-5-21-<redacted>\Software\Microsoft\Windows\CurrentVersion\Explorer\Accent result=SUCCESS detail=Desired Access: Notify, Disposition: REG_OPENED_EXISTING_KEY
+2026-07-22T22:52:03.0438236+08:00 REGISTRY_CANDIDATE operation=RegSetValue path=HKLM\System\CurrentControlSet\Services\bam\State\UserSettings\S-1-5-21-<redacted>\\Device\HarddiskVolume4\Users\<user>\AppData\Local\Temp\TinyPix-WinUI-Gate\bin\Debug\net10.0-windows10.0.19041.0\win-x64\TinyPix.WinUIGate.exe result=SUCCESS detail=Type: REG_BINARY, Length: 24, Data: 59 E0 AA 73 E9 19 DD 01 00 00 00 00 00 00 00 00
+2026-07-22T22:52:03.0577042+08:00 REGISTRY_CANDIDATE operation=RegCreateKey path=HKU\S-1-5-21-<redacted>\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize result=SUCCESS detail=Desired Access: Notify, Disposition: REG_OPENED_EXISTING_KEY
+2026-07-22T22:52:03.0700101+08:00 REGISTRY_CANDIDATE operation=RegCreateKey path=HKU\S-1-5-21-<redacted>\Control Panel\Colors result=SUCCESS detail=Desired Access: Notify, Disposition: REG_OPENED_EXISTING_KEY
+2026-07-22T22:52:03.0861090+08:00 REGISTRY_CANDIDATE operation=RegCreateKey path=HKU\S-1-5-21-<redacted>\Software\Microsoft\Windows\CurrentVersion\Explorer\Accent result=SUCCESS detail=Desired Access: Notify, Disposition: REG_OPENED_EXISTING_KEY
+2026-07-22T22:52:03.1001945+08:00 REGISTRY_CANDIDATE operation=RegCreateKey path=HKU\S-1-5-21-<redacted>\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.png\OpenWithList result=SUCCESS detail=Desired Access: Read/Write, Disposition: REG_OPENED_EXISTING_KEY
+2026-07-22T22:52:03.1173447+08:00 REGISTRY_CANDIDATE operation=RegCreateKey path=HKU\S-1-5-21-<redacted>\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.png\OpenWithList result=SUCCESS detail=Desired Access: Read/Write, Disposition: REG_OPENED_EXISTING_KEY
+2026-07-22T22:52:03.1317449+08:00 REGISTRY_CANDIDATE operation=RegCreateKey path=HKU\S-1-5-21-<redacted>\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.png\OpenWithList result=SUCCESS detail=Desired Access: Read/Write, Disposition: REG_OPENED_EXISTING_KEY
+2026-07-22T22:52:03.1461356+08:00 REGISTRY_CANDIDATE operation=RegCreateKey path=HKU\S-1-5-21-<redacted>\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.png\OpenWithList result=SUCCESS detail=Desired Access: Read/Write, Disposition: REG_OPENED_EXISTING_KEY
+2026-07-22T22:52:03.1608731+08:00 REGISTRY_CANDIDATE operation=RegCreateKey path=HKCR\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\Deployment\Package\*\S-1-5-21-<redacted>\{B8C6654A-6437-4D7D-84A0-1D03F69E0A73} result=SUCCESS detail=Desired Access: Notify, Disposition: REG_OPENED_EXISTING_KEY
+2026-07-22T22:52:03.1760684+08:00 REGISTRY_WRITE_RESULT passed=True rawCandidates=12 appOwnedWrites=0 systemManagedBamWrites=1
