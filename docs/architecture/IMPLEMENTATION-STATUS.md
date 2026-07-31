@@ -1,6 +1,6 @@
 # TinyPix 4.0 implementation status
 
-Updated: 2026-07-22
+Updated: 2026-07-31
 
 ## Implemented and locally verified
 
@@ -40,6 +40,18 @@ Updated: 2026-07-22
   opens, zero new keys, zero TinyPix-owned writes, and one Windows BAM
   execution-state value. Full raw evidence is retained locally and the compact
   candidate/report evidence is in `artifacts/windows/winui-feasibility-gate/`.
+- 2026-07-31 formal WinUI shell skeleton in `src/TinyPix.App` (commit e3585e7):
+  App composition root enforcing the `portable.flag` boundary and wiring
+  `JobQueueService`, `ISettingsStore`, `IHistoryRepository`, `ICacheService`;
+  MainWindow with top category NavigationView and the four-region workbench
+  (`LeftFilePanel` / `WorkbenchFrame` / `RightParameterPanel` / `TaskQueue`);
+  shell keyboard contract (F6 five-region cycle, Ctrl+J task queue, J/K/L
+  timeline transport, Ctrl+, settings); the single reusable `SettingsDialog`;
+  default `VideoOutputPage` landing page; and `LocalFileCacheService` (the
+  missing `ICacheService` implementation). Two new v4 architecture contracts
+  pin the shell structure and keyboard/offline boundaries; full pytest 48/48
+  and `git diff --check` green on macOS. Contract-level only: no Windows
+  runtime window/UIA evidence yet.
 
 ## Gated, not claimed complete
 
@@ -47,9 +59,14 @@ Updated: 2026-07-22
   evidence now uses one responsive `SettingsDialog` with a complete-root scrim;
   the repository Pencil source, exports, UI specification, and control mapping
   agree. This static result does not prove runtime focus or input behavior.
-- WinUI shell and formal business pages: not implemented. Windows 10 prototype
-  behavior passed, but the overall gate remains open until a clean Windows 11
-  x64 run exists.
+- WinUI shell skeleton (single native shell, top NavigationView, four-region
+  workbench, one reusable SettingsDialog, default video-output page) is
+  implemented and contract-verified on macOS as of 2026-07-31; formal business
+  pages beyond the skeleton and all media handlers remain not implemented.
+  Windows 10 prototype behavior passed, but the overall gate remains open until
+  a clean Windows 11 x64 run exists. Per explicit user direction on 2026-07-31
+  the shell phase proceeded without that VM gate, so Windows runtime
+  window/UIA verification is still owed before any completion claim.
 - App project restore/build and the disposable prototype build passed on the
   configured Windows 10 VM. The formal App, Portable ZIP, SBOM execution, and
   clean-machine runtime acceptance remain incomplete.
