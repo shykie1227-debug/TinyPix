@@ -376,3 +376,72 @@ def test_winui_gate_runs_200_percent_text_scale_and_restores_100_percent() -> No
         "TEXT_SCALE restored=100",
     ):
         assert marker in orchestrator_script
+
+
+def test_formal_winui_shell_has_one_native_shell_and_one_settings_dialog() -> None:
+    app_root = ROOT / "src" / "TinyPix.App"
+    required = (
+        "App.xaml",
+        "App.xaml.cs",
+        "MainWindow.xaml",
+        "MainWindow.xaml.cs",
+        "ViewModels/MainWindowViewModel.cs",
+        "ViewModels/SettingsDialogViewModel.cs",
+        "Controls/SettingsDialogContent.xaml",
+        "Controls/SettingsDialogContent.xaml.cs",
+        "Pages/VideoOutputPage.xaml",
+        "Pages/VideoOutputPage.xaml.cs",
+    )
+    for relative_path in required:
+        assert (app_root / relative_path).is_file(), relative_path
+
+    main_window = (app_root / "MainWindow.xaml").read_text(encoding="utf-8")
+    app_code = (app_root / "App.xaml.cs").read_text(encoding="utf-8")
+    settings_vm = (app_root / "ViewModels/SettingsDialogViewModel.cs").read_text(
+        encoding="utf-8"
+    )
+    settings_content = (
+        app_root / "Controls/SettingsDialogContent.xaml"
+    ).read_text(encoding="utf-8")
+
+    for marker in (
+        'PaneDisplayMode="Top"',
+        'Content="图片工具"',
+        'Content="视频工具"',
+        'Content="工具箱"',
+        'x:Name="LeftFilePanel"',
+        'x:Name="WorkbenchFrame"',
+        'x:Name="RightParameterPanel"',
+        'x:Name="TaskQueue"',
+        'AutomationProperties.Name="任务队列区域"',
+    ):
+        assert marker in main_window
+
+    assert "new MainWindow()" in app_code
+    assert "SettingsDialogViewModel" in settings_vm
+    assert "SaveSettingsCommand" in settings_vm
+    assert "XamlRoot" in settings_content or "设置" in settings_content
+
+
+def test_formal_shell_declares_required_keyboard_and_offline_boundaries() -> None:
+    app_root = ROOT / "src" / "TinyPix.App"
+    combined = "\n".join(
+        path.read_text(encoding="utf-8")
+        for path in app_root.rglob("*.cs")
+        if "obj" not in path.parts and "bin" not in path.parts
+    )
+    for marker in (
+        "VirtualKey.F6",
+        "VirtualKey.J",
+        "VirtualKey.K",
+        "VirtualKey.L",
+        "VirtualKey.OemComma",
+        "ToolCatalog",
+        "JobQueueService",
+        "ISettingsStore",
+        "IHistoryRepository",
+        "ICacheService",
+        "portable.flag",
+        "SettingsDialog",
+    ):
+        assert marker in combined

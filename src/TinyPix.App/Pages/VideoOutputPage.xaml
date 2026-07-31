@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="TinyPix.App.Pages.VideoOutputPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <!--
+      视频工具 > 视频输出 — the default landing page (design/UI-SPEC.md) built on
+      template 1 (conversion/compression workbench). Full parameter binding to a
+      video.convert handler lands with the media handlers gate; this page fixes
+      the workbench skeleton and its automation names.
+    -->
+    <Grid Padding="16">
+        <StackPanel Spacing="12">
+            <TextBlock
+                Text="视频输出"
+                Style="{ThemeResource TitleTextBlockStyle}"
+                AutomationProperties.Name="视频输出" />
+
+            <Border
+                x:Name="PreviewStage"
+                MinHeight="240"
+                AutomationProperties.Name="中央预览区域">
+                <TextBlock
+                    Text="添加视频后在此预览"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center" />
+            </Border>
+
+            <ComboBox
+                x:Name="FormatBox"
+                Header="输出格式"
+                AutomationProperties.Name="输出格式"
+                SelectedIndex="0">
+                <ComboBoxItem Content="MP4" />
+                <ComboBoxItem Content="MOV" />
+                <ComboBoxItem Content="MKV" />
+                <ComboBoxItem Content="AVI" />
+                <ComboBoxItem Content="WebM" />
+                <ComboBoxItem Content="MP3（仅音频）" />
+                <ComboBoxItem Content="WAV（仅音频）" />
+                <ComboBoxItem Content="AAC（仅音频）" />
+                <ComboBoxItem Content="FLAC（仅音频）" />
+            </ComboBox>
+
+            <Slider
+                x:Name="QualitySlider"
+                Header="质量"
+                Minimum="0"
+                Maximum="100"
+                Value="80" />
+
+            <Button
+                x:Name="StartOutputButton"
+                Content="开始输出"
+                Style="{ThemeResource AccentButtonStyle}"
+                AutomationProperties.Name="开始输出" />
+        </StackPanel>
+    </Grid>
+</Page>
