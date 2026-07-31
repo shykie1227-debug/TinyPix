@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="TinyPix.App.Controls.RightParameterPanelControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <!-- 21 Shell/RightParameterPanel: scrollable parameter stack + one fixed
+         primary action. Alt+R resets; Ctrl+Enter executes; Busy disables edits
+         but keeps cancel available. -->
+    <Grid RowSpacing="8" Padding="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <ScrollViewer Grid.Row="0">
+            <StackPanel Spacing="12">
+                <TextBlock
+                    Text="参数"
+                    Style="{ThemeResource SubtitleTextBlockStyle}"
+                    AutomationProperties.Name="参数区域" />
+                <ItemsControl x:Name="ParameterGroups" ItemsSource="{Binding ParameterGroups}" />
+                <InfoBar
+                    x:Name="ValidationSummary"
+                    Severity="Error"
+                    IsOpen="{Binding HasValidationError}"
+                    Message="{Binding ValidationSummaryText}"
+                    IsClosable="False"
+                    AutomationProperties.Name="参数校验摘要" />
+            </StackPanel>
+        </ScrollViewer>
+
+        <Button
+            x:Name="ExecuteButton"
+            Grid.Row="1"
+            Content="开始执行"
+            Command="{Binding ExecuteCommand}"
+            Style="{ThemeResource TinyPixPrimaryButtonStyle}"
+            HorizontalAlignment="Stretch"
+            AutomationProperties.Name="开始执行">
+            <Button.KeyboardAccelerators>
+                <KeyboardAccelerator Key="Enter" Modifiers="Control" />
+            </Button.KeyboardAccelerators>
+        </Button>
+    </Grid>
+</UserControl>

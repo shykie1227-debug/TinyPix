@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="TinyPix.App.Controls.PresetCardItem"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <!-- 14 Card/Preset: a quick-parameter card (not a second navigation).
+         Selected state uses control-border + icon + text, never color alone. -->
+    <Grid
+        Padding="12"
+        BorderBrush="{ThemeResource TinyPixControlBorderBrush}"
+        BorderThickness="1"
+        CornerRadius="6"
+        Background="{ThemeResource TinyPixSurfaceBrush}"
+        AutomationProperties.Name="{Binding PresetName}">
+        <StackPanel Spacing="4">
+            <StackPanel Orientation="Horizontal" Spacing="6">
+                <FontIcon Glyph="{Binding IconGlyph}" FontSize="16" />
+                <TextBlock Text="{Binding PresetName}" FontWeight="SemiBold" />
+            </StackPanel>
+            <TextBlock
+                Text="{Binding KeyParameters}"
+                FontSize="11"
+                TextWrapping="Wrap"
+                Foreground="{ThemeResource TinyPixMutedBrush}" />
+        </StackPanel>
+    </Grid>
+</UserControl>

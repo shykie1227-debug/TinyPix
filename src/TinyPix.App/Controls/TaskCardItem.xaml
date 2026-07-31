@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="TinyPix.App.Controls.TaskCardItem"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <!-- 12 Card/Task: job row with progress, state text and cancel. Esc/Delete
+         never auto-cancel; each state carries both text and icon. -->
+    <Grid
+        Padding="8"
+        ColumnSpacing="8"
+        AutomationProperties.Name="{Binding JobName}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Column="0" Spacing="4">
+            <TextBlock Text="{Binding JobName}" FontWeight="SemiBold" />
+            <ProgressBar
+                x:Name="JobProgress"
+                Style="{ThemeResource TinyPixProgressBarStyle}"
+                Minimum="0"
+                Maximum="100"
+                Value="{Binding Progress}"
+                IsIndeterminate="{Binding IsIndeterminate}"
+                AutomationProperties.Name="{Binding JobName}" />
+            <StackPanel Orientation="Horizontal" Spacing="6">
+                <FontIcon Glyph="{Binding StateGlyph}" FontSize="12" />
+                <TextBlock
+                    Text="{Binding StateText}"
+                    FontSize="11"
+                    Foreground="{ThemeResource TinyPixMutedBrush}" />
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
+            <Button
+                x:Name="CancelButton"
+                Style="{ThemeResource TinyPixIconButtonStyle}"
+                Command="{Binding CancelCommand}"
+                IsEnabled="{Binding CanCancel}"
+                ToolTipService.ToolTip="取消任务"
+                AutomationProperties.Name="取消任务">
+                <FontIcon Glyph="&#xE711;" />
+            </Button>
+            <Button
+                x:Name="MoreButton"
+                Style="{ThemeResource TinyPixIconButtonStyle}"
+                ToolTipService.ToolTip="更多操作"
+                AutomationProperties.Name="更多操作">
+                <FontIcon Glyph="&#xE712;" />
+                <Button.Flyout>
+                    <MenuFlyout>
+                        <MenuFlyoutItem Text="重试" Command="{Binding RetryCommand}" />
+                        <MenuFlyoutItem Text="打开输出" Command="{Binding OpenOutputCommand}" />
+                    </MenuFlyout>
+                </Button.Flyout>
+            </Button>
+        </StackPanel>
+    </Grid>
+</UserControl>

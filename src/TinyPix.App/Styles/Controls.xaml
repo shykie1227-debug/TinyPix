@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Shared styles for the native-control-based reusable components
+  (WINUI-CONTROL-MAPPING §3.1/§3.2/§3.3). Per the mapping, these style the
+  default WinUI templates via TemplateBinding-friendly setters; they do NOT
+  replace any ControlTemplate.
+-->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- 1 Button/Primary: dark action-primary surface, lime on-action-primary
+         text/icons. Never hardcode white/black/lime. -->
+    <Style x:Key="TinyPixPrimaryButtonStyle" TargetType="Button">
+        <Setter Property="Background" Value="{ThemeResource TinyPixActionPrimaryBrush}" />
+        <Setter Property="Foreground" Value="{ThemeResource TinyPixOnActionPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="{ThemeResource TinyPixActionPrimaryBrush}" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="MinHeight" Value="44" />
+        <Setter Property="Padding" Value="16,8" />
+    </Style>
+
+    <!-- 2 Button/Secondary: light/transparent surface with a control-border
+         functional border and focus ring. -->
+    <Style x:Key="TinyPixSecondaryButtonStyle" TargetType="Button">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{ThemeResource TinyPixInkBrush}" />
+        <Setter Property="BorderBrush" Value="{ThemeResource TinyPixControlBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="MinHeight" Value="44" />
+        <Setter Property="Padding" Value="16,8" />
+    </Style>
+
+    <!-- 3 Button/Danger: danger + on-danger; red reserved for destructive actions. -->
+    <Style x:Key="TinyPixDangerButtonStyle" TargetType="Button">
+        <Setter Property="Background" Value="{ThemeResource TinyPixDangerBrush}" />
+        <Setter Property="Foreground" Value="{ThemeResource TinyPixOnDangerBrush}" />
+        <Setter Property="BorderBrush" Value="{ThemeResource TinyPixDangerBrush}" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="MinHeight" Value="44" />
+        <Setter Property="Padding" Value="16,8" />
+    </Style>
+
+    <!-- 4 Button/Icon: 44x44 minimum hit target; icon from Segoe Fluent glyphs.
+         Tooltip + AutomationProperties.Name are still mandatory per instance. -->
+    <Style x:Key="TinyPixIconButtonStyle" TargetType="Button">
+        <Setter Property="MinWidth" Value="44" />
+        <Setter Property="MinHeight" Value="44" />
+        <Setter Property="Padding" Value="8" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{ThemeResource TinyPixInkBrush}" />
+    </Style>
+
+    <!-- 10 Status/Progress: accent progress bar tint via theme resource. -->
+    <Style x:Key="TinyPixProgressBarStyle" TargetType="ProgressBar">
+        <Setter Property="Foreground" Value="{ThemeResource TinyPixLimeBrush}" />
+        <Setter Property="MinHeight" Value="4" />
+    </Style>
+
+    <!-- Shell region surface: bordered card separation without heavy shadow. -->
+    <Style x:Key="TinyPixRegionBorderStyle" TargetType="Border">
+        <Setter Property="Background" Value="{ThemeResource TinyPixSurfaceBrush}" />
+        <Setter Property="BorderBrush" Value="{ThemeResource TinyPixBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="6" />
+    </Style>
+
+</ResourceDictionary>

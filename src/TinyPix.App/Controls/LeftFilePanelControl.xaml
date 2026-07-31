@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="TinyPix.App.Controls.LeftFilePanelControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:TinyPix.App.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <!-- 20 Shell/LeftFilePanel: title + count, single primary add button,
+         file list, engine health. Tab order: add -> list mode -> file items.
+         Ctrl+O adds; Delete requests removal; F6 moves to the workbench. -->
+    <Grid RowSpacing="8" Padding="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="6">
+            <TextBlock Text="文件" Style="{ThemeResource SubtitleTextBlockStyle}" />
+            <TextBlock
+                Text="{Binding FileCount}"
+                VerticalAlignment="Center"
+                Foreground="{ThemeResource TinyPixMutedBrush}" />
+        </StackPanel>
+
+        <Button
+            x:Name="AddFilesButton"
+            Grid.Row="1"
+            Content="添加媒体文件"
+            Command="{Binding AddFilesCommand}"
+            Style="{ThemeResource TinyPixPrimaryButtonStyle}"
+            HorizontalAlignment="Stretch"
+            AutomationProperties.Name="添加媒体文件">
+            <Button.KeyboardAccelerators>
+                <KeyboardAccelerator Key="O" Modifiers="Control" />
+            </Button.KeyboardAccelerators>
+        </Button>
+
+        <ListView
+            x:Name="FileList"
+            Grid.Row="2"
+            ItemsSource="{Binding Files}"
+            SelectedItem="{Binding SelectedFile, Mode=TwoWay}"
+            AutomationProperties.Name="文件列表">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <local:FileCardItem />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="6">
+            <FontIcon Glyph="{Binding EngineHealthGlyph}" FontSize="12" />
+            <TextBlock
+                Text="{Binding EngineHealthText}"
+                FontSize="11"
+                Foreground="{ThemeResource TinyPixMutedBrush}"
+                AutomationProperties.Name="引擎状态" />
+        </StackPanel>
+    </Grid>
+</UserControl>

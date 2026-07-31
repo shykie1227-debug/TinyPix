@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="TinyPix.App.Controls.EmptyStateControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <!-- 19 State/Empty: icon + heading + description + primary action. DragOver
+         switches the whole appearance (border + icon + text) via VisualState. -->
+    <VisualStateManager.VisualStateGroups>
+        <VisualStateGroup x:Name="DropStates">
+            <VisualState x:Name="Empty" />
+            <VisualState x:Name="DragOver">
+                <VisualState.Setters>
+                    <Setter Target="DropTarget.BorderBrush" Value="{ThemeResource TinyPixFocusBrush}" />
+                    <Setter Target="DropTarget.BorderThickness" Value="2" />
+                </VisualState.Setters>
+            </VisualState>
+        </VisualStateGroup>
+    </VisualStateManager.VisualStateGroups>
+
+    <Border
+        x:Name="DropTarget"
+        Padding="32"
+        BorderBrush="{ThemeResource TinyPixControlBorderBrush}"
+        BorderThickness="1"
+        BorderStyle="Dashed"
+        CornerRadius="6"
+        AutomationProperties.Name="{Binding GroupName}">
+        <StackPanel Spacing="12" HorizontalAlignment="Center">
+            <FontIcon
+                x:Name="StateGlyph"
+                Glyph="{Binding IconGlyph}"
+                FontSize="40"
+                HorizontalAlignment="Center"
+                Foreground="{ThemeResource TinyPixMutedBrush}" />
+            <TextBlock
+                Text="{Binding Title}"
+                Style="{ThemeResource SubtitleTextBlockStyle}"
+                HorizontalAlignment="Center" />
+            <TextBlock
+                Text="{Binding Description}"
+                TextWrapping="Wrap"
+                TextAlignment="Center"
+                Foreground="{ThemeResource TinyPixMutedBrush}" />
+            <Button
+                x:Name="PrimaryAction"
+                Content="添加媒体文件"
+                Command="{Binding PrimaryCommand}"
+                Style="{ThemeResource TinyPixPrimaryButtonStyle}"
+                HorizontalAlignment="Center"
+                AutomationProperties.Name="添加媒体文件" />
+        </StackPanel>
+    </Border>
+</UserControl>

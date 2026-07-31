@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="TinyPix.App.Controls.PageTitleControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <!-- 24 Header/PageTitle: H1 title + non-repeating subtitle + optional help. -->
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0" Spacing="2">
+            <TextBlock
+                x:Name="Title"
+                Text="{Binding Title}"
+                Style="{ThemeResource TitleTextBlockStyle}"
+                AutomationProperties.HeadingLevel="1" />
+            <TextBlock
+                x:Name="Subtitle"
+                Text="{Binding Subtitle}"
+                FontSize="12"
+                TextWrapping="Wrap"
+                Foreground="{ThemeResource TinyPixMutedBrush}" />
+        </StackPanel>
+        <Button
+            x:Name="HelpButton"
+            Grid.Column="1"
+            VerticalAlignment="Top"
+            Style="{ThemeResource TinyPixIconButtonStyle}"
+            Command="{Binding HelpCommand}"
+            ToolTipService.ToolTip="帮助"
+            AutomationProperties.Name="帮助">
+            <FontIcon Glyph="&#xE897;" />
+        </Button>
+    </Grid>
+</UserControl>

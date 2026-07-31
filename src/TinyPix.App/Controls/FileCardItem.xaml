@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="TinyPix.App.Controls.FileCardItem"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <!-- 11 Card/File: thumbnail + name/metadata/status + remove action.
+         Status uses icon + text together; Delete requests removal of the
+         reference only, never the source file. -->
+    <Grid
+        Padding="8"
+        ColumnSpacing="8"
+        BorderBrush="{ThemeResource TinyPixBorderBrush}"
+        BorderThickness="1"
+        CornerRadius="6"
+        AutomationProperties.Name="{Binding DisplayName}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="48" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <Border
+            Width="48"
+            Height="48"
+            CornerRadius="4"
+            Background="{ThemeResource TinyPixSurfaceMutedBrush}">
+            <Image x:Name="Thumbnail" Source="{Binding Thumbnail}" Stretch="UniformToFill" />
+        </Border>
+
+        <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+            <TextBlock
+                Text="{Binding FileName}"
+                MaxLines="2"
+                TextTrimming="CharacterEllipsis"
+                ToolTipService.ToolTip="{Binding Path}" />
+            <StackPanel Orientation="Horizontal" Spacing="6">
+                <FontIcon x:Name="StatusIcon" Glyph="{Binding StatusGlyph}" FontSize="12" />
+                <TextBlock
+                    Text="{Binding StatusText}"
+                    FontSize="11"
+                    Foreground="{ThemeResource TinyPixMutedBrush}" />
+            </StackPanel>
+            <TextBlock
+                Text="{Binding Metadata}"
+                FontSize="11"
+                Foreground="{ThemeResource TinyPixMutedBrush}" />
+        </StackPanel>
+
+        <Button
+            x:Name="RemoveButton"
+            Grid.Column="2"
+            VerticalAlignment="Center"
+            Style="{ThemeResource TinyPixIconButtonStyle}"
+            Command="{Binding RemoveCommand}"
+            CommandParameter="{Binding Path}"
+            ToolTipService.ToolTip="移除"
+            AutomationProperties.Name="移除文件"
+            KeyboardAcceleratorPlacementMode="Hidden">
+            <FontIcon Glyph="&#xE894;" />
+            <Button.KeyboardAccelerators>
+                <KeyboardAccelerator Key="Delete" />
+            </Button.KeyboardAccelerators>
+        </Button>
+    </Grid>
+</UserControl>
