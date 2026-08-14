@@ -25,11 +25,14 @@ public abstract class VideoOutputHandlerBase : IToolHandler
 
     protected VideoOutputHandlerBase(IFfmpegEngineProvider engine) => _engine = engine;
 
+    /// <summary>Resolved local FFmpeg engine, exposed for subclass encode paths.</summary>
+    protected IFfmpegEngineProvider Engine => _engine;
+
     public abstract string ToolId { get; }
 
     protected abstract string OutputSuffix { get; }
 
-    public async ValueTask<ToolValidationResult> ValidateAsync(
+    public virtual async ValueTask<ToolValidationResult> ValidateAsync(
         JobRequest request,
         CancellationToken cancellationToken)
     {
@@ -64,7 +67,7 @@ public abstract class VideoOutputHandlerBase : IToolHandler
         CancellationToken cancellationToken) =>
         ValueTask.FromResult(new ToolEstimate(null, null));
 
-    public async Task<ToolExecutionResult> ExecuteAsync(
+    public virtual async Task<ToolExecutionResult> ExecuteAsync(
         JobExecutionContext context,
         CancellationToken cancellationToken)
     {
@@ -184,7 +187,7 @@ public abstract class VideoOutputHandlerBase : IToolHandler
         _ => new[] { "-c:a", "aac", "-b:a", "160k" },
     };
 
-    private static string Truncate(string text, int max = 2000)
+    protected static string Truncate(string text, int max = 2000)
     {
         if (string.IsNullOrEmpty(text) || text.Length <= max)
         {

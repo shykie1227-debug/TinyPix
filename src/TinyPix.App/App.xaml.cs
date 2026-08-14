@@ -68,14 +68,17 @@ public partial class App : Application
         services.AddSingleton<JobSubmissionService>();
         services.AddSingleton<VideoConvertHandler>();
         services.AddSingleton<VideoCompressHandler>();
+        services.AddSingleton<GifMakerHandler>();
 
         IServiceProvider provider = services.BuildServiceProvider();
 
-        // Phase 1 (视频输出): register the media handlers implemented this pass so
-        // the job queue can resolve them by their frozen ToolCatalog ids.
+        // Phase 1 (视频输出) + Phase 2 (GIF 制作): register the media handlers
+        // implemented so far so the job queue can resolve them by their frozen
+        // ToolCatalog ids.
         var registry = provider.GetRequiredService<ToolHandlerRegistry>();
         registry.Register(provider.GetRequiredService<VideoConvertHandler>());
         registry.Register(provider.GetRequiredService<VideoCompressHandler>());
+        registry.Register(provider.GetRequiredService<GifMakerHandler>());
 
         return provider;
     }
