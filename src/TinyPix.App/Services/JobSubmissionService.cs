@@ -21,18 +21,15 @@ public sealed class JobSubmissionService
     private readonly JobQueueService _queue;
     private readonly ToolHandlerRegistry _registry;
     private readonly OutputPreflightService _preflight;
-    private readonly IOutputEnvironment _environment;
 
     public JobSubmissionService(
         JobQueueService queue,
         ToolHandlerRegistry registry,
-        OutputPreflightService preflight,
-        IOutputEnvironment environment)
+        OutputPreflightService preflight)
     {
         _queue = queue;
         _registry = registry;
         _preflight = preflight;
-        _environment = environment;
     }
 
     public async Task<JobRecord> SubmitAsync(

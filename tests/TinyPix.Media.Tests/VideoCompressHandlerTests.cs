@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using TinyPix.Media.Ffmpeg;
 using TinyPix.Media.Video;
 
@@ -20,11 +21,11 @@ public sealed class VideoCompressHandlerTests
         IReadOnlyList<string> args = handler.PreviewArguments(
             "clip.mp4", "/out", new Dictionary<string, string> { ["format"] = "mp4", ["sourceBitrateKbps"] = "10000" });
 
-        int bv = args.IndexOf("-b:v");
+        int bv = args.ToList().IndexOf("-b:v");
         Assert.Equal("6000k", args[bv + 1]);
-        int max = args.IndexOf("-maxrate");
+        int max = args.ToList().IndexOf("-maxrate");
         Assert.Equal("6000k", args[max + 1]);
-        int buf = args.IndexOf("-bufsize");
+        int buf = args.ToList().IndexOf("-bufsize");
         Assert.Equal("12000k", args[buf + 1]);
         Assert.Equal("/out/clip_压缩.mp4", args[^1]);
     }
@@ -36,7 +37,7 @@ public sealed class VideoCompressHandlerTests
         IReadOnlyList<string> args = handler.PreviewArguments(
             "clip.mp4", "/out", new Dictionary<string, string> { ["format"] = "mp4", ["quality"] = "60" });
 
-        int crf = args.IndexOf("-crf");
+        int crf = args.ToList().IndexOf("-crf");
         Assert.Equal("22", args[crf + 1]); // 28 - round(60 * 0.10) = 22
         Assert.Equal("/out/clip_压缩.mp4", args[^1]);
     }
