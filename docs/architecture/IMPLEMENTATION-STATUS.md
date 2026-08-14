@@ -1,6 +1,6 @@
 # TinyPix 4.0 implementation status
 
-Updated: 2026-07-31
+Updated: 2026-08-14
 
 ## Implemented and locally verified
 
@@ -58,6 +58,12 @@ Updated: 2026-07-31
   `PortableFfmpegEngineProvider` 装配、VideoOutputPage 接线；新增 C# 单测与
   `tests/test_v4_phase1_video_output.py` 结构契约（macOS pytest 全过）。dotnet
   编译与 Windows 11 运行门禁待补。
+- 2026-08-14 phase 2 GIF 制作业务页：Media `GifMakerHandler`（video.gif 两遍
+  palettegen→paletteuse，时长上限 30s 按 FEATURE-MATRIX 冻结口径）、`VideoOutputNaming`
+  扩展 gif 格式、`VideoOutputHandlerBase` 改为可子类化（virtual 方法 + protected Engine）；
+  App 注册 `GifMakerHandler`、MainWindow 顶部导航新增"GIF 制作"并切到 `GifMakerPage`；
+  新增 C# 单测与 `tests/test_v4_phase2_gif_maker.py` 结构契约（macOS pytest 全过）。
+  dotnet 编译与 Windows 11 运行门禁待补。
 
 ## Gated, not claimed complete
 
@@ -76,6 +82,11 @@ Updated: 2026-07-31
 - Phase 1 视频输出 Handler（video.convert / video.compress）已实现并 macOS 结构契约
   验证：dotnet 编译与 Windows 11 真实 FFmpeg 转码、UIA、取消/失败隔离等行为尚未在
   Windows 验证；当前为契约级实现，不得据此声称功能完成。
+- Phase 2 GIF 制作 Handler（video.gif）已实现并 macOS 结构契约验证：两遍
+  palettegen→paletteuse 管线、时长/格式校验与命名冲突仅在本机 pytest 结构契约与 C# 单测
+  （Windows 编译跑）覆盖；真实 FFmpeg 转码、调色板质量、UIA 与取消/失败隔离尚未在
+  Windows 11 验证；当前为契约级实现，不得据此声称功能完成。GIF 时长上限按 FEATURE-MATRIX
+  取 30s（与 MEDIA_CAPABILITIES 60s 文档冲突，已统一到冻结口径）。
 - App project restore/build and the disposable prototype build passed on the
   configured Windows 10 VM. The formal App, Portable ZIP, SBOM execution, and
   clean-machine runtime acceptance remain incomplete.

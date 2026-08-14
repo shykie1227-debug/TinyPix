@@ -6,6 +6,15 @@
 
 ## 变更记录
 
+### 2026-08-14 阶段2·GIF 制作业务页（video.gif）
+
+- 按分阶段开发推进第二个正式业务页：实现 GIF 制作 workbench 的 `video.gif` 两遍 FFmpeg Handler（palettegen → paletteuse），串联 Core 任务模型、Media 引擎执行与 App UI。
+- Media 新增 `GifMakerHandler : VideoOutputHandlerBase`：覆盖 `ValidateAsync`（格式必须为 gif、结束>开始、时长 0–30s，以 FEATURE-MATRIX 30s 冻结口径为准）、`ExecuteAsync`（两遍管线）与 `BuildArguments`（paletteuse 参数）；`VideoOutputNaming` 扩展 `gif` 格式，`{原名}_GIF.gif` 与 ` (n)` 冲突规则复用基类。
+- Core `VideoOutputHandlerBase` 增设 `protected Engine` 访问器并将 `ValidateAsync`/`ExecuteAsync` 改为 `virtual`、`Truncate` 改为 `protected`，以支持 GIF 子类化而不破坏既有 video.convert/compress。
+- App 装配新增 `GifMakerHandler` 注册；MainWindow 顶部导航新增"GIF 制作"（Tag `video.gif`），`OnCategorySelectionChanged` 据此切到 `GifMakerPage`；GifMakerPage 接入开始/结束时间、帧率、尺寸、循环次数、质量与"开始制作"提交（supportsBatch=false，逐文件独立入队）。
+- 新增 C# 单测 `tests/TinyPix.Media.Tests/GifMakerHandlerTests.cs`（调色板管线、命名冲突、时长/格式校验、引擎缺失异常）与 `tests/test_v4_phase2_gif_maker.py` 结构契约钉住阶段2接线。
+- 验证说明：本机 macOS 沙箱无 .NET SDK 与网络，无法编译 C#；阶段2以严格对照接口编写 + C# 单测（供 Windows `dotnet test` 跑）+ pytest 结构契约（本机全过）保障。dotnet 编译与 Windows 11 运行门禁留待 Windows 环境补验。GIF 时长上限采用 FEATURE-MATRIX（30s），与 MEDIA_CAPABILITIES（60s）存在文档冲突，已统一到冻结口径。
+
 ### 2026-08-14 阶段1·视频输出业务页（video.convert / video.compress）
 
 - 按 IMPLEMENTATION-STATUS 缺口启动首个正式业务页阶段：实现 视频输出 workbench 的 video.convert 与 video.compress 两个 FFmpeg Handler，串联 Core 任务模型、Media 引擎执行与 App UI。

@@ -58,7 +58,18 @@ public sealed partial class MainWindow : Window
 
         if (args.SelectedItem is NavigationViewItem item)
         {
-            _viewModel.SelectCategory(item.Tag as string);
+            string? tag = item.Tag as string;
+            if (string.Equals(tag, "video.gif", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!WorkbenchFrame.Navigate(typeof(GifMakerPage), _viewModel))
+                {
+                    System.Diagnostics.Debug.WriteLine("GIF workbench navigation failed.");
+                }
+
+                return;
+            }
+
+            _viewModel.SelectCategory(tag);
             if (!WorkbenchFrame.Navigate(typeof(VideoOutputPage), _viewModel))
             {
                 System.Diagnostics.Debug.WriteLine("Workbench navigation failed.");

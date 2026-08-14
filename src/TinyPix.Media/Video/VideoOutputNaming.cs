@@ -4,9 +4,9 @@ using System.IO;
 namespace TinyPix.Media.Video;
 
 /// <summary>
-/// Builds the default output path for a video-output job, matching the frozen
+/// Builds the default output path for a media-output job, matching the frozen
 /// FEATURE-MATRIX naming rules (e.g. <c>{原名}_转换.mp4</c>,
-/// <c>{原名}_压缩.mp4</c>) and the <c> (n)</c> collision rule.
+/// <c>{原名}_压缩.mp4</c>, <c>{原名}_GIF.gif</c>) and the <c> (n)</c> collision rule.
 /// </summary>
 public static class VideoOutputNaming
 {
@@ -22,6 +22,7 @@ public static class VideoOutputNaming
             ["wav"] = "wav",
             ["aac"] = "aac",
             ["flac"] = "flac",
+            ["gif"] = "gif",
         };
 
     public static bool IsSupportedFormat(string? format) =>
