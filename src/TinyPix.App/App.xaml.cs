@@ -7,6 +7,8 @@ using TinyPix.Core.Cache;
 using TinyPix.Core.History;
 using TinyPix.Core.Jobs;
 using TinyPix.Core.Settings;
+using TinyPix.Core.Tools;
+using TinyPix.Media.Video;
 using TinyPix.Infrastructure.History;
 using TinyPix.Infrastructure.Portable;
 using TinyPix.Infrastructure.Settings;
@@ -61,6 +63,20 @@ public partial class App : Application
         services.AddSingleton<ICacheService>(_ => new LocalFileCacheService(
             workspace.CacheDirectory));
 
-        return services.BuildServiceProvider();
+        services.AddSingleton<IFfmpegEngineProvider>(_ => new PortableFfmpegEngineProvider(workspace));
+        services.AddSingleton<ToolHandlerRegistry>();
+        services.AddSingleton<JobSubmissionService>();
+        services.AddSingleton<VideoConvertHandler>();
+        services.AddSingleton<VideoCompressHandler>();
+
+        IServiceProvider provider = services.BuildServiceProvider();
+
+        // Phase 1 (视频输出): register the media handlers implemented this pass so
+        // the job queue can resolve them by their frozen ToolCatalog ids.
+        var registry = provider.GetRequiredService<ToolHandlerRegistry>();
+        registry.Register(provider.GetRequiredService<VideoConvertHandler>());
+        registry.Register(provider.GetRequiredService<VideoCompressHandler>());
+
+        return provider;
     }
 }
