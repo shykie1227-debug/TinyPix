@@ -9,9 +9,9 @@
 
     <!--
       视频工具 > 视频输出 — the default landing page (design/UI-SPEC.md) built on
-      template 1 (conversion/compression workbench). Full parameter binding to a
-      video.convert handler lands with the media handlers gate; this page fixes
-      the workbench skeleton and its automation names.
+      template 1 (conversion/compression workbench). Phase 1 wires the workbench to
+      the video.convert handler through JobSubmissionService: add files, pick a
+      format and quality, then enqueue. GIF / trim land in later phases.
     -->
     <Grid Padding="16">
         <StackPanel Spacing="12">
@@ -29,6 +29,12 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center" />
             </Border>
+
+            <Button
+                x:Name="AddFilesButton"
+                Content="添加视频"
+                AutomationProperties.Name="添加视频"
+                Click="AddFilesButton_Click" />
 
             <ComboBox
                 x:Name="FormatBox"
@@ -57,7 +63,13 @@
                 x:Name="StartOutputButton"
                 Content="开始输出"
                 Style="{ThemeResource AccentButtonStyle}"
-                AutomationProperties.Name="开始输出" />
+                AutomationProperties.Name="开始输出"
+                Click="StartOutputButton_Click" />
+
+            <TextBlock
+                x:Name="StatusText"
+                AutomationProperties.Name="输出状态"
+                Foreground="{ThemeResource TinyPixMutedBrush}" />
         </StackPanel>
     </Grid>
 </Page>

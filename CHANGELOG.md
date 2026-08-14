@@ -6,6 +6,16 @@
 
 ## 变更记录
 
+### 2026-08-14 阶段1·视频输出业务页（video.convert / video.compress）
+
+- 按 IMPLEMENTATION-STATUS 缺口启动首个正式业务页阶段：实现 视频输出 workbench 的 video.convert 与 video.compress 两个 FFmpeg Handler，串联 Core 任务模型、Media 引擎执行与 App UI。
+- Core 新增 `ToolHandlerRegistry`：按冻结 ToolCatalog id 注册/解析 `IToolHandler`，使 JobQueueService 保持 handler 无关。
+- Media 新增 `IFfmpegEngineProvider` 接口、`VideoOutputHandlerBase`（共享 FFmpeg 参数构建、质量→CRF 映射、进度映射）与 `VideoConvertHandler`/`VideoCompressHandler`；输出命名遵循 FEATURE-MATRIX（`{原名}_转换.mp4` / `{原名}_压缩.mp4`，冲突追加 ` (n)`）。video.compress 在提供 `sourceBitrateKbps` 时按源码率 60%（1–20 Mbps）目标码率，否则回退 CRF。
+- Infrastructure `PortableWorkspace` 暴露只读 `EnginesDirectory`（`<root>/Engines`，不纳入可变目录探针）。
+- App 装配 `PortableFfmpegEngineProvider`、`ToolHandlerRegistry` 与两个 Handler，新增 `JobSubmissionService`（解析 handler → OutputPreflightService 预检 → JobQueueService 入队）；VideoOutputPage 接入文件选择、格式/质量与"开始输出"提交。
+- 新增 C# 单测（Core · Media）覆盖注册表、参数构建、命名冲突与校验分支；新增 `tests/test_v4_phase1_video_output.py` 结构契约钉住阶段1接线。
+- 验证说明：本机 macOS 沙箱无 .NET SDK 与网络，无法编译 C#；阶段1以严格对照接口编写 + C# 单测（供 Windows `dotnet test` 跑）+ pytest 结构契约（本机全过）保障。dotnet 编译与 Windows 11 运行门禁留待 Windows 环境补验。
+
 ### 2026-07-22 Windows 10 WinUI 可行性门禁收口
 
 - 在真实 Windows 10 22H2 x64 VM 完成可丢弃 WinUI 原型门禁：自包含启动、100/125/150% 显示缩放、200% 文本缩放、主题、设置弹窗、键盘焦点、Narrator、拖放、图片/视频预览、FFmpeg 缩略图回退、取消/异常退出、断网和只读目录场景均有报告与截图证据。

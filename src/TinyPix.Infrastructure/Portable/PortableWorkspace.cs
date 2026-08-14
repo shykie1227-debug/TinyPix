@@ -75,6 +75,13 @@ public sealed class PortableWorkspace
 
     public string DatabasePath { get; }
 
+    /// <summary>
+    /// Locally bundled, hash-pinned engines (FFmpeg/FFprobe, Magick.NET native
+    /// assets, models). Read-only at runtime; never created by the writable-dir
+    /// probe so the engine tree stays immutable under the portable root.
+    /// </summary>
+    public string EnginesDirectory => UnderRoot("Engines");
+
     public IReadOnlyList<string> MutableDirectories { get; }
 
     public static PortableWorkspace Open(

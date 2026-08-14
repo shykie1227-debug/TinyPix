@@ -52,6 +52,12 @@ Updated: 2026-07-31
   pin the shell structure and keyboard/offline boundaries; full pytest 48/48
   and `git diff --check` green on macOS. Contract-level only: no Windows
   runtime window/UIA evidence yet.
+- 2026-08-14 phase 1 视频输出业务页：Core `ToolHandlerRegistry`、Media
+  `VideoConvertHandler`/`VideoCompressHandler`（FFmpeg 参数构建、质量→CRF、命名
+  ` (n)` 冲突）、`IFfmpegEngineProvider` 与 App `JobSubmissionService` +
+  `PortableFfmpegEngineProvider` 装配、VideoOutputPage 接线；新增 C# 单测与
+  `tests/test_v4_phase1_video_output.py` 结构契约（macOS pytest 全过）。dotnet
+  编译与 Windows 11 运行门禁待补。
 
 ## Gated, not claimed complete
 
@@ -67,6 +73,9 @@ Updated: 2026-07-31
   a clean Windows 11 x64 run exists. Per explicit user direction on 2026-07-31
   the shell phase proceeded without that VM gate, so Windows runtime
   window/UIA verification is still owed before any completion claim.
+- Phase 1 视频输出 Handler（video.convert / video.compress）已实现并 macOS 结构契约
+  验证：dotnet 编译与 Windows 11 真实 FFmpeg 转码、UIA、取消/失败隔离等行为尚未在
+  Windows 验证；当前为契约级实现，不得据此声称功能完成。
 - App project restore/build and the disposable prototype build passed on the
   configured Windows 10 VM. The formal App, Portable ZIP, SBOM execution, and
   clean-machine runtime acceptance remain incomplete.
