@@ -55,9 +55,9 @@ public sealed partial class GifMakerPage : Page
         picker.FileTypeFilter.Add(".m4v");
         picker.FileTypeFilter.Add(".ts");
 
-        if (MainWindow is not null)
+        if (MainWindow.Current is not null)
         {
-            InitializeWithWindow.Initialize(picker, WindowNative.GetWindowHandle(MainWindow));
+            InitializeWithWindow.Initialize(picker, WindowNative.GetWindowHandle(MainWindow.Current));
         }
 
         IReadOnlyList<Windows.Storage.StorageFile> files = await picker.PickMultipleFilesAsync();

@@ -7,11 +7,13 @@ using TinyPix.Core.Cache;
 using TinyPix.Core.History;
 using TinyPix.Core.Jobs;
 using TinyPix.Core.Settings;
+using TinyPix.Core.Storage;
 using TinyPix.Core.Tools;
 using TinyPix.Media.Video;
 using TinyPix.Infrastructure.History;
 using TinyPix.Infrastructure.Portable;
 using TinyPix.Infrastructure.Settings;
+using TinyPix.Infrastructure.Storage;
 
 namespace TinyPix.App;
 
@@ -69,6 +71,12 @@ public partial class App : Application
         services.AddSingleton<VideoConvertHandler>();
         services.AddSingleton<VideoCompressHandler>();
         services.AddSingleton<GifMakerHandler>();
+
+        // Output preflight (writability / disk space / source-overwrite) consumed by
+        // JobSubmissionService. LocalOutputEnvironment has an optional probe, so it
+        // can be constructed directly.
+        services.AddSingleton<IOutputEnvironment>(_ => new LocalOutputEnvironment());
+        services.AddSingleton<OutputPreflightService>();
 
         IServiceProvider provider = services.BuildServiceProvider();
 

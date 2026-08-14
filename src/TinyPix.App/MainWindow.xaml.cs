@@ -23,7 +23,7 @@ namespace TinyPix.App;
 /// </summary>
 public sealed partial class MainWindow : Window
 {
-    internal static MainWindow? MainWindow { get; private set; }
+    internal static MainWindow? Current { get; private set; }
 
     private readonly MainWindowViewModel _viewModel;
     private readonly JobQueueService _jobQueue;
@@ -41,7 +41,7 @@ public sealed partial class MainWindow : Window
         // First launch lands on 视频工具 > 视频输出 (design/UI-SPEC.md).
         CategoryNav.SelectedItem = VideoCategoryItem;
         WorkbenchFrame.Navigate(typeof(VideoOutputPage), _viewModel);
-        MainWindow = this;
+        Current = this;
     }
 
     private void OnCategorySelectionChanged(

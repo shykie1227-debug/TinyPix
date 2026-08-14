@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
 using TinyPix.Core.Jobs;
 using TinyPix.Media.Ffmpeg;
 using TinyPix.Media.Video;
@@ -26,11 +27,11 @@ public sealed class VideoConvertHandlerTests
         IReadOnlyList<string> args = Handler().PreviewArguments(
             "clip.mp4", "/out", new Dictionary<string, string> { ["format"] = "mp4", ["quality"] = "80" });
 
-        int codec = args.IndexOf("-c:v");
+        int codec = args.ToList().IndexOf("-c:v");
         Assert.Equal("libx264", args[codec + 1]);
-        int crf = args.IndexOf("-crf");
+        int crf = args.ToList().IndexOf("-crf");
         Assert.Equal("20", args[crf + 1]);
-        int audio = args.IndexOf("-c:a");
+        int audio = args.ToList().IndexOf("-c:a");
         Assert.Equal("aac", args[audio + 1]);
         Assert.Equal("/out/clip_转换.mp4", args[^1]);
     }
@@ -44,7 +45,7 @@ public sealed class VideoConvertHandlerTests
         IReadOnlyList<string> args = Handler().PreviewArguments(
             "clip.mp4", "/out", new Dictionary<string, string> { ["format"] = "mp4", ["quality"] = quality.ToString() });
 
-        int index = args.IndexOf("-crf");
+        int index = args.ToList().IndexOf("-crf");
         Assert.Equal(crf.ToString(), args[index + 1]);
     }
 
@@ -55,7 +56,7 @@ public sealed class VideoConvertHandlerTests
             "clip.mp4", "/out", new Dictionary<string, string> { ["format"] = "mp3" });
 
         Assert.Contains("-vn", args);
-        int audio = args.IndexOf("-c:a");
+        int audio = args.ToList().IndexOf("-c:a");
         Assert.Equal("libmp3lame", args[audio + 1]);
         Assert.Equal("/out/clip_转换.mp3", args[^1]);
     }
@@ -66,11 +67,11 @@ public sealed class VideoConvertHandlerTests
         IReadOnlyList<string> args = Handler().PreviewArguments(
             "clip.mp4", "/out", new Dictionary<string, string> { ["format"] = "webm" });
 
-        int codec = args.IndexOf("-c:v");
+        int codec = args.ToList().IndexOf("-c:v");
         Assert.Equal("libvpx", args[codec + 1]);
-        int bv = args.IndexOf("-b:v");
+        int bv = args.ToList().IndexOf("-b:v");
         Assert.Equal("0", args[bv + 1]);
-        int audio = args.IndexOf("-c:a");
+        int audio = args.ToList().IndexOf("-c:a");
         Assert.Equal("libvorbis", args[audio + 1]);
     }
 
