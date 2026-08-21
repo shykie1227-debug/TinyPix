@@ -41,6 +41,11 @@
                     AutomationProperties.Name="GIF 制作"
                     Tag="video.gif" />
                 <NavigationViewItem
+                    x:Name="VideoEditCategoryItem"
+                    Content="视频编辑"
+                    AutomationProperties.Name="视频编辑"
+                    Tag="video-edit" />
+                <NavigationViewItem
                     x:Name="ToolboxCategoryItem"
                     Content="工具箱"
                     AutomationProperties.Name="工具箱"

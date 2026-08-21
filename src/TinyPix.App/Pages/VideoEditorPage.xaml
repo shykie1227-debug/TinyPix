@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="TinyPix.App.Pages.VideoEditorPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <!--
+      视频编辑 — Phase 3 合并入口页，覆盖 video.trim / split / merge / geometry /
+      speed-volume / audio / overlay / frames / metadata 九个工具。页面通过
+      JobSubmissionService 把所选工具路由到对应 handler；参数采用各工具的保守默认值，
+      便于在 exe 电脑上先验证管线，后续再细化可视化参数面板。
+    -->
+    <Grid Padding="16">
+        <StackPanel Spacing="12">
+            <TextBlock
+                Text="视频编辑"
+                Style="{ThemeResource TitleTextBlockStyle}"
+                AutomationProperties.Name="视频编辑" />
+
+            <Border
+                x:Name="PreviewStage"
+                MinHeight="200"
+                AutomationProperties.Name="中央预览区域">
+                <TextBlock
+                    Text="添加视频后在此预览"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center" />
+            </Border>
+
+            <ComboBox
+                x:Name="ToolBox"
+                Header="工具"
+                AutomationProperties.Name="工具选择"
+                SelectedIndex="0">
+                <ComboBoxItem Tag="video.trim" Content="视频时间剪辑" />
+                <ComboBoxItem Tag="video.split" Content="视频分段" />
+                <ComboBoxItem Tag="video.merge" Content="视频合并" />
+                <ComboBoxItem Tag="video.geometry" Content="裁切、缩放与旋转" />
+                <ComboBoxItem Tag="video.speed-volume" Content="速度与音量" />
+                <ComboBoxItem Tag="video.audio" Content="音频处理" />
+                <ComboBoxItem Tag="video.overlay" Content="水印与字幕" />
+                <ComboBoxItem Tag="video.frames" Content="截图与帧提取" />
+                <ComboBoxItem Tag="video.metadata" Content="媒体信息与元数据清理" />
+            </ComboBox>
+
+            <Button
+                x:Name="AddFilesButton"
+                Content="添加视频"
+                AutomationProperties.Name="添加视频"
+                Click="AddFilesButton_Click" />
+
+            <Button
+                x:Name="StartEditButton"
+                Content="开始处理"
+                Style="{ThemeResource AccentButtonStyle}"
+                AutomationProperties.Name="开始处理"
+                Click="StartEditButton_Click" />
+
+            <TextBlock
+                x:Name="StatusText"
+                AutomationProperties.Name="输出状态"
+                Foreground="{ThemeResource TinyPixMutedBrush}" />
+        </StackPanel>
+    </Grid>
+</Page>

@@ -6,6 +6,14 @@
 
 ## 变更记录
 
+### 2026-08-14 阶段3·视频编辑业务页（trim/split/merge/geometry/speed-volume/audio/overlay/frames/metadata）
+
+- 按分阶段开发推进第三个正式业务页：以单个合并入口页 `VideoEditorPage` 覆盖剩余 9 个视频工具，全部 FFmpeg 基础、复用既有引擎基础设施，不新建引擎。
+- Media 新增 `VideoEditHandlerBase : IToolHandler`：持有 `IFfmpegEngineProvider`，以 `BuildJobs` 抽象出 `(输出路径, FFmpeg 参数)` 列表；`ExecuteAsync` 循环执行、`PreviewOutputPaths`/`PreviewArguments` 供 UI 与测试、`AtempoChain` 支持 0.25–4.0 倍速、`ResolveOutput` 复用 `VideoOutputNaming.BuildOutputPathByExtension`（任意扩展名 + ` (n)` 冲突）。
+- 9 个 handler：`VideoTrimHandler`(关键帧 stream copy / 精确重编码)、`VideoSplitHandler`(分割点分段)、`VideoMergeHandler`(concat 滤镜合并)、`VideoGeometryHandler`(crop/scale/transpose/flip)、`VideoSpeedVolumeHandler`(setpts+atempo+volume)、`VideoAudioHandler`(提取/静音/替换)、`VideoOverlayHandler`(图片水印/字幕烧录)、`VideoFramesHandler`(单帧/序列)、`VideoMetadataHandler`(查看/清理元数据)。命名与参数严格对齐 FEATURE-MATRIX。
+- `VideoOutputNaming` 新增 `BuildOutputPathByExtension`；`JobSubmissionService` 扩展 `VideoEditHandlerBase` 预览输出；`App.xaml.cs` 注册全部 9 个 handler；`MainWindow` 顶部导航新增"视频编辑"(Tag `video-edit`) 切到 `VideoEditorPage`。
+- 新增 C# 单测 `tests/TinyPix.Media.Tests/VideoEditHandlersTests.cs` 与 `tests/test_v4_phase3_video_edit.py` 结构契约。验证说明同前：本机仅能跑 pytest（18 passed 含阶段1/2），C# 编译与 Windows 运行门禁留待 exe 电脑补验。
+
 ### 2026-08-14 阶段2·GIF 制作业务页（video.gif）
 
 - 按分阶段开发推进第二个正式业务页：实现 GIF 制作 workbench 的 `video.gif` 两遍 FFmpeg Handler（palettegen → paletteuse），串联 Core 任务模型、Media 引擎执行与 App UI。

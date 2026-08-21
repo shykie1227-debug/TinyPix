@@ -64,6 +64,14 @@ Updated: 2026-08-14
   App 注册 `GifMakerHandler`、MainWindow 顶部导航新增"GIF 制作"并切到 `GifMakerPage`；
   新增 C# 单测与 `tests/test_v4_phase2_gif_maker.py` 结构契约（macOS pytest 全过）。
   dotnet 编译与 Windows 11 运行门禁待补。
+- 2026-08-14 phase 3 视频编辑业务页：Media 新增 `VideoEditHandlerBase`（BuildJobs
+  抽象 + ExecuteAsync 循环 + PreviewOutputPaths/PreviewArguments + AtempoChain）与
+  9 个 handler（trim/split/merge/geometry/speed-volume/audio/overlay/frames/metadata，
+  全部 FFmpeg 基础、命名与 FEATURE-MATRIX 对齐）；`VideoOutputNaming.BuildOutputPathByExtension`
+  支持任意扩展名；`JobSubmissionService` 扩展 `VideoEditHandlerBase` 预览；App 注册 9 handler；
+  MainWindow 顶部导航新增"视频编辑"并切到 `VideoEditorPage`；新增 C# 单测与
+  `tests/test_v4_phase3_video_edit.py`（macOS pytest 18 passed 含阶段1/2）。dotnet 编译与
+  Windows 11 运行门禁待补。
 
 ## Gated, not claimed complete
 
@@ -87,6 +95,11 @@ Updated: 2026-08-14
   （Windows 编译跑）覆盖；真实 FFmpeg 转码、调色板质量、UIA 与取消/失败隔离尚未在
   Windows 11 验证；当前为契约级实现，不得据此声称功能完成。GIF 时长上限按 FEATURE-MATRIX
   取 30s（与 MEDIA_CAPABILITIES 60s 文档冲突，已统一到冻结口径）。
+- Phase 3 视频编辑 9 个 Handler（trim/split/merge/geometry/speed-volume/audio/overlay/
+  frames/metadata）已实现并 macOS 结构契约验证：参数构造、命名冲突与校验仅在本机 pytest
+  结构契约与 C# 单测（Windows 编译跑）覆盖；真实 FFmpeg 转码、合并/水印/字幕烧录等行为、
+  UIA 与取消/失败隔离尚未在 Windows 11 验证；当前为契约级实现，不得据此声称功能完成。
+  图片工具（11 个）未实现：Media 层当前仅 FFmpeg 引擎，缺图像引擎抽象，留作 phase 4。
 - App project restore/build and the disposable prototype build passed on the
   configured Windows 10 VM. The formal App, Portable ZIP, SBOM execution, and
   clean-machine runtime acceptance remain incomplete.

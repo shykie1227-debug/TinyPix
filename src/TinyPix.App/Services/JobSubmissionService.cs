@@ -65,6 +65,11 @@ public sealed class JobSubmissionService
                 .ToList();
         }
 
+        if (handler is VideoEditHandlerBase editHandler)
+        {
+            return editHandler.PreviewOutputPaths(request);
+        }
+
         return request.InputPaths
             .Select(input => Path.Combine(
                 request.OutputDirectory,

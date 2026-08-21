@@ -30,6 +30,36 @@ public static class VideoOutputNaming
 
     public static string ContainerExtension(string format) => FormatExtension[format];
 
+    /// <summary>
+    /// Build an output path using an explicit extension (e.g. <c>m4v</c>, <c>ts</c>,
+    /// <c>png</c>) that need not be in the supported-format map. Used by the video
+    /// edit handlers whose outputs keep the source container or become images.
+    /// </summary>
+    public static string BuildOutputPathByExtension(
+        string inputPath,
+        string suffix,
+        string extension,
+        string outputDirectory)
+    {
+        string stem = Path.GetFileNameWithoutExtension(inputPath);
+        string candidate = Path.Combine(outputDirectory, $"{stem}{suffix}.{extension}");
+        if (!File.Exists(candidate))
+        {
+            return candidate;
+        }
+
+        int index = 1;
+        string conflict;
+        do
+        {
+            conflict = Path.Combine(outputDirectory, $"{stem}{suffix} ({index}).{extension}");
+            index++;
+        }
+        while (File.Exists(conflict));
+
+        return conflict;
+    }
+
     public static string BuildOutputPath(
         string inputPath,
         string suffix,
