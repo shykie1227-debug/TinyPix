@@ -69,6 +69,16 @@ public sealed partial class MainWindow : Window
                 return;
             }
 
+            if (string.Equals(tag, "video-edit", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!WorkbenchFrame.Navigate(typeof(VideoEditorPage), _viewModel))
+                {
+                    System.Diagnostics.Debug.WriteLine("视频编辑 workbench navigation failed.");
+                }
+
+                return;
+            }
+
             _viewModel.SelectCategory(tag);
             if (!WorkbenchFrame.Navigate(typeof(VideoOutputPage), _viewModel))
             {

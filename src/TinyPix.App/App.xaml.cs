@@ -71,6 +71,15 @@ public partial class App : Application
         services.AddSingleton<VideoConvertHandler>();
         services.AddSingleton<VideoCompressHandler>();
         services.AddSingleton<GifMakerHandler>();
+        services.AddSingleton<VideoTrimHandler>();
+        services.AddSingleton<VideoSplitHandler>();
+        services.AddSingleton<VideoMergeHandler>();
+        services.AddSingleton<VideoGeometryHandler>();
+        services.AddSingleton<VideoSpeedVolumeHandler>();
+        services.AddSingleton<VideoAudioHandler>();
+        services.AddSingleton<VideoOverlayHandler>();
+        services.AddSingleton<VideoFramesHandler>();
+        services.AddSingleton<VideoMetadataHandler>();
 
         // Output preflight (writability / disk space / source-overwrite) consumed by
         // JobSubmissionService. LocalOutputEnvironment has an optional probe, so it
@@ -80,13 +89,22 @@ public partial class App : Application
 
         IServiceProvider provider = services.BuildServiceProvider();
 
-        // Phase 1 (视频输出) + Phase 2 (GIF 制作): register the media handlers
-        // implemented so far so the job queue can resolve them by their frozen
-        // ToolCatalog ids.
+        // Phase 1 (视频输出) + Phase 2 (GIF 制作) + Phase 3 (视频编辑): register the
+        // media handlers implemented so far so the job queue can resolve them by
+        // their frozen ToolCatalog ids.
         var registry = provider.GetRequiredService<ToolHandlerRegistry>();
         registry.Register(provider.GetRequiredService<VideoConvertHandler>());
         registry.Register(provider.GetRequiredService<VideoCompressHandler>());
         registry.Register(provider.GetRequiredService<GifMakerHandler>());
+        registry.Register(provider.GetRequiredService<VideoTrimHandler>());
+        registry.Register(provider.GetRequiredService<VideoSplitHandler>());
+        registry.Register(provider.GetRequiredService<VideoMergeHandler>());
+        registry.Register(provider.GetRequiredService<VideoGeometryHandler>());
+        registry.Register(provider.GetRequiredService<VideoSpeedVolumeHandler>());
+        registry.Register(provider.GetRequiredService<VideoAudioHandler>());
+        registry.Register(provider.GetRequiredService<VideoOverlayHandler>());
+        registry.Register(provider.GetRequiredService<VideoFramesHandler>());
+        registry.Register(provider.GetRequiredService<VideoMetadataHandler>());
 
         return provider;
     }
