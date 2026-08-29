@@ -6,6 +6,14 @@
 
 ## 变更记录
 
+### 2026-08-29 阶段性收尾与版本管理
+
+- 新增 `docs/PHASE-CLOSEOUT-2026-08-29.md`，按进展记录、下一步计划和实施指导梳理当前 TinyPix 4.0 状态。
+- 确认当前主干已包含 WinUI Shell 骨架、视频输出、GIF 制作、统一视频编辑页、Windows 发布脚本和首次编译阻断修复等阶段提交；本地主干相对 `origin/main` 领先 10 个提交，远端无新增冲突提交。
+- 清理已忽略的 `.DS_Store` 临时文件；保留被 `.gitignore` 排除的 Windows 门禁原始 PML/CSV 证据和本地构建缓存，不把诊断证据误删。
+- 重新验证 TinyPix 4 设计/架构合同：34 项 pytest 通过，`git diff --check` 通过。
+- 明确 Windows 11 干净 VM、正式 Portable ZIP、最终可运行 TinyPix 4.0 EXE 仍未完成，不在本阶段声明最终发布完成。
+
 ### 2026-08-14 阶段3·视频编辑业务页（trim/split/merge/geometry/speed-volume/audio/overlay/frames/metadata）
 
 - 按分阶段开发推进第三个正式业务页：以单个合并入口页 `VideoEditorPage` 覆盖剩余 9 个视频工具，全部 FFmpeg 基础、复用既有引擎基础设施，不新建引擎。
