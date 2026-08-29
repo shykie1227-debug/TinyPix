@@ -12,7 +12,7 @@
 
 - Final packaged exe must not network, upload, telemetry, CDN, remote fonts, cloud API, or auto-update checks.
 - Development, build, and local testing may use network.
-- Use local design references from `/Users/huashu/TinyPix/v3.0 pro/UI设计`.
+- Use local design references from `/Users/<user>/TinyPix/v3.0 pro/UI设计`.
 - Settings button primarily configures the output path.
 - Record changes and implementation lessons in `CHANGELOG.md`.
 - This workspace is currently not a Git repository; do not claim commits were made.
@@ -22,10 +22,10 @@
 ### Task 1: Workbench Shell And Navigation
 
 **Files:**
-- Modify: `/Users/huashu/Desktop/v3.0 pro/src/App.tsx`
-- Modify: `/Users/huashu/Desktop/v3.0 pro/src/components/Sidebar.tsx`
-- Create: `/Users/huashu/Desktop/v3.0 pro/src/components/OutputSettingsPanel.tsx`
-- Test: `/Users/huashu/Desktop/v3.0 pro/tests/components/AppWorkbench.test.tsx`
+- Modify: `/Users/<user>/Desktop/v3.0 pro/src/App.tsx`
+- Modify: `/Users/<user>/Desktop/v3.0 pro/src/components/Sidebar.tsx`
+- Create: `/Users/<user>/Desktop/v3.0 pro/src/components/OutputSettingsPanel.tsx`
+- Test: `/Users/<user>/Desktop/v3.0 pro/tests/components/AppWorkbench.test.tsx`
 
 **Interfaces:**
 - Produces: `OutputSettingsPanel({ onClose }: { onClose: () => void })`.
@@ -81,11 +81,11 @@ Run the focused test, then `node node_modules/typescript/bin/tsc --noEmit`.
 ### Task 2: Shared Demo UI Primitives
 
 **Files:**
-- Create: `/Users/huashu/Desktop/v3.0 pro/src/components/MediaPreviewStage.tsx`
-- Create: `/Users/huashu/Desktop/v3.0 pro/src/components/ToolOptionCard.tsx`
-- Create: `/Users/huashu/Desktop/v3.0 pro/src/components/MediaQueue.tsx`
-- Modify: `/Users/huashu/Desktop/v3.0 pro/src/components/DropZone.tsx`
-- Test: `/Users/huashu/Desktop/v3.0 pro/tests/components/DropZone.test.tsx`
+- Create: `/Users/<user>/Desktop/v3.0 pro/src/components/MediaPreviewStage.tsx`
+- Create: `/Users/<user>/Desktop/v3.0 pro/src/components/ToolOptionCard.tsx`
+- Create: `/Users/<user>/Desktop/v3.0 pro/src/components/MediaQueue.tsx`
+- Modify: `/Users/<user>/Desktop/v3.0 pro/src/components/DropZone.tsx`
+- Test: `/Users/<user>/Desktop/v3.0 pro/tests/components/DropZone.test.tsx`
 
 **Interfaces:**
 - Produces: `MediaPreviewStage` for video preview, placeholder upload stage, thumbnails, trim lanes, and waveform mock sections.
@@ -137,13 +137,13 @@ Run DropZone tests and `tsc --noEmit`.
 ### Task 3: Video Tools High-Fidelity Implementation
 
 **Files:**
-- Modify: `/Users/huashu/Desktop/v3.0 pro/src/components/Compressor.tsx`
-- Modify: `/Users/huashu/Desktop/v3.0 pro/src/components/GifMaker.tsx`
-- Modify: `/Users/huashu/Desktop/v3.0 pro/src/components/VideoScreenshot.tsx`
-- Modify: `/Users/huashu/Desktop/v3.0 pro/src/components/VideoConverter.tsx`
-- Modify: `/Users/huashu/Desktop/v3.0 pro/src/components/VideoTrimmer.tsx`
-- Modify: `/Users/huashu/Desktop/v3.0 pro/src/components/VideoEditor.tsx`
-- Test: `/Users/huashu/Desktop/v3.0 pro/tests/components/VideoWorkbench.test.tsx`
+- Modify: `/Users/<user>/Desktop/v3.0 pro/src/components/Compressor.tsx`
+- Modify: `/Users/<user>/Desktop/v3.0 pro/src/components/GifMaker.tsx`
+- Modify: `/Users/<user>/Desktop/v3.0 pro/src/components/VideoScreenshot.tsx`
+- Modify: `/Users/<user>/Desktop/v3.0 pro/src/components/VideoConverter.tsx`
+- Modify: `/Users/<user>/Desktop/v3.0 pro/src/components/VideoTrimmer.tsx`
+- Modify: `/Users/<user>/Desktop/v3.0 pro/src/components/VideoEditor.tsx`
+- Test: `/Users/<user>/Desktop/v3.0 pro/tests/components/VideoWorkbench.test.tsx`
 
 **Interfaces:**
 - Consumes: `MediaPreviewStage`, `ToolOptionCard`, `MediaQueue`.
@@ -207,11 +207,11 @@ Run focused video tests, `tsc --noEmit`, and visually check the Vite screen.
 ### Task 4: Image Tools Layout And Product Completion
 
 **Files:**
-- Modify: `/Users/huashu/Desktop/v3.0 pro/src/components/ControlPanel.tsx`
-- Modify: `/Users/huashu/Desktop/v3.0 pro/src/components/ImageRotator.tsx`
-- Modify: `/Users/huashu/Desktop/v3.0 pro/src/components/Cropper.tsx`
-- Modify: `/Users/huashu/Desktop/v3.0 pro/src/App.tsx`
-- Test: `/Users/huashu/Desktop/v3.0 pro/tests/components/ImageWorkbench.test.tsx`
+- Modify: `/Users/<user>/Desktop/v3.0 pro/src/components/ControlPanel.tsx`
+- Modify: `/Users/<user>/Desktop/v3.0 pro/src/components/ImageRotator.tsx`
+- Modify: `/Users/<user>/Desktop/v3.0 pro/src/components/Cropper.tsx`
+- Modify: `/Users/<user>/Desktop/v3.0 pro/src/App.tsx`
+- Test: `/Users/<user>/Desktop/v3.0 pro/tests/components/ImageWorkbench.test.tsx`
 
 **Interfaces:**
 - Consumes: `ToolOptionCard`, `MediaQueue`, `useImageProcessor()`.
@@ -257,8 +257,8 @@ Run image tests and `tsc --noEmit`.
 ### Task 5: Validation, Runtime Safety, And Changelog
 
 **Files:**
-- Modify: `/Users/huashu/Desktop/v3.0 pro/CHANGELOG.md`
-- Optional modify: `/Users/huashu/Desktop/v3.0 pro/README.md`
+- Modify: `/Users/<user>/Desktop/v3.0 pro/CHANGELOG.md`
+- Optional modify: `/Users/<user>/Desktop/v3.0 pro/README.md`
 
 **Interfaces:**
 - Produces: audit record for UI changes, testing, and remaining known limitations.

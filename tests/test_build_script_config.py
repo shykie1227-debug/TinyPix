@@ -24,7 +24,7 @@ def test_fix_tauri_config_keeps_frontend_dist_relative(tmp_path):
         json.dumps(
             {
                 "build": {
-                    "frontendDist": "C:/Users/huashu/AppData/Local/TinyPixBuild/dist",
+                    "frontendDist": "C:/Users/test/AppData/Local/TinyPixBuild/dist",
                     "beforeBuildCommand": "",
                 }
             }
@@ -123,7 +123,7 @@ def test_msvc_environment_is_loaded_from_vcvars(monkeypatch, tmp_path):
 
 def test_local_windows_source_builds_in_place(monkeypatch):
     build = load_build_module()
-    build.SOURCE = Path(r"C:\Users\huashu\Desktop\test\3.5pro")
+    build.SOURCE = Path(r"C:\Users\test\Desktop\test\3.5pro")
     monkeypatch.delenv("TINYPIX_FORCE_STAGE", raising=False)
     monkeypatch.delenv("TINYPIX_BUILD_IN_PLACE", raising=False)
 

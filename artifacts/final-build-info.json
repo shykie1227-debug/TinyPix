@@ -2,7 +2,7 @@
   "project": "TinyPix Pro",
   "version": "3.5.0",
   "platform": "Windows 10 x64 (10.0.19045)",
-  "artifact": "/Users/huashu/Desktop/tiny/TinyPix-Pro-3.5.0-Windows-x64-Portable.exe",
+  "artifact": "<user-desktop>/tiny/TinyPix-Pro-3.5.0-Windows-x64-Portable.exe",
   "bytes": 223005696,
   "sizeMiB": 212.67,
   "sha256": "c999007cd3b01752238cd29bb936b704b352462f0f7470b6ceec3a434e9a9759",

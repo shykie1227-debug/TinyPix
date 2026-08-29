@@ -2,10 +2,10 @@
 
 ## 交付产物
 
-- 文件：`/Users/huashu/Desktop/tiny/TinyPix-Pro-3.5.0-Windows-x64-Portable.exe`
+- 文件：`<user-desktop>/tiny/TinyPix-Pro-3.5.0-Windows-x64-Portable.exe`
 - 大小：223,005,696 bytes（212.67 MiB）
 - SHA-256：`c999007cd3b01752238cd29bb936b704b352462f0f7470b6ceec3a434e9a9759`
-- Windows：Windows 10 x64 19045，普通用户 `F1B7\huashu`
+- Windows：Windows 10 x64 19045，普通用户环境
 - 媒体引擎：FFmpeg/FFprobe 8.1.2 essentials，内置于单 EXE
 
 ## 自动化验证

@@ -5,7 +5,7 @@
 
 ## 0｜60 秒开始
 
-1. 确认仓库：`git rev-parse --show-toplevel` 应返回 `/Users/huashu/TinyPix/3.5pro`（Windows 使用实际克隆路径）。
+1. 确认仓库：`git rev-parse --show-toplevel` 应返回当前项目根目录（Windows 使用实际克隆路径）。
 2. 确认状态：`git status --short --branch`，不得覆盖其他分支或工作区的未提交改动。
 3. 先读硬约束：[LOCAL_RULES.md](LOCAL_RULES.md)。
 4. 按任务查下方“任务到文件路由”，只加载相关文件。

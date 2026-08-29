@@ -2,7 +2,7 @@
 
 ## Quick Start
 
-1. Use `/Users/huashu/TinyPix/3.5pro` as the canonical checkout.
+1. Use the repository root as the canonical checkout.
 2. Read `PROJECT-INDEX.md` for fast task routing, source ownership, tests, and Git workflow.
 3. Read `LOCAL_RULES.md` before changing runtime, storage, networking, packaging, or source-file behavior.
 4. Treat TinyPix 4.0 WinUI as the active target. 旧 Tauri/React/Rust implementation is a protected behavior baseline, not the target architecture.

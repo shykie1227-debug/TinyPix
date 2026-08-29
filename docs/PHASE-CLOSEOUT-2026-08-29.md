@@ -1,7 +1,7 @@
 # TinyPix 4.0 phase closeout report
 
 Date: 2026-08-29
-Branch at audit time: `codex/phase-closeout-version-management`
+Branch at audit time: `codex/phase-closeout-cleanup`
 
 ## 1. Progress record
 
@@ -34,7 +34,7 @@ Branch at audit time: `codex/phase-closeout-version-management`
   - Result: passed.
 - Git remote check:
   - `origin/main` has no new commits beyond the local base.
-  - Local `main` is ahead of `origin/main` by 10 commits before this closeout commit.
+- `main` and `origin/main` are synchronized at the start of this cleanup pass.
 
 ### Gated, not complete
 

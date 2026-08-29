@@ -45,7 +45,7 @@ describe('DropZone', () => {
     render(<DropZone mediaType="video" onFilesAdded={onFilesAdded} />);
     const oversized = new File(['demo'], 'too-large.mp4', { type: 'video/mp4' });
     Object.defineProperty(oversized, 'size', { value: 4 * 1024 * 1024 * 1024 + 1 });
-    Object.defineProperty(oversized, 'path', { value: '/Users/huashu/Movies/too-large.mp4' });
+    Object.defineProperty(oversized, 'path', { value: '/Users/test/Movies/too-large.mp4' });
 
     fireEvent.drop(screen.getByText('拖拽视频文件到这里').closest('div')!, {
       dataTransfer: { files: [oversized] },

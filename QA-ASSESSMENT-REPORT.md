@@ -233,9 +233,9 @@ connect-src 'self' ipc: http://localhost:*
 
 | ID | 问题 | 文件 | 严重程度 | 建议修复 |
 |----|------|------|----------|----------|
-| UI-001 | HomePage 统计卡片使用 rounded-3xl | [HomePage.tsx](file:///Users/huashu/TinyPix/3.5pro/src/components/HomePage.tsx) | 低 | 改为 rounded-[18px] |
-| UI-002 | HomePage 添加文件按钮使用 rounded-3xl | [HomePage.tsx](file:///Users/huashu/TinyPix/3.5pro/src/components/HomePage.tsx) | 低 | 改为 rounded-full |
-| UI-003 | HomePage 清空列表按钮使用 rounded-3xl | [HomePage.tsx](file:///Users/huashu/TinyPix/3.5pro/src/components/HomePage.tsx) | 低 | 改为 rounded-[18px] |
+| UI-001 | HomePage 统计卡片使用 rounded-3xl | [HomePage.tsx](src/components/HomePage.tsx) | 低 | 改为 rounded-[18px] |
+| UI-002 | HomePage 添加文件按钮使用 rounded-3xl | [HomePage.tsx](src/components/HomePage.tsx) | 低 | 改为 rounded-full |
+| UI-003 | HomePage 清空列表按钮使用 rounded-3xl | [HomePage.tsx](src/components/HomePage.tsx) | 低 | 改为 rounded-[18px] |
 
 ### 4.2 测试改进建议
 

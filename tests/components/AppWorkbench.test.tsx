@@ -55,7 +55,7 @@ vi.mock('@tauri-apps/api/core', async () => ({
 const createDroppedFile = (name: string, type: string, size = 1024) => {
   const file = new File(['demo'], name, { type });
   Object.defineProperty(file, 'size', { value: size });
-  Object.defineProperty(file, 'path', { value: `/Users/huashu/Movies/${name}` });
+  Object.defineProperty(file, 'path', { value: `/Users/test/Movies/${name}` });
   return file;
 };
 
@@ -171,7 +171,7 @@ describe('App workbench shell', () => {
     expect(screen.getByTestId('video-preview-player')).toBeInTheDocument();
     expect(screen.getAllByText('demo.mp4').length).toBeGreaterThan(0);
     expect(invoke).toHaveBeenCalledWith('prepare_media_preview', {
-      inputPath: '/Users/huashu/Movies/demo.mp4',
+      inputPath: '/Users/test/Movies/demo.mp4',
       mediaType: 'video',
       taskId: expect.any(String),
     });
@@ -206,7 +206,7 @@ describe('App workbench shell', () => {
       'asset:///tmp/TinyPix/previews/proxy.mp4'
     );
     expect(invoke).toHaveBeenCalledWith('prepare_media_preview', {
-      inputPath: '/Users/huashu/Movies/h265-demo.mkv',
+      inputPath: '/Users/test/Movies/h265-demo.mkv',
       mediaType: 'video',
       taskId: expect.any(String),
     });
@@ -220,12 +220,12 @@ describe('App workbench shell', () => {
     });
 
     const directPlayer = await screen.findByTestId('video-preview-player');
-    expect(directPlayer).toHaveAttribute('src', 'asset:///Users/huashu/Movies/direct-demo.mp4');
+    expect(directPlayer).toHaveAttribute('src', 'asset:///Users/test/Movies/direct-demo.mp4');
     fireEvent.error(directPlayer);
 
     await waitFor(() => {
       expect(invoke).toHaveBeenCalledWith('prepare_media_preview', expect.objectContaining({
-        inputPath: '/Users/huashu/Movies/direct-demo.mp4',
+        inputPath: '/Users/test/Movies/direct-demo.mp4',
         mediaType: 'video',
         forceProxy: true,
       }));
@@ -246,7 +246,7 @@ describe('App workbench shell', () => {
         {
           id: 'test-img-1',
           name: 'sample.png',
-          path: '/Users/huashu/Pictures/sample.png',
+          path: '/Users/test/Pictures/sample.png',
           format: 'PNG',
           originalSize: 1024 * 1024,
           status: 'pending',
@@ -256,7 +256,7 @@ describe('App workbench shell', () => {
 
     expect((await screen.findAllByText('sample.png')).length).toBeGreaterThanOrEqual(2);
     expect(invoke).toHaveBeenCalledWith('prepare_media_preview', {
-      inputPath: '/Users/huashu/Pictures/sample.png',
+      inputPath: '/Users/test/Pictures/sample.png',
       mediaType: 'image',
       taskId: expect.any(String),
     });

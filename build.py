@@ -10,7 +10,7 @@ TinyPix v3.5 Pro Build Script
   4. 验证产物（.exe 大小 / 复制回 SMB / 清理临时目录）
 
 Source: C:\Mac\Home\Desktop\test\3.5pro  (手动复制后的 Parallels 共享目录)
-Target: Windows local project dir when safe, otherwise C:\Users\huashu\AppData\Local\TinyPixBuild
+Target: Windows local project dir when safe, otherwise %LOCALAPPDATA%\TinyPixBuild
 """
 import os
 import sys
@@ -256,7 +256,7 @@ def err(msg: str):
 # ── 配置 ────────────────────────────────────────────────────────────────────
 VERSION = "3.5.1"
 # 2026-06-24: 优先支持手动复制到 Parallels Desktop 的共享桌面 test 目录。
-# 若用户从 Mac 复制 /Users/huashu/TinyPix/3.5pro 到
+# 若用户从 Mac 复制项目到 Windows 本地目录后
 # C:\Mac\Home\Desktop\test 后运行 build.py，应优先使用这份源码。
 SOURCE_CANDIDATES = [
     Path(__file__).resolve().parent,                                      # build.py 所在项目目录（优先）
@@ -266,23 +266,23 @@ SOURCE_CANDIDATES = [
     Path(r"Y:\TinyPix\3.5pro"),                                            # Parallels SMB (主)
     Path(r"\\Mac\Home\TinyPix\3.5pro"),                                    # SMB UNC 形式
     Path(r"Z:\TinyPix\3.5pro"),                                            # 备用 SMB 盘
-    Path(os.environ.get("LOCALAPPDATA", r"C:\Users\huashu\AppData\Local")) / "TinyPixBuild" / "source",  # 上次成功构建的本地源
+    Path(os.environ.get("LOCALAPPDATA", str(Path.home() / "AppData" / "Local"))) / "TinyPixBuild" / "source",  # 上次成功构建的本地源
     Path(r"C:\Projects\TinyPix\3.5pro"),                                   # Windows 本地(用户手动 robocopy 过的话)
-    Path(r"C:\Users\huashu\TinyPix\3.5pro"),                              # Windows 用户目录
+    Path(os.environ.get("USERPROFILE", str(Path.home()))) / "TinyPix" / "3.5pro", # Windows 用户目录
 ]
 SOURCE = None  # 在 check_source() 里实际选择
-DEFAULT_TARGET = Path(os.environ.get("LOCALAPPDATA", r"C:\Users\huashu\AppData\Local")) / "TinyPixBuild"
+DEFAULT_TARGET = Path(os.environ.get("LOCALAPPDATA", str(Path.home() / "AppData" / "Local"))) / "TinyPixBuild"
 TARGET = DEFAULT_TARGET
-BUILD_CACHE_ROOT = Path(os.environ.get("LOCALAPPDATA", r"C:\Users\huashu\AppData\Local")) / "TinyPixBuildCache"
+BUILD_CACHE_ROOT = Path(os.environ.get("LOCALAPPDATA", str(Path.home() / "AppData" / "Local"))) / "TinyPixBuildCache"
 NPM_CACHE_DIR = BUILD_CACHE_ROOT / "npm-cache"
 CARGO_TARGET_CACHE = BUILD_CACHE_ROOT / "cargo-target"
-FFMPEG_CACHE_DIR = Path(os.environ.get("APPDATA", r"C:\Users\huashu\AppData\Roaming")) / "TinyPix" / "cache" / "ffmpeg"
-FFMPEG_SIDECAR_DIR = Path(os.environ.get("APPDATA", r"C:\Users\huashu\AppData\Roaming")) / "TinyPix" / "sidecars"
+FFMPEG_CACHE_DIR = Path(os.environ.get("APPDATA", str(Path.home() / "AppData" / "Roaming"))) / "TinyPix" / "cache" / "ffmpeg"
+FFMPEG_SIDECAR_DIR = Path(os.environ.get("APPDATA", str(Path.home() / "AppData" / "Roaming"))) / "TinyPix" / "sidecars"
 LOCAL_FFMPEG_ZIP_CANDIDATES = [
     Path(r"C:\Mac\Home\Desktop\图片\ffmpeg-8.1.1-essentials_build.zip"),
     Path(r"C:\Mac\Home\Desktop\图片\ffmpeg-release-essentials.zip"),
-    Path(r"C:\Users\huashu\Desktop\图片\ffmpeg-8.1.1-essentials_build.zip"),
-    Path(r"C:\Users\huashu\Desktop\图片\ffmpeg-release-essentials.zip"),
+    Path(os.environ.get("USERPROFILE", str(Path.home()))) / "Desktop" / "图片" / "ffmpeg-8.1.1-essentials_build.zip",
+    Path(os.environ.get("USERPROFILE", str(Path.home()))) / "Desktop" / "图片" / "ffmpeg-release-essentials.zip",
 ]
 NODE_MIN = (20, 0, 0)
 # 自动安装器固定提供 Node.js 20 LTS；项目的 Vite 6/Tauri 2 构建链也支持该版本。
@@ -499,7 +499,7 @@ def _find_node_after_install() -> Optional[Path]:
 
 def _find_rust_after_install() -> Optional[Path]:
     """在常见安装路径找 cargo.exe"""
-    cargo_bin = Path(os.environ.get("USERPROFILE", r"C:\Users\huashu")) / ".cargo" / "bin"
+    cargo_bin = Path(os.environ.get("USERPROFILE", str(Path.home()))) / ".cargo" / "bin"
     for name in ("cargo.exe", "rustc.exe"):
         p = cargo_bin / name
         if file_exists(p):
@@ -755,7 +755,7 @@ def check_environment() -> bool:
             err(f"  {mark} {cand}")
         err("")
         err("修复方法(选一个):")
-        err("  1. 在 Mac 复制 /Users/huashu/TinyPix/3.5pro 到 Windows 的 C:\\Mac\\Home\\Desktop\\test")
+        err("  1. 将项目复制到 Windows 本地目录（例如 C:\\3.5pro）")
         err("  2. 在 Windows 中进入 C:\\Mac\\Home\\Desktop\\test\\3.5pro 后运行 build.py")
         err("  3. 如需旧 SMB 方式,检查 Y:\\TinyPix\\3.5pro 是否可访问")
         return False
@@ -772,7 +772,7 @@ def check_environment() -> bool:
     # 1.8 ffmpeg（可选，但视频功能必需）
     step("检查 FFmpeg (可选)")
     ffmpeg_paths = [
-        Path(r"C:\Users\huashu\AppData\Roaming\TinyPix\sidecars\ffmpeg.exe"),
+        FFMPEG_SIDECAR_DIR / "ffmpeg.exe",
         TARGET.parent / "TinyPix" / "sidecars" / "ffmpeg.exe" if TARGET.parent else None,
         Path(r"C:\Windows\ffmpeg.exe"),
     ]
@@ -784,7 +784,7 @@ def check_environment() -> bool:
             break
     if not ffmpeg_found:
         warn("FFmpeg 未找到 — 视频功能（GIF/Compress/Frame）将不可用")
-        ffmpeg_suggest = r"C:\Users\huashu\AppData\Roaming\TinyPix\sidecars\ffmpeg.exe"
+        ffmpeg_suggest = str(FFMPEG_SIDECAR_DIR / "ffmpeg.exe")
         warn(f"建议放置到: {ffmpeg_suggest}")
 
     # 1.9 磁盘空间
@@ -924,7 +924,7 @@ def clean_target() -> bool:
 def get_ffmpeg_bundle_candidates(binary_name: str) -> List[Path]:
     """返回 FFmpeg/FFprobe 的候选路径,用于构建期打包。"""
     candidates = [
-        Path(os.environ.get("APPDATA", r"C:\Users\huashu\AppData\Roaming")) / "TinyPix" / "sidecars" / binary_name,
+        FFMPEG_SIDECAR_DIR / binary_name,
         TARGET.parent / "TinyPix" / "sidecars" / binary_name if TARGET.parent else None,
         Path(r"C:\ffmpeg\bin") / binary_name,
         Path(r"C:\tools\ffmpeg\bin") / binary_name,
@@ -1339,10 +1339,10 @@ def copy_artifacts_to_smb() -> None:
 
     dest_dirs = []
     if platform.system() == "Windows":
-        dest_dirs.append(Path(os.environ.get("USERPROFILE", r"C:\Users\huashu")) / "Desktop" / "tiny")
+        dest_dirs.append(Path(os.environ.get("USERPROFILE", str(Path.home()))) / "Desktop" / "tiny")
         dest_dirs.append(Path(r"C:\Mac\Home\Desktop\tiny"))
     else:
-        dest_dirs.append(Path("/Users/huashu/Desktop/tiny"))
+        dest_dirs.append(Path.home() / "Desktop" / "tiny")
 
     for dest_dir in dest_dirs:
         if dest_dir.drive and not dest_dir.parent.exists():
@@ -1545,7 +1545,7 @@ def main() -> int:
                 # 2026-06-03: 复制到 C:\Mac\Home\Desktop\tiny\,而不是 SOURCE/release
                 smb_exe = Path(r"C:\Mac\Home\Desktop\tiny") / candidate.name
                 if not smb_exe.parent.exists():
-                    smb_exe = Path("/Users/huashu/Desktop/tiny") / candidate.name
+                    smb_exe = Path.home() / "Desktop" / "tiny" / candidate.name
                 if smb_exe.exists():
                     _extras["output_exe_smb"] = str(smb_exe)
                     _extras["output_exe_smb_size_mb"] = round(smb_exe.stat().st_size / (1024*1024), 2)

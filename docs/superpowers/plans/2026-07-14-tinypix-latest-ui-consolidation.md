@@ -10,7 +10,7 @@
 
 ## Global Constraints
 
-- 唯一源码目录是 `/Users/huashu/TinyPix/3.5pro`，Git 根目录是 `/Users/huashu/TinyPix`。
+- 唯一源码目录是当前项目根目录，Git 根目录为当前项目仓库。
 - 当前功能基线是 `main`；开始实现前创建隔离 worktree，执行期使用 `superpowers:using-git-worktrees`。
 - 视频入口固定为 `视频输出`、`GIF 制作`、`视频剪辑`；首次打开进入 `视频输出`。
 - 图片入口固定为 `图片处理`；不得再出现“导出模式/编辑模式”切换。

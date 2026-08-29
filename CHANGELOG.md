@@ -2,14 +2,22 @@
 
 > 本文件记录所有 UI 适配修改，每次修改在此文件上增量更新
 >
-> 适配参考: `/Users/huashu/TinyPix/3.5pro/UI设计/`
+> 适配参考: `<project-root>/UI设计/`
 
 ## 变更记录
+
+### 2026-08-29 阶段收尾清理与合规复核
+
+- 统一前端锁文件根版本为 `3.5.1`，保留 Tauri 3.5.1 基线与 WinUI 4.0.0 清单的双轨版本边界。
+- 将构建脚本、测试夹具、历史报告和旧计划中的本机用户名/绝对路径替换为环境变量或通用占位符。
+- 修正阶段收尾文档中已过时的远端同步状态，并保留 Windows 门禁摘要与原始本地证据边界。
+- 清理可再生的前端、Python、Rust 编译缓存和日志；未删除源码、设计源文件或 Windows 门禁摘要证据。
+- 重新执行 Python、前端、Rust 测试与构建检查；Windows 11 干净环境运行门禁仍需在 Windows 上完成。
 
 ### 2026-08-29 阶段性收尾与版本管理
 
 - 新增 `docs/PHASE-CLOSEOUT-2026-08-29.md`，按进展记录、下一步计划和实施指导梳理当前 TinyPix 4.0 状态。
-- 确认当前主干已包含 WinUI Shell 骨架、视频输出、GIF 制作、统一视频编辑页、Windows 发布脚本和首次编译阻断修复等阶段提交；本地主干相对 `origin/main` 领先 10 个提交，远端无新增冲突提交。
+- 确认当前主干已包含 WinUI Shell 骨架、视频输出、GIF 制作、统一视频编辑页、Windows 发布脚本和首次编译阻断修复等阶段提交；收尾前 `main` 与 `origin/main` 已同步，无新增冲突提交。
 - 清理已忽略的 `.DS_Store` 临时文件；保留被 `.gitignore` 排除的 Windows 门禁原始 PML/CSV 证据和本地构建缓存，不把诊断证据误删。
 - 重新验证 TinyPix 4 设计/架构合同：34 项 pytest 通过，`git diff --check` 通过。
 - 明确 Windows 11 干净 VM、正式 Portable ZIP、最终可运行 TinyPix 4.0 EXE 仍未完成，不在本阶段声明最终发布完成。
@@ -877,7 +885,7 @@
 
 #### 产物位置
 - Windows 原始位置: C:\TinyPixBuild\3.5pro\src-tauri\target\release\tinypix.exe
-- 复制到 Mac: /Users/huashu/TinyPix/3.5pro/TinyPix-Pro-3.5.0.exe
+- 复制到 Mac: `<user-desktop>/TinyPix-Pro-3.5.0.exe`
 
 #### 注意事项
 - NSIS 安装包打包失败（工具下载问题），但 EXE 本身已成功构建
@@ -1747,12 +1755,12 @@ AudioExtractor.tsx (编排器 UI)
 
 #### 主要修改
 - 已手动复制可运行产物到 Windows 本地目录：
-  - `C:\Users\huashu\Desktop\tiny\tinypix.exe`
-  - `C:\Users\huashu\Desktop\tiny\TinyPix Pro_3.5.0_x64-setup.exe`
-  - `C:\Users\huashu\Desktop\tiny\ffmpeg.exe`
-  - `C:\Users\huashu\Desktop\tiny\ffprobe.exe`
+  - `%USERPROFILE%\Desktop\tiny\tinypix.exe`
+  - `%USERPROFILE%\Desktop\tiny\TinyPix Pro_3.5.0_x64-setup.exe`
+  - `%USERPROFILE%\Desktop\tiny\ffmpeg.exe`
+  - `%USERPROFILE%\Desktop\tiny\ffprobe.exe`
 - `build.py` 的产物复制逻辑改为同时输出：
-  - Windows 本地桌面 `C:\Users\huashu\Desktop\tiny`，用于直接运行。
+  - Windows 本地桌面 `%USERPROFILE%\Desktop\tiny`，用于直接运行。
   - Mac 共享桌面 `C:\Mac\Home\Desktop\tiny`，用于 Mac 侧取文件。
 - 复制直运行版本时同步带上 `ffmpeg.exe` / `ffprobe.exe`，避免只复制主程序导致视频功能找不到 sidecar。
 
@@ -1780,7 +1788,7 @@ AudioExtractor.tsx (编排器 UI)
   - 优先识别本地 FFmpeg 包：`C:\Mac\Home\Desktop\图片\ffmpeg-8.1.1-essentials_build.zip`。
   - 成功解压后写入 `%APPDATA%\TinyPix\sidecars`，后续构建可直接复用。
 - 使用 Parallels CLI 完成 Windows 自动构建：
-  - 同步 Mac 项目到 `C:\Users\huashu\Desktop\test\3.5pro`。
+  - 同步 Mac 项目到 Windows 本地测试目录。
   - 启动可见 PowerShell 构建窗口，用户可直接看进度。
   - Codex 通过 `prlctl exec --current-user` 读取 Windows 日志和产物信息。
 
@@ -1788,8 +1796,8 @@ AudioExtractor.tsx (编排器 UI)
 - Windows 构建成功 ✅
 - 总耗时约 23 分 8 秒。
 - 产物：
-  - `C:\Users\huashu\AppData\Local\TinyPixBuildCache\cargo-target\release\tinypix.exe`
-  - `C:\Users\huashu\AppData\Local\TinyPixBuildCache\cargo-target\release\bundle\nsis\TinyPix Pro_3.5.0_x64-setup.exe`
+  - `%LOCALAPPDATA%\TinyPixBuildCache\cargo-target\release\tinypix.exe`
+  - `%LOCALAPPDATA%\TinyPixBuildCache\cargo-target\release\bundle\nsis\TinyPix Pro_3.5.0_x64-setup.exe`
   - 已复制到 `C:\Mac\Home\Desktop\tiny\tinypix.exe`
   - 已复制到 `C:\Mac\Home\Desktop\tiny\TinyPix Pro_3.5.0_x64-setup.exe`
 - FFmpeg / FFprobe 已包含并复制到 release，视频功能不再因为缺少 FFmpeg 失效。
@@ -1803,7 +1811,7 @@ AudioExtractor.tsx (编排器 UI)
 ### 2026-06-25 第十九次更新：Windows 本地目录原地构建
 
 #### 问题定位
-- 用户已经把项目复制到 `C:\Users\huashu\Desktop\test\3.5pro`，这是 Windows 本地目录，但 `build.py` 仍固定复制到 `C:\Users\huashu\AppData\Local\TinyPixBuild`。
+- 用户已经把项目复制到 Windows 本地目录，但 `build.py` 仍固定复制到 `%LOCALAPPDATA%\TinyPixBuild`。
 - 这个复制动作最初是为了规避 `C:\Mac` / `\\Mac` / `\\psf` / 映射盘等共享路径上的权限、锁文件和 IO 问题；当源码已经在 Windows 本地目录时，再复制一次会增加等待时间，也让日志看起来像在构建旧缓存。
 
 #### 主要修改
@@ -1936,7 +1944,7 @@ AudioExtractor.tsx (编排器 UI)
   - `VideoConverter.tsx`
   - `VideoEditor.tsx`
 - `build.py` 新增 FFmpeg/FFprobe 候选路径扫描，覆盖：
-  - `C:\Users\huashu\AppData\Roaming\TinyPix\sidecars`
+  - `%APPDATA%\TinyPix\sidecars`
   - `C:\ffmpeg\bin`
   - `C:\tools\ffmpeg\bin`
   - Chocolatey 路径
@@ -1960,7 +1968,7 @@ AudioExtractor.tsx (编排器 UI)
 ### 2026-06-24 第十四次更新：Windows 构建入口修复 + Parallels 手动复制流程
 
 #### 问题定位
-- Windows 构建后的 exe 显示 `C:\Users\huashu\AppData\Local\TinyPixBuild\dist 的索引`，不是 TinyPix Pro UI。
+- Windows 构建后的 exe 显示 `%LOCALAPPDATA%\TinyPixBuild\dist 的索引`，不是 TinyPix Pro UI。
 - 根因不是 UI 未编译，而是 `build.py` 在复制到本地缓存后，把 `src-tauri/tauri.conf.json` 中的 `frontendDist` 从 `../dist` 改成了绝对目录路径，导致运行时打开了 `dist` 文件夹目录页。
 
 #### 主要修改
@@ -1988,7 +1996,7 @@ AudioExtractor.tsx (编排器 UI)
 ### 2026-06-24 第十三次更新：视频工具 Demo 高保真工作台 + 输出路径设置
 
 #### 目标定位
-- 以 `/Users/huashu/TinyPix/v3.0 pro/UI设计` 中 6 张视频工具截图作为主参考，恢复“视频工具 demo 作为第一屏主体验”的产品结构
+- 以 `<project-root>/UI设计` 中 6 张视频工具截图作为主参考，恢复“视频工具 demo 作为第一屏主体验”的产品结构
 - 将底部“设置”明确改为输出路径配置入口
 - 图片工具按视频工具的黑白中性 + 荧光绿强调风格进行布局补齐
 - 保持最终 exe 运行时无外联、无遥测、无远程字体/CDN
@@ -2038,7 +2046,7 @@ AudioExtractor.tsx (编排器 UI)
 - 视频工具的 6 个 demo 更适合抽象成“统一工作台骨架 + 工具专属右侧参数卡”，不要每个功能各写一套视觉结构。
 - “设置”入口不应承载泛设置页；当前产品阶段最有价值的是输出路径配置，能直接解决用户处理后文件保存位置的不确定性。
 - 项目当前不是 Git 仓库，`git-commit` 技能只作为提交规范参考使用，实际交付以 `CHANGELOG.md`、测试结果和构建结果记录为准。
-- 构建目录必须和开发目录一致：当前唯一有效源码目录固定为 `/Users/huashu/TinyPix/3.5pro`，避免旧桌面目录、旧共享盘或旧缓存继续打进旧 UI。
+- 构建目录必须和开发目录一致：当前唯一有效源码目录固定为项目根目录，避免旧桌面目录、旧共享盘或旧缓存继续打进旧 UI。
 
 ### 2026-06-23 第十二次更新：UI 排版修复 + 未定义 CSS 类修复
 

@@ -2,7 +2,7 @@
   {
     "route": "video-output",
     "configuration": "1200x800-100",
-    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/video-output-1200x800-100.png",
+    "screenshot": "/Users/<user>/TinyPix/3.5pro/artifacts/ui/video-output-1200x800-100.png",
     "primaryActionVisible": true,
     "viewport": [
       1200,
@@ -19,7 +19,7 @@
   {
     "route": "gif-maker",
     "configuration": "1200x800-100",
-    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/gif-maker-1200x800-100.png",
+    "screenshot": "/Users/<user>/TinyPix/3.5pro/artifacts/ui/gif-maker-1200x800-100.png",
     "primaryActionVisible": true,
     "viewport": [
       1200,
@@ -36,7 +36,7 @@
   {
     "route": "video-trimmer",
     "configuration": "1200x800-100",
-    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/video-trimmer-1200x800-100.png",
+    "screenshot": "/Users/<user>/TinyPix/3.5pro/artifacts/ui/video-trimmer-1200x800-100.png",
     "primaryActionVisible": true,
     "viewport": [
       1200,
@@ -53,7 +53,7 @@
   {
     "route": "image-workbench",
     "configuration": "1200x800-100",
-    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/image-workbench-1200x800-100.png",
+    "screenshot": "/Users/<user>/TinyPix/3.5pro/artifacts/ui/image-workbench-1200x800-100.png",
     "primaryActionVisible": true,
     "viewport": [
       1200,
@@ -70,7 +70,7 @@
   {
     "route": "settings",
     "configuration": "1200x800-100",
-    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/settings-1200x800-100.png",
+    "screenshot": "/Users/<user>/TinyPix/3.5pro/artifacts/ui/settings-1200x800-100.png",
     "viewport": [
       1200,
       800
@@ -86,7 +86,7 @@
   {
     "route": "video-output",
     "configuration": "900x600-100",
-    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/video-output-900x600-100.png",
+    "screenshot": "/Users/<user>/TinyPix/3.5pro/artifacts/ui/video-output-900x600-100.png",
     "primaryActionVisible": true,
     "viewport": [
       900,
@@ -103,7 +103,7 @@
   {
     "route": "gif-maker",
     "configuration": "900x600-100",
-    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/gif-maker-900x600-100.png",
+    "screenshot": "/Users/<user>/TinyPix/3.5pro/artifacts/ui/gif-maker-900x600-100.png",
     "primaryActionVisible": true,
     "viewport": [
       900,
@@ -120,7 +120,7 @@
   {
     "route": "video-trimmer",
     "configuration": "900x600-100",
-    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/video-trimmer-900x600-100.png",
+    "screenshot": "/Users/<user>/TinyPix/3.5pro/artifacts/ui/video-trimmer-900x600-100.png",
     "primaryActionVisible": true,
     "viewport": [
       900,
@@ -137,7 +137,7 @@
   {
     "route": "image-workbench",
     "configuration": "900x600-100",
-    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/image-workbench-900x600-100.png",
+    "screenshot": "/Users/<user>/TinyPix/3.5pro/artifacts/ui/image-workbench-900x600-100.png",
     "primaryActionVisible": true,
     "viewport": [
       900,
@@ -154,7 +154,7 @@
   {
     "route": "settings",
     "configuration": "900x600-100",
-    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/settings-900x600-100.png",
+    "screenshot": "/Users/<user>/TinyPix/3.5pro/artifacts/ui/settings-900x600-100.png",
     "viewport": [
       900,
       600
@@ -170,7 +170,7 @@
   {
     "route": "video-output",
     "configuration": "900x600-125",
-    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/video-output-900x600-125.png",
+    "screenshot": "/Users/<user>/TinyPix/3.5pro/artifacts/ui/video-output-900x600-125.png",
     "primaryActionVisible": true,
     "viewport": [
       720,
@@ -375,7 +375,7 @@
   {
     "route": "gif-maker",
     "configuration": "900x600-125",
-    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/gif-maker-900x600-125.png",
+    "screenshot": "/Users/<user>/TinyPix/3.5pro/artifacts/ui/gif-maker-900x600-125.png",
     "primaryActionVisible": true,
     "viewport": [
       720,
@@ -392,7 +392,7 @@
   {
     "route": "video-trimmer",
     "configuration": "900x600-125",
-    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/video-trimmer-900x600-125.png",
+    "screenshot": "/Users/<user>/TinyPix/3.5pro/artifacts/ui/video-trimmer-900x600-125.png",
     "primaryActionVisible": true,
     "viewport": [
       720,
@@ -409,7 +409,7 @@
   {
     "route": "image-workbench",
     "configuration": "900x600-125",
-    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/image-workbench-900x600-125.png",
+    "screenshot": "/Users/<user>/TinyPix/3.5pro/artifacts/ui/image-workbench-900x600-125.png",
     "primaryActionVisible": true,
     "viewport": [
       720,
@@ -438,7 +438,7 @@
   {
     "route": "settings",
     "configuration": "900x600-125",
-    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/settings-900x600-125.png",
+    "screenshot": "/Users/<user>/TinyPix/3.5pro/artifacts/ui/settings-900x600-125.png",
     "viewport": [
       720,
       480
@@ -642,7 +642,7 @@
   {
     "route": "video-output",
     "configuration": "900x600-150",
-    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/video-output-900x600-150.png",
+    "screenshot": "/Users/<user>/TinyPix/3.5pro/artifacts/ui/video-output-900x600-150.png",
     "primaryActionVisible": true,
     "viewport": [
       600,
@@ -880,7 +880,7 @@
   {
     "route": "gif-maker",
     "configuration": "900x600-150",
-    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/gif-maker-900x600-150.png",
+    "screenshot": "/Users/<user>/TinyPix/3.5pro/artifacts/ui/gif-maker-900x600-150.png",
     "primaryActionVisible": true,
     "viewport": [
       600,
@@ -897,7 +897,7 @@
   {
     "route": "video-trimmer",
     "configuration": "900x600-150",
-    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/video-trimmer-900x600-150.png",
+    "screenshot": "/Users/<user>/TinyPix/3.5pro/artifacts/ui/video-trimmer-900x600-150.png",
     "primaryActionVisible": true,
     "viewport": [
       600,
@@ -914,7 +914,7 @@
   {
     "route": "image-workbench",
     "configuration": "900x600-150",
-    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/image-workbench-900x600-150.png",
+    "screenshot": "/Users/<user>/TinyPix/3.5pro/artifacts/ui/image-workbench-900x600-150.png",
     "primaryActionVisible": false,
     "viewport": [
       600,
@@ -954,7 +954,7 @@
   {
     "route": "settings",
     "configuration": "900x600-150",
-    "screenshot": "/Users/huashu/TinyPix/3.5pro/artifacts/ui/settings-900x600-150.png",
+    "screenshot": "/Users/<user>/TinyPix/3.5pro/artifacts/ui/settings-900x600-150.png",
     "viewport": [
       600,
       400
