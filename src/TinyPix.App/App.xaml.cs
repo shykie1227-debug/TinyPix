@@ -9,6 +9,7 @@ using TinyPix.Core.Jobs;
 using TinyPix.Core.Settings;
 using TinyPix.Core.Storage;
 using TinyPix.Core.Tools;
+using TinyPix.Media.Ffmpeg;
 using TinyPix.Media.Video;
 using TinyPix.Infrastructure.History;
 using TinyPix.Infrastructure.Portable;

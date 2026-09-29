@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TinyPix.Core.Jobs;
 using TinyPix.Core.Tools;
+using TinyPix.Media.Ffmpeg;
 
 namespace TinyPix.Media.Video;
 
@@ -74,15 +75,12 @@ public sealed class VideoTrimHandler : VideoEditHandlerBase
             args.Add(start.ToString(CultureInfo.InvariantCulture));
             args.Add("-to");
             args.Add(end.ToString(CultureInfo.InvariantCulture));
-            args.Add("-c:v");
-            args.Add("libx264");
-            args.Add("-crf");
-            args.Add("20");
+            args.AddRange(LgplVideoCodec.H264Arguments());
             args.Add("-c:a");
             args.Add("aac");
         }
 
         args.Add(output);
-        return new[] { (output, args) };
+        return new[] { (output, (IReadOnlyList<string>)args) };
     }
 }

@@ -17,9 +17,10 @@
 
 ## 2. Portable 部署底线
 
-- 正式版本只发布 `TinyPix-4.0-Windows-x64-Portable.zip`。
+- 正式版本以 `TinyPix-4.0-Windows-x64-Portable.zip` 为准。
 - 使用 Unpackaged、self-contained 目录部署；不发布 MSIX、MSI、NSIS 或自解压安装器。
-- `PublishSingleFile=false`；不把首次释放依赖的单文件 EXE 当正式发行方式。
+- 默认 `PublishSingleFile=false`。单文件 EXE 只作为**可选附加产物**，不作为正式发行的唯一形态：由 `build/Publish-SingleFile.ps1` 产出，必须同时满足 Windows App SDK 单文件所需的全部 MSBuild 属性（`WindowsPackageType=None`、`SelfContained`、`WindowsAppSDKSelfContained`、`EnableMsixTooling`、`IncludeAllContentForSelfExtract`），并在发布说明中写明"首次启动会把依赖释放到临时目录"。
+- 单文件形态同样受便携边界约束：`portable.flag`、`Config`、`Engines` 必须与 `TinyPix.exe` 同目录；改为单文件不得放宽本节与第 3 节的原文件、可变数据目录边界。
 - ZIP 内置 `portable.flag`、.NET/Windows App SDK 运行时、Engines、Models、Templates、
   Licenses、第三方声明和构建清单；运行时不得下载缺失项。
 - 不要求管理员权限，不创建服务、计划任务、开始菜单项或文件关联。

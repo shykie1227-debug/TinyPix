@@ -39,7 +39,7 @@ public sealed class VideoCompressHandler : VideoOutputHandlerBase
             var args = new List<string>
             {
                 "-y", "-i", input,
-                "-c:v", "libx264",
+                "-c:v", LgplVideoCodec.H264,
                 "-b:v", $"{targetKbps}k",
                 "-maxrate", $"{targetKbps}k",
                 "-bufsize", $"{targetKbps * 2}k",

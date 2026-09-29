@@ -9,6 +9,11 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.0" />
     <PackageVersion Include="Microsoft.WindowsAppSDK.WinUI" Version="2.2.1" />
+    <!-- WinUI and Runtime must stay on the same Windows App SDK release train
+         (2.2.x with 2.2.x). Pairing WinUI 2.2.1 with Runtime 2.3.x builds fine but
+         the published app fail-fasts with STATUS_STOWED_EXCEPTION 0xC000027B in
+         Microsoft.UI.Xaml.dll, because the shipped XAML (3.2.x) does not match the
+         runtime the bootstrapper activates. Change both lines together. -->
     <PackageVersion Include="Microsoft.WindowsAppSDK.Runtime" Version="2.2.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />

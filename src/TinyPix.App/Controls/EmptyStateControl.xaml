@@ -12,7 +12,7 @@
     <VisualStateManager.VisualStateGroups>
         <VisualStateGroup x:Name="DropStates">
             <VisualState x:Name="Empty" />
-            <VisualState x:Name="DragOver">
+            <VisualState x:Name="Dragging">
                 <VisualState.Setters>
                     <Setter Target="DropTarget.BorderBrush" Value="{ThemeResource TinyPixFocusBrush}" />
                     <Setter Target="DropTarget.BorderThickness" Value="2" />
@@ -26,7 +26,6 @@
         Padding="32"
         BorderBrush="{ThemeResource TinyPixControlBorderBrush}"
         BorderThickness="1"
-        BorderStyle="Dashed"
         CornerRadius="6"
         AutomationProperties.Name="{Binding GroupName}">
         <StackPanel Spacing="12" HorizontalAlignment="Center">

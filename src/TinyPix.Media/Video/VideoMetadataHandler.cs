@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TinyPix.Core.Jobs;
 using TinyPix.Core.Tools;
+using TinyPix.Media.Ffmpeg;
 
 namespace TinyPix.Media.Video;
 
@@ -36,6 +37,6 @@ public sealed class VideoMetadataHandler : VideoEditHandlerBase
         string extension = OriginalExtension(input);
         string output = ResolveOutput(input, "_已清理", extension, request.OutputDirectory);
         var args = new List<string> { "-y", "-i", input, "-map_metadata", "-1", "-c", "copy", output };
-        return new[] { (output, args) };
+        return new[] { (output, (IReadOnlyList<string>)args) };
     }
 }

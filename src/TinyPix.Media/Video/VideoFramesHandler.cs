@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TinyPix.Core.Jobs;
 using TinyPix.Core.Tools;
+using TinyPix.Media.Ffmpeg;
 
 namespace TinyPix.Media.Video;
 

@@ -13,7 +13,7 @@ public sealed partial class EmptyStateControl : UserControl
         InitializeComponent();
     }
 
-    /// <summary>Switch to the DragOver appearance while files are hovered.</summary>
+    /// <summary>Switch to the dragging appearance while files are hovered.</summary>
     public void SetDragOver(bool isDragOver) =>
-        VisualStateManager.GoToState(this, isDragOver ? "DragOver" : "Empty", true);
+        VisualStateManager.GoToState(this, isDragOver ? "Dragging" : "Empty", true);
 }

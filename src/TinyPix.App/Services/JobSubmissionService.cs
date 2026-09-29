@@ -47,9 +47,9 @@ public sealed class JobSubmissionService
         OutputPreflightResult check = _preflight.Evaluate(preflightRequest);
         if (!check.CanExecute)
         {
-            JobError first = check.Issues.First(issue => issue.IsBlocking);
+            OutputPreflightIssue first = check.Issues.First(issue => issue.IsBlocking);
             JobRecord blocked = JobRecord.CreateQueued(request);
-            blocked.Fail(first);
+            blocked.Fail(new JobError(first.Code, first.Message, CanRetry: false));
             return blocked;
         }
 

@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TinyPix.Core.Jobs;
 using TinyPix.Core.Tools;
+using TinyPix.Media.Ffmpeg;
 
 namespace TinyPix.Media.Video;
 
@@ -56,11 +57,12 @@ public sealed class VideoOverlayHandler : VideoEditHandlerBase
             {
                 "-y", "-i", video,
                 "-vf", subtitleFilter,
-                "-c:v", "libx264", "-crf", "20",
-                "-c:a", "copy",
-                subOut,
             };
-            return new[] { (subOut, subArgs) };
+            subArgs.AddRange(LgplVideoCodec.H264Arguments());
+            subArgs.Add("-c:a");
+            subArgs.Add("copy");
+            subArgs.Add(subOut);
+            return new[] { (subOut, (IReadOnlyList<string>)subArgs) };
         }
 
         // watermark (default)
@@ -70,10 +72,11 @@ public sealed class VideoOverlayHandler : VideoEditHandlerBase
             "-y", "-i", video, "-i", overlay,
             "-filter_complex", "[0][1]overlay=W-w-10:H-h-10[out]",
             "-map", "[out]", "-map", "0:a?",
-            "-c:v", "libx264", "-crf", "20",
-            "-c:a", "aac",
-            wmOut,
         };
-        return new[] { (wmOut, wmArgs) };
+        wmArgs.AddRange(LgplVideoCodec.H264Arguments());
+        wmArgs.Add("-c:a");
+        wmArgs.Add("aac");
+        wmArgs.Add(wmOut);
+        return new[] { (wmOut, (IReadOnlyList<string>)wmArgs) };
     }
 }

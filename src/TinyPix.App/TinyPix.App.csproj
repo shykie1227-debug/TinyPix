@@ -16,7 +16,14 @@
     <WindowsAppSdkUndockedRegFreeWinRTInitialize>true</WindowsAppSdkUndockedRegFreeWinRTInitialize>
     <SelfContained>true</SelfContained>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <!-- Default stays as-is: the formal release is still the portable folder.
+         `-p:PublishSingleFile=true` switches the same project to the optional
+         single-file TinyPix.exe. Windows App SDK requires
+         IncludeAllContentForSelfExtract (plus unpackaged + self-contained,
+         both already set above) or its `WindowsAppSDKSingleFileVerifyConfiguration`
+         target fails the build. See build/Publish-SingleFile.ps1. -->
     <PublishSingleFile>false</PublishSingleFile>
+    <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../TinyPix.Core/TinyPix.Core.csproj" />

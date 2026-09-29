@@ -23,7 +23,12 @@ namespace TinyPix.App;
 /// </summary>
 public sealed partial class MainWindow : Window
 {
-    internal static MainWindow? Current { get; private set; }
+    // Windows.System.VirtualKey has no OEM members (the enum stops at the
+    // Gamepad* values), so Ctrl+, is matched through its Win32 code: VK_OEM_COMMA.
+    private const int VkOemComma = 188;
+
+    // `new` is required: Window already exposes a static Current.
+    internal static new MainWindow? Current { get; private set; }
 
     private readonly MainWindowViewModel _viewModel;
     private readonly JobQueueService _jobQueue;
@@ -149,7 +154,7 @@ public sealed partial class MainWindow : Window
             SeekTimelineForward();
             e.Handled = true;
         }
-        else if (e.Key == VirtualKey.OemComma && controlDown)
+        else if ((int)e.Key == VkOemComma && controlDown)
         {
             _ = OpenSettingsDialogAsync();
             e.Handled = true;
