@@ -6,6 +6,16 @@
 
 ## 变更记录
 
+### 2026-10-14 CI 首次全绿，两个 artifact 自动上传
+
+- run `38538164421` 全流程通过（Restore / Build solution / Test / LGPL 门禁 / 便携发布 /
+  单文件发布 / 尺寸报告 / 上传 ZIP / 上传 exe），为该项目 CI 历史上第一次成功。
+- CI 产物：单文件 `TinyPix.exe` 160.60 MB、便携 ZIP 180.60 MB、引擎 ffmpeg 131.90 MB + ffprobe 131.70 MB。
+- 本轮推送共修三轮失败：①LGPL 门禁误伤注释（改为只扫代码行）②publish 触发 NU1004
+  （`RestoreLockedMode=false` + lock 快照还原，并排除了两种不可行的改法）③PowerShell 5.1 兼容三处。
+- 已知遗留：FFmpeg 用 `latest` 滚动标签，CI 与本地拿到不同构建（131.90 vs 129.5 MB），
+  产物字节级不可复现；需改为固定 release tag + 写死资产 SHA-256。
+
 ### 2026-10-14 阶段收尾：产物回传与交付说明
 
 - 将 Windows VM 的构建产物回传至仓库 `artifacts/`：单文件 `TinyPix.exe`（168,382,782 B / 160.58 MiB，

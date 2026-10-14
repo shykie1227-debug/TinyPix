@@ -1,6 +1,6 @@
 # TinyPix 4.0 implementation status
 
-Updated: 2026-10-14
+Updated: 2026-10-14（CI 首次全绿后）
 
 ## Implemented and locally verified
 
@@ -107,6 +107,11 @@ Updated: 2026-10-14
   产物：单文件 `TinyPix.exe` 160.58 MiB、便携 ZIP 172.58 MiB，均自带 ffmpeg/ffprobe。
   真实转码冒烟通过：`video.convert` → `in_转换.mp4`、`video.gif` → `in_GIF.gif`，
   源文件 SHA-256 前后一致。交付细节见 `docs/DELIVERY-2026-10-14.md`。
+- 2026-10-14 GitHub Actions run `38538164421` 全流程通过（Restore / Build / Test / LGPL 门禁 /
+  便携发布 / 单文件发布 / 产物上传），为该项目 CI 首次成功。此前失败已修复：LGPL 门禁误伤注释
+  （改为只扫代码行）；publish 触发 NU1004（publish 时关闭 locked mode 并快照还原 lock 文件）；
+  Windows PowerShell 5.1 兼容三处（`utf8NoBOM`、`Path.GetRelativePath`、`ZipFile` 程序集）。
+  已知遗留：FFmpeg 用 `latest` 滚动标签，CI 与本地拿到不同构建，产物字节级不可复现。
 - App project restore/build, the formal App publish, the Portable ZIP and the
   single-file EXE now pass on the configured Windows 10 VM (2026-09-29).
   Clean-machine runtime acceptance remains incomplete: the UI window launch and

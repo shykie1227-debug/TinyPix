@@ -29,9 +29,24 @@
 - **产物回传**：`artifacts/TinyPix.exe`（160.58 MiB）与 `artifacts/TinyPix-4.0-Windows-x64-Portable.zip`（172.58 MiB），
   Mac 侧与 VM 侧两次独立哈希计算一致。
 
+### 推送后 CI 连续修复（三轮，最终全绿）
+
+| run | 结果 | 失败点 | 修复 |
+|---|---|---|---|
+| `38534470640` | 失败 | LGPL encoder gate | 门禁改为只扫代码行，跳过注释；两处过时注释改写 |
+| `38535102086` | 失败 | Publish portable folder（NU1004） | publish 时关闭 locked mode + lock 快照还原 |
+| `38538164421` | **全绿** | — | 全部 12 步通过，两个 artifact 上传成功 |
+
+- **NU1004 的根因与排除过程**（已写进脚本注释）：publish 强制 `-r win-x64`，而提交的 lock 无 RID。
+  两种改法实测都不可行——用 `-r win-x64` 重新生成全部 lock 会让 CI 的无 RID `--locked-mode` 还原失败；
+  `-p:RestorePackagesWithLockFile=false` 因 lock 文件存在被 NU1005 拒绝。
+- **顺带修了 Windows PowerShell 5.1 兼容**（CI 用 pwsh 7，本机 5.1 会踩）：
+  `Set-Content -Encoding utf8NoBOM`、`[System.IO.Path]::GetRelativePath`、未加载 `System.IO.Compression.FileSystem`。
+
 ### 本阶段执行的验证
 
 - C# 单测：**84 全通过**（Core 32 / Media 42 / Infrastructure 10），macOS 与 Windows 两侧各跑一遍。
+- GitHub Actions run `38538164421`：**12 个步骤全绿**（含 LGPL 门禁、便携发布、单文件发布、产物上传）。
 - Python 契约：**72 全通过**（需 `--basetemp=/tmp/pytest-tp`，否则沙箱下默认临时目录报 EEXIST）。
 - 真实转码冒烟（Windows 10 19045，无 UI 控制台进程）：
   - `video.convert` → `in_转换.mp4` 31,336 B ✅
@@ -47,6 +62,8 @@
 - **38/50 工具无 handler**：图片 11、PDF 8、证件照 3 等仍只有目录条目和契约；Media 层只有 FFmpeg 引擎，缺图像/PDF 引擎抽象。
 - `IModelRuntime` / `IMediaPreviewService` 只有接口无实现；三个业务页参数面板与 handler 参数未完整接线。
 - SBOM / 第三方声明 / 离线安全说明的最终 release gate 未跑。
+- **FFmpeg 版本未锁定**：`Get-FfmpegEngine.ps1` 用 `latest` 滚动标签，CI 与本地拿到不同构建
+  （131.90 vs 129.5 MB），产物字节级不可复现。需改为固定 release tag + 写死资产 SHA-256。
 
 ## 2. 下一步计划
 
