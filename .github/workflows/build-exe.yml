@@ -60,15 +60,29 @@ jobs:
           }
 
       - name: LGPL encoder gate
-        # DEPENDENCY-BASELINE.md §6: any libx264 / libx265 / libfdk-aac usage is
-        # a release blocker. Fail fast before spending time on publish.
+        # DEPENDENCY-BASELINE.md §6: any libx264 / libx265 / libfdk-aac usage in
+        # *code* is a release blocker. Fail fast before spending time on publish.
+        # Documentation comments may name the banned encoders while explaining the
+        # rule, so comment-only lines are skipped - the gate is about what the
+        # compiler emits into FFmpeg arguments, not about prose.
         shell: pwsh
         run: |
-          $hits = Get-ChildItem src/TinyPix.Media -Recurse -Filter *.cs |
-            Select-String -Pattern 'libx264','libx265','libfdk' -SimpleMatch
-          if ($hits) {
-            $lines = ($hits | ForEach-Object { "$($_.Filename):$($_.LineNumber)" }) -join ', '
-            Write-Error "GPL/nonfree encoder referenced: $lines"
+          $pattern = 'libx264|libx265|libfdk'
+          $hits = @()
+          foreach ($file in Get-ChildItem src/TinyPix.Media -Recurse -Filter *.cs) {
+            $lines = Get-Content -LiteralPath $file.FullName
+            for ($i = 0; $i -lt $lines.Count; $i++) {
+              $trimmed = $lines[$i].Trim()
+              if ($trimmed.StartsWith('//') -or $trimmed.StartsWith('*') -or $trimmed.StartsWith('/*')) {
+                continue
+              }
+              if ($trimmed -match $pattern) {
+                $hits += "$($file.Name):$($i + 1)"
+              }
+            }
+          }
+          if ($hits.Count -gt 0) {
+            Write-Error "GPL/nonfree encoder referenced: $($hits -join ', ')"
             exit 1
           }
           Write-Host 'No GPL/nonfree encoder referenced in TinyPix.Media.'

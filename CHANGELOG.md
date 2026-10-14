@@ -21,6 +21,16 @@
 - 同步 `tests/test_v4_architecture_contract.py` 中钉住的门禁状态原文（新措辞同样声明门禁未完成）。
 - `.gitignore` 追加忽略 `artifacts/SHA256.txt`（数百 MB 产物回传目录不进版本库）。
 
+### 2026-10-14 CI 首次跑通构建阶段，并修正 LGPL 门禁误伤
+
+- 推送后 GitHub Actions（run 38534470640）首次跑过 `Restore solution` / `Build solution` /
+  `Test portable class libraries`（此前 2 次运行全部在 workload 安装步骤失败）。
+- 失败点：`LGPL encoder gate` 用关键字扫描命中 4 处**注释**——`LgplVideoCodec.cs:11/12`（禁令说明）
+  与 `VideoConvertHandler.cs:7`、`VideoOutputHandlerBase.cs:14`（已过时的 "libx264 CRF" 描述）。
+- 修正：门禁改为逐行扫描并跳过 `//`、`///`、`*` 开头的注释行——门禁语义是"代码不得引用 GPL 编码器"，
+  不是"文档不得提及"；同时把两处过时注释改写为 `LgplVideoCodec` 的真实行为（OpenH264 目标比特率）。
+- 本地复验：同样的行过滤在 `src/TinyPix.Media` 下代码行命中数为 0；Media 42 个单测通过。
+
 ### 2026-09-29 首次真实编译贯通、LGPL 编码器替换与双形态打包
 
 - 首次在 Windows 上真正编译通过 `TinyPix.sln`。此前项目从未编译成功：本次暴露并修复 21 处编译错误
