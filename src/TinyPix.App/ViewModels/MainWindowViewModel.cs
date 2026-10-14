@@ -23,8 +23,18 @@ public partial class MainWindowViewModel : ObservableObject
         _jobQueue = services.GetRequiredService<JobQueueService>();
     }
 
-    [ObservableProperty]
     private string _selectedCategory = "video";
+
+    /// <summary>
+    /// Implemented by hand instead of via <c>[ObservableProperty]</c>: the source
+    /// generator's field form is not WinRT/AOT compatible (MVVMTK0045), and the
+    /// partial-property form needs the generator to emit an implementation part.
+    /// </summary>
+    public string SelectedCategory
+    {
+        get => _selectedCategory;
+        set => SetProperty(ref _selectedCategory, value);
+    }
 
     public IReadOnlyList<ToolDescriptor> VisibleTools =>
         ToolCatalog.All

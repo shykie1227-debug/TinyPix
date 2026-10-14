@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TinyPix.Core.Jobs;
 using TinyPix.Core.Tools;
+using TinyPix.Media.Ffmpeg;
 
 namespace TinyPix.Media.Video;
 
@@ -73,10 +74,11 @@ public sealed class VideoSpeedVolumeHandler : VideoEditHandlerBase
             "-y", "-i", input,
             "-filter_complex", filter,
             "-map", "[v]", "-map", "[a]",
-            "-c:v", "libx264", "-crf", "20",
-            "-c:a", "aac",
-            output,
         };
-        return new[] { (output, args) };
+        args.AddRange(LgplVideoCodec.H264Arguments());
+        args.Add("-c:a");
+        args.Add("aac");
+        args.Add(output);
+        return new[] { (output, (IReadOnlyList<string>)args) };
     }
 }

@@ -68,10 +68,13 @@ public sealed class ToolHandlerRegistryTests
     public void Re_registering_same_id_overwrites_previous_handler()
     {
         var registry = new ToolHandlerRegistry();
-        registry.Register(new StubHandler("video.convert"));
-        registry.Register(new StubHandler("video.compress"));
+        var first = new StubHandler("video.convert");
+        var second = new StubHandler("video.convert");
+        registry.Register(first);
+        registry.Register(second);
 
         Assert.True(registry.TryResolve("video.convert", out IToolHandler? resolved));
-        Assert.Equal("video.compress", resolved!.ToolId);
+        Assert.Same(second, resolved);
+        Assert.NotSame(first, resolved);
     }
 }

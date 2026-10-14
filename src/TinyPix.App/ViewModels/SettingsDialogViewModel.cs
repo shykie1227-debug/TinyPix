@@ -27,23 +27,51 @@ public partial class SettingsDialogViewModel : ObservableObject
         SaveSettingsCommand = new AsyncRelayCommand(SaveSettingsAsync);
     }
 
-    [ObservableProperty]
+    // Implemented by hand instead of via [ObservableProperty]: the generator's
+    // field form is not WinRT/AOT compatible (MVVMTK0045) and its partial-property
+    // form needs the generator to emit an implementation part.
     private string _outputDirectory = string.Empty;
-
-    [ObservableProperty]
     private string _theme = "System";
-
-    [ObservableProperty]
     private string _language = "zh-CN";
-
-    [ObservableProperty]
     private bool _reduceMotion;
-
-    [ObservableProperty]
     private long _maximumCacheBytes;
-
-    [ObservableProperty]
     private bool _confirmBeforeReplacingExistingOutput = true;
+
+    public string OutputDirectory
+    {
+        get => _outputDirectory;
+        set => SetProperty(ref _outputDirectory, value);
+    }
+
+    public string Theme
+    {
+        get => _theme;
+        set => SetProperty(ref _theme, value);
+    }
+
+    public string Language
+    {
+        get => _language;
+        set => SetProperty(ref _language, value);
+    }
+
+    public bool ReduceMotion
+    {
+        get => _reduceMotion;
+        set => SetProperty(ref _reduceMotion, value);
+    }
+
+    public long MaximumCacheBytes
+    {
+        get => _maximumCacheBytes;
+        set => SetProperty(ref _maximumCacheBytes, value);
+    }
+
+    public bool ConfirmBeforeReplacingExistingOutput
+    {
+        get => _confirmBeforeReplacingExistingOutput;
+        set => SetProperty(ref _confirmBeforeReplacingExistingOutput, value);
+    }
 
     public IAsyncRelayCommand SaveSettingsCommand { get; }
 

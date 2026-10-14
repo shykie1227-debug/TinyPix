@@ -1,6 +1,6 @@
 # TinyPix 4.0 implementation status
 
-Updated: 2026-08-14
+Updated: 2026-10-14
 
 ## Implemented and locally verified
 
@@ -87,22 +87,35 @@ Updated: 2026-08-14
   a clean Windows 11 x64 run exists. Per explicit user direction on 2026-07-31
   the shell phase proceeded without that VM gate, so Windows runtime
   window/UIA verification is still owed before any completion claim.
-- Phase 1 视频输出 Handler（video.convert / video.compress）已实现并 macOS 结构契约
-  验证：dotnet 编译与 Windows 11 真实 FFmpeg 转码、UIA、取消/失败隔离等行为尚未在
-  Windows 验证；当前为契约级实现，不得据此声称功能完成。
-- Phase 2 GIF 制作 Handler（video.gif）已实现并 macOS 结构契约验证：两遍
-  palettegen→paletteuse 管线、时长/格式校验与命名冲突仅在本机 pytest 结构契约与 C# 单测
-  （Windows 编译跑）覆盖；真实 FFmpeg 转码、调色板质量、UIA 与取消/失败隔离尚未在
-  Windows 11 验证；当前为契约级实现，不得据此声称功能完成。GIF 时长上限按 FEATURE-MATRIX
-  取 30s（与 MEDIA_CAPABILITIES 60s 文档冲突，已统一到冻结口径）。
+- Phase 1 视频输出 Handler（video.convert / video.compress）已在 Windows 10 19045 上真实
+  编译并跑通 `video.convert`（输出 mp4 31,336 B）；`video.compress` 仅参数层覆盖。
+  Windows 11 干净机的 UIA、取消/失败隔离、DPI/主题组合仍欠，不得据此声称功能完成。
+- Phase 2 GIF 制作 Handler（video.gif）已在 Windows 10 19045 上真实跑通两遍
+  palettegen→paletteuse 管线（输出 gif 43,439 B）；调色板质量、UIA 与取消/失败隔离尚未在
+  Windows 11 验证。GIF 时长上限按 FEATURE-MATRIX 取 30s（与 MEDIA_CAPABILITIES 60s 文档冲突，
+  已统一到冻结口径）。
 - Phase 3 视频编辑 9 个 Handler（trim/split/merge/geometry/speed-volume/audio/overlay/
   frames/metadata）已实现并 macOS 结构契约验证：参数构造、命名冲突与校验仅在本机 pytest
   结构契约与 C# 单测（Windows 编译跑）覆盖；真实 FFmpeg 转码、合并/水印/字幕烧录等行为、
   UIA 与取消/失败隔离尚未在 Windows 11 验证；当前为契约级实现，不得据此声称功能完成。
   图片工具（11 个）未实现：Media 层当前仅 FFmpeg 引擎，缺图像引擎抽象，留作 phase 4。
-- App project restore/build and the disposable prototype build passed on the
-  configured Windows 10 VM. The formal App, Portable ZIP, SBOM execution, and
-  clean-machine runtime acceptance remain incomplete.
+- 2026-09-29 首次真实编译贯通（此前项目从未编译成功）：在 Windows 10 19045 + .NET SDK
+  10.0.302 上修复 21 处编译错误后 `TinyPix.sln` 全量 Release 构建通过；84 个 C# 单测与
+  72 个 Python 契约全绿。排除 GPL 编码器（6 处 `libx264` → `libopenh264`，新增
+  `src/TinyPix.Media/Ffmpeg/LgplVideoCodec.cs`）；新增 `build/Get-FfmpegEngine.ps1`
+  （BtbN LGPL 静态构建 + SHA-256 + libopenh264 硬门禁）与 `build/Publish-SingleFile.ps1`。
+  产物：单文件 `TinyPix.exe` 160.58 MiB、便携 ZIP 172.58 MiB，均自带 ffmpeg/ffprobe。
+  真实转码冒烟通过：`video.convert` → `in_转换.mp4`、`video.gif` → `in_GIF.gif`，
+  源文件 SHA-256 前后一致。交付细节见 `docs/DELIVERY-2026-10-14.md`。
+- App project restore/build, the formal App publish, the Portable ZIP and the
+  single-file EXE now pass on the configured Windows 10 VM (2026-09-29).
+  Clean-machine runtime acceptance remains incomplete: the UI window launch and
+  the Windows 11 DPI/theme/UIA/Narrator matrix are still owed. The automated
+  launch attempt could not cover the window because the VM exec channel runs as
+  SYSTEM in a non-interactive session (`UserInteractive=False`); a minimal WinUI
+  app without any TinyPix XAML failed identically, which isolates the cause to
+  the harness rather than the product. Manual double-click confirmation is
+  required before claiming a runnable window.
 - Media/OCR/PDF/model handlers and all 50 end-user workflows are contracts or
   catalog entries, not complete feature implementations yet.
 

@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TinyPix.Core.Jobs;
 using TinyPix.Core.Tools;
+using TinyPix.Media.Ffmpeg;
 
 namespace TinyPix.Media.Video;
 
@@ -53,7 +54,7 @@ public sealed class VideoAudioHandler : VideoEditHandlerBase
         {
             string muteOut = ResolveOutput(input, "_静音", "mp4", request.OutputDirectory);
             var muteArgs = new List<string> { "-y", "-i", input, "-an", "-c:v", "copy", muteOut };
-            return new[] { (muteOut, muteArgs) };
+            return new[] { (muteOut, (IReadOnlyList<string>)muteArgs) };
         }
 
         if (string.Equals(mode, "replace", StringComparison.OrdinalIgnoreCase))
@@ -67,7 +68,7 @@ public sealed class VideoAudioHandler : VideoEditHandlerBase
                 "-c:v", "copy", "-c:a", "aac", "-shortest",
                 replaceOut,
             };
-            return new[] { (replaceOut, replaceArgs) };
+            return new[] { (replaceOut, (IReadOnlyList<string>)replaceArgs) };
         }
 
         // extract (default)
@@ -76,6 +77,6 @@ public sealed class VideoAudioHandler : VideoEditHandlerBase
         {
             "-y", "-i", input, "-vn", "-c:a", "libmp3lame", "-b:a", "192k", extractOut,
         };
-        return new[] { (extractOut, extractArgs) };
+        return new[] { (extractOut, (IReadOnlyList<string>)extractArgs) };
     }
 }

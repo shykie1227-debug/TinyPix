@@ -434,8 +434,10 @@ def test_formal_shell_declares_required_keyboard_and_offline_boundaries() -> Non
         "VirtualKey.F6",
         "VirtualKey.J",
         "VirtualKey.K",
-        "VirtualKey.L",
-        "VirtualKey.OemComma",
+            "VirtualKey.L",
+            # Windows.System.VirtualKey has no OEM members, so Ctrl+, is matched
+            # through the Win32 code VK_OEM_COMMA (188) exposed as VkOemComma.
+            "VkOemComma",
         "ToolCatalog",
         "JobQueueService",
         "ISettingsStore",

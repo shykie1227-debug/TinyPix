@@ -52,7 +52,8 @@ public sealed class VideoEditHandlersTests
 
         IReadOnlyList<string> args = handler.PreviewArguments(request);
 
-        Assert.Contains("libx264", args);
+        Assert.Contains(LgplVideoCodec.H264, args);
+        Assert.Contains(LgplVideoCodec.BitrateKbpsForQuality(LgplVideoCodec.DefaultQuality) + "k", args);
         Assert.Contains("aac", args);
         Assert.EndsWith("_剪辑.mp4", handler.PreviewOutputPaths(request)[0]);
     }
@@ -115,8 +116,10 @@ public sealed class VideoEditHandlersTests
 
         IReadOnlyList<string> args = handler.PreviewArguments(request);
 
-        Assert.Contains("setpts=PTS/", args);
-        Assert.Contains("atempo=", args);
+        // The whole filter graph is one argv item, so match inside it instead of
+        // comparing whole items.
+        Assert.Contains(args, a => a.Contains("setpts=PTS/"));
+        Assert.Contains(args, a => a.Contains("atempo="));
     }
 
     [Fact]
@@ -153,7 +156,7 @@ public sealed class VideoEditHandlersTests
 
         IReadOnlyList<string> args = handler.PreviewArguments(request);
 
-        Assert.Contains("overlay=", args);
+        Assert.Contains(args, a => a.Contains("overlay="));
         Assert.Contains("_水印", handler.PreviewOutputPaths(request)[0]);
     }
 

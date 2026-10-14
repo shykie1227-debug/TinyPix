@@ -35,6 +35,12 @@ public sealed class GifMakerHandler : VideoOutputHandlerBase
 
     protected override string OutputSuffix => "_GIF";
 
+    /// <summary>
+    /// A GIF tool always produces .gif, so the output name must not depend on a
+    /// <c>format</c> parameter the caller may legitimately omit.
+    /// </summary>
+    protected override string DefaultExtension => "gif";
+
     public override async ValueTask<ToolValidationResult> ValidateAsync(
         JobRequest request,
         CancellationToken cancellationToken)

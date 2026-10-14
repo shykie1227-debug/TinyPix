@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 using TinyPix.Core.Jobs;
+using TinyPix.Core.Tools;
 using TinyPix.Media.Ffmpeg;
 using TinyPix.Media.Video;
 
@@ -37,10 +38,10 @@ public sealed class GifMakerHandlerTests
                 ["quality"] = "80",
             });
 
-        Assert.True(args.Any(a => a.Contains("paletteuse")));
+        Assert.Contains(args, a => a.Contains("paletteuse"));
         Assert.Contains("-loop", args);
         Assert.Contains("-r", args);
-        Assert.Equal("/out/clip_GIF.gif", args[^1]);
+        Assert.Equal(Path.Combine("/out", "clip_GIF.gif"), args[^1]);
     }
 
     [Fact]

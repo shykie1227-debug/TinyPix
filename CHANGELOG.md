@@ -6,6 +6,42 @@
 
 ## 变更记录
 
+### 2026-10-14 阶段收尾：产物回传与交付说明
+
+- 将 Windows VM 的构建产物回传至仓库 `artifacts/`：单文件 `TinyPix.exe`（168,382,782 B / 160.58 MiB，
+  SHA-256 `e8616e0c…22514`）与 `TinyPix-4.0-Windows-x64-Portable.zip`（180,966,774 B / 172.58 MiB，
+  SHA-256 `cee50c4c…8471a`）。Mac 侧与 VM 侧两次独立哈希计算完全一致。
+- 新增 `docs/DELIVERY-2026-10-14.md`：打包命令、产物路径/体积/哈希、内置引擎说明、
+  干净机器六步验证流程，以及"已实测 / 未实测"边界表。
+- 更新 `docs/architecture/IMPLEMENTATION-STATUS.md`：Phase 1/2 由"契约级"上调为
+  "Windows 10 19045 真实转码已验证"，并写明 UI 窗口启动仍欠手动确认及其原因。
+- `.gitignore` 追加忽略 `artifacts/SHA256.txt`（数百 MB 产物回传目录不进版本库）。
+
+### 2026-09-29 首次真实编译贯通、LGPL 编码器替换与双形态打包
+
+- 首次在 Windows 上真正编译通过 `TinyPix.sln`。此前项目从未编译成功：本次暴露并修复 21 处编译错误
+  （9 个 Phase 3 handler 缺 `using TinyPix.Media.Ffmpeg;`、10 处元组类型不匹配、
+  `VideoSplitHandler.ParsePoints` LINQ 类型错误、`EmptyStateControl` 用了 WinUI 不存在的 `BorderStyle`、
+  `VisualState x:Name="DragOver"` 与 `UIElement.DragOver` 冲突、`MainWindow.Current` 隐藏基类成员、
+  `VirtualKey.OemComma` 不存在（改为 `VK_OEM_COMMA = 188`）、3 个页面缺 DI/Navigation using、
+  `JobSubmissionService` 类型误用、`[ObservableProperty]` 字段形式触发 MVVMTK0045）。
+- 排除 GPL 编码器：新增 `src/TinyPix.Media/Ffmpeg/LgplVideoCodec.cs`，6 处 `libx264` 改为
+  `libopenh264`（比特率驱动），WebM 保留 `libvpx`。符合 `DEPENDENCY-BASELINE.md` §6 与 `LOCAL_RULES.md` §5。
+- 新增 `build/Get-FfmpegEngine.ps1`：构建期下载 BtbN LGPL 静态构建（资产 SHA-256
+  `b12b2da1bf1d9495d6650f2621f54a7111aa82cb210544b5dba53746a88b8502`），哈希校验后装入 `Engines/`，
+  并硬门禁校验"必须含 libopenh264、不得含任何 GPL/nonfree 编码器"。
+- 新增 `build/Publish-SingleFile.ps1` 与单文件所需的 `IncludeAllContentForSelfExtract`，产出单个
+  `TinyPix.exe`（160.58 MB）；便携 ZIP 仍为正式形态。`LOCAL_RULES.md` §2 相应补充单文件为可选附加产物。
+- 修复 CI：移除失效的 `dotnet workload install microsoft-windows-appsdk`（ID 不存在，且 pwsh 的
+  `|| echo` 不重置 `$LASTEXITCODE`），补充解决方案构建、三个库测试与 LGPL 编码器门禁。
+- 统一 Windows App SDK 版本认知：WinUI 与 Runtime 必须同属一个版本序列（现为 2.2.x），
+  并在 `Directory.Packages.props` 写下变更约束注释。
+- 修复 `GifMakerHandler` 依赖基类 `format` 参数导致的 `KeyNotFoundException`（GIF 输出恒为 .gif）。
+- 修复 5 个把 Unix 路径分隔符写死的测试与 1 个自相矛盾的注册表测试；同步更新架构契约中
+  不存在的 `VirtualKey.OemComma` 标记。
+- 实测：单文件 exe 160.58 MB / 便携目录 425.8 MB；`video.convert`、`video.gif` 真实跑通，
+  源文件 SHA-256 前后一致；84 个 C# 单测与 72 个 Python 契约全通过。
+
 ### 2026-08-29 阶段收尾清理与合规复核
 
 - 统一前端锁文件根版本为 `3.5.1`，保留 Tauri 3.5.1 基线与 WinUI 4.0.0 清单的双轨版本边界。

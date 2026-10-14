@@ -114,18 +114,25 @@ public abstract class VideoOutputHandlerBase : IToolHandler
         return BuildArguments(input, output, parameters);
     }
 
-    public string PreviewOutputPath(
+    public virtual string PreviewOutputPath(
         string input,
         string outputDirectory,
         IReadOnlyDictionary<string, string> parameters) =>
-        VideoOutputNaming.BuildOutputPath(input, OutputSuffix, parameters["format"], outputDirectory);
+        VideoOutputNaming.BuildOutputPath(
+            input,
+            OutputSuffix,
+            parameters.TryGetValue("format", out string? format) ? format : DefaultExtension,
+            outputDirectory);
+
+    /// <summary>Extension used when the caller omits the <c>format</c> parameter.</summary>
+    protected virtual string DefaultExtension => "mp4";
 
     protected virtual IReadOnlyList<string> BuildArguments(
         string input,
         string output,
         IReadOnlyDictionary<string, string> parameters)
     {
-        int crf = ClampCrf(28 - (int)Math.Round(ParseQuality(parameters) * 0.10));
+        int quality = ParseQuality(parameters);
         string format = parameters["format"].ToLowerInvariant();
         bool audioOnly = AudioOnlyFormats.Contains(format);
 
@@ -138,22 +145,7 @@ public abstract class VideoOutputHandlerBase : IToolHandler
         }
         else
         {
-            string videoCodec = VideoCodecFor(format);
-            args.Add("-c:v");
-            args.Add(videoCodec);
-            args.Add("-crf");
-            args.Add(crf.ToString(CultureInfo.InvariantCulture));
-            if (videoCodec == "libvpx")
-            {
-                args.Add("-b:v");
-                args.Add("0");
-            }
-            else
-            {
-                args.Add("-preset");
-                args.Add("medium");
-            }
-
+            args.AddRange(LgplVideoCodec.EncoderArguments(VideoCodecFor(format), ParseQuality(parameters)));
             args.AddRange(AudioCodecArgs(format));
         }
 
@@ -172,12 +164,9 @@ public abstract class VideoOutputHandlerBase : IToolHandler
         return 80;
     }
 
-    private static int ClampCrf(int crf) => Math.Clamp(crf, 18, 28);
+    private static string VideoCodecFor(string format) => LgplVideoCodec.ForContainer(format);
 
-    private static string VideoCodecFor(string format) =>
-        string.Equals(format, "webm", StringComparison.OrdinalIgnoreCase) ? "libvpx" : "libx264";
-
-    private static IReadOnlyList<string> AudioCodecArgs(string format) => format switch
+    protected static IReadOnlyList<string> AudioCodecArgs(string format) => format switch
     {
         "mp3" or "avi" => new[] { "-c:a", "libmp3lame", "-b:a", "160k" },
         "wav" => new[] { "-c:a", "pcm_s16le" },

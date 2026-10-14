@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 using TinyPix.Core.Jobs;
+using TinyPix.Core.Tools;
 using TinyPix.Media.Ffmpeg;
 using TinyPix.Media.Video;
 
@@ -22,29 +23,44 @@ public sealed class VideoConvertHandlerTests
     private static VideoConvertHandler Handler() => new(new FakeEngine("ffmpeg"));
 
     [Fact]
-    public void Mp4_maps_quality_80_to_crf_20_with_h264_aac()
+    public void Mp4_uses_lgpl_openh264_with_bitrate_and_aac()
     {
         IReadOnlyList<string> args = Handler().PreviewArguments(
             "clip.mp4", "/out", new Dictionary<string, string> { ["format"] = "mp4", ["quality"] = "80" });
 
         int codec = args.ToList().IndexOf("-c:v");
-        Assert.Equal("libx264", args[codec + 1]);
-        int crf = args.ToList().IndexOf("-crf");
-        Assert.Equal("20", args[crf + 1]);
+        Assert.Equal(LgplVideoCodec.H264, args[codec + 1]);
+        int bv = args.ToList().IndexOf("-b:v");
+        Assert.Equal("8300k", args[bv + 1]);
         int audio = args.ToList().IndexOf("-c:a");
         Assert.Equal("aac", args[audio + 1]);
-        Assert.Equal("/out/clip_转换.mp4", args[^1]);
+        Assert.Equal(Path.Combine("/out", "clip_转换.mp4"), args[^1]);
+    }
+
+    [Theory]
+    [InlineData(100, "10300k")]
+    [InlineData(80, "8300k")]
+    [InlineData(0, "300k")]
+    public void Quality_maps_to_clamped_openh264_bitrate(int quality, string expectedBitrate)
+    {
+        IReadOnlyList<string> args = Handler().PreviewArguments(
+            "clip.mp4", "/out", new Dictionary<string, string> { ["format"] = "mp4", ["quality"] = quality.ToString() });
+
+        int index = args.ToList().IndexOf("-b:v");
+        Assert.Equal(expectedBitrate, args[index + 1]);
     }
 
     [Theory]
     [InlineData(100, 18)]
     [InlineData(80, 20)]
     [InlineData(0, 28)]
-    public void Quality_maps_to_clamped_crf(int quality, int crf)
+    public void Quality_maps_to_clamped_crf_for_webm(int quality, int crf)
     {
         IReadOnlyList<string> args = Handler().PreviewArguments(
-            "clip.mp4", "/out", new Dictionary<string, string> { ["format"] = "mp4", ["quality"] = quality.ToString() });
+            "clip.mp4", "/out", new Dictionary<string, string> { ["format"] = "webm", ["quality"] = quality.ToString() });
 
+        int codec = args.ToList().IndexOf("-c:v");
+        Assert.Equal(LgplVideoCodec.Vp8, args[codec + 1]);
         int index = args.ToList().IndexOf("-crf");
         Assert.Equal(crf.ToString(), args[index + 1]);
     }
@@ -58,7 +74,7 @@ public sealed class VideoConvertHandlerTests
         Assert.Contains("-vn", args);
         int audio = args.ToList().IndexOf("-c:a");
         Assert.Equal("libmp3lame", args[audio + 1]);
-        Assert.Equal("/out/clip_转换.mp3", args[^1]);
+        Assert.Equal(Path.Combine("/out", "clip_转换.mp3"), args[^1]);
     }
 
     [Fact]

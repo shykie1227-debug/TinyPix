@@ -1,7 +1,8 @@
 [CmdletBinding()]
 param(
     [string]$Configuration = 'Release',
-    [string]$ArtifactsDirectory = 'artifacts'
+    [string]$ArtifactsDirectory = 'artifacts',
+    [switch]$SkipFfmpeg
 )
 
 $ErrorActionPreference = 'Stop'
@@ -33,6 +34,13 @@ Copy-Item -LiteralPath (Join-Path $repoRoot 'THIRD_PARTY_NOTICES') -Destination 
 
 foreach ($directory in @('Runtime', 'Engines', 'Templates', 'Models', 'Licenses', 'Config', 'Data', 'Cache', 'Logs')) {
     New-Item -ItemType Directory -Path (Join-Path $stagingRoot $directory) -Force | Out-Null
+}
+
+if (-not $SkipFfmpeg) {
+    & (Join-Path $PSScriptRoot 'Get-FfmpegEngine.ps1') -PortableRoot $stagingRoot
+}
+else {
+    Write-Warning 'SkipFfmpeg requested: Engines/ stays empty and every media tool will fail.'
 }
 
 & (Join-Path $PSScriptRoot 'generate-sbom.ps1') `

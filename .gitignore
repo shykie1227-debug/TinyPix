@@ -70,5 +70,8 @@ artifacts/TinyPix-4.0-Windows-x64-Portable.zip
 artifacts/TinyPix-4.0-Windows-x64-Portable.zip.sha256
 artifacts/windows/**/*.pml
 artifacts/windows/**/tinypix-registry-capture.csv
+
+# Locally retrieved build outputs (hundreds of MB; never versioned).
+artifacts/SHA256.txt
 !assets/Portable/Logs/
 !assets/Portable/Logs/.gitkeep

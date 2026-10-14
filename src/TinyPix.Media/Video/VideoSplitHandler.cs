@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TinyPix.Core.Jobs;
 using TinyPix.Core.Tools;
+using TinyPix.Media.Ffmpeg;
 
 namespace TinyPix.Media.Video;
 
@@ -85,8 +86,11 @@ public sealed class VideoSplitHandler : VideoEditHandlerBase
         return text
             .Split(',', StringSplitOptions.RemoveEmptyEntries)
             .Select(part => part.Trim())
-            .Where(part => double.TryParse(
-                part, NumberStyles.Float, CultureInfo.InvariantCulture, out double value) && value > 0)
+            .Select(part => double.TryParse(
+                part, NumberStyles.Float, CultureInfo.InvariantCulture, out double value) && value > 0
+                    ? value
+                    : double.NaN)
+            .Where(value => !double.IsNaN(value))
             .OrderBy(value => value)
             .Distinct()
             .ToList();
