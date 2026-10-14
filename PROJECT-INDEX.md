@@ -27,6 +27,7 @@
 | 旧 Tauri | `src/` React 与 `src-tauri/` Rust 仍是 3.5.1 行为事实基线，暂不删除 |
 | 当前产物 | `artifacts/TinyPix.exe` 160.58 MiB、便携 ZIP 172.58 MiB（含 LGPL ffmpeg/ffprobe），见 `docs/DELIVERY-2026-10-14.md` |
 | 当前门禁 | 编译、单测、真实转码、源文件哈希已过；**窗口启动与 Windows 11 干净机门禁未完成**，整体门禁仍开 |
+| CI | `build-exe.yml` 在 push 到 `main` 时出包，run `38538164421` 首次全绿；artifact：`TinyPix-win-x64-single-file`、`TinyPix-win-x64-portable` |
 
 完成边界以 [IMPLEMENTATION-STATUS.md](docs/architecture/IMPLEMENTATION-STATUS.md) 为准，不从目录存在推断功能已经完成。
 
