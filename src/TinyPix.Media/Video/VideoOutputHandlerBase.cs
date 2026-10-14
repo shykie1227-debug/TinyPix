@@ -11,8 +11,9 @@ namespace TinyPix.Media.Video;
 /// <summary>
 /// Shared FFmpeg-driven implementation for the 视频输出 workbench handlers
 /// (video.convert / video.compress). Builds container-appropriate encode arguments
-/// from the request parameters, maps the quality slider to a libx264 CRF, resolves
-/// the locally bundled FFmpeg engine, and maps progress back to JobProgress.
+/// from the request parameters, maps the quality slider to the LGPL encoder
+/// arguments supplied by <see cref="LgplVideoCodec"/>, resolves the locally
+/// bundled FFmpeg engine, and maps progress back to JobProgress.
 /// </summary>
 public abstract class VideoOutputHandlerBase : IToolHandler
 {
