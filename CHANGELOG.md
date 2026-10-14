@@ -6,6 +6,17 @@
 
 ## 变更记录
 
+### 2026-10-14 阶段收尾：产物回传与交付说明
+
+- 将 Windows VM 的构建产物回传至仓库 `artifacts/`：单文件 `TinyPix.exe`（168,382,782 B / 160.58 MiB，
+  SHA-256 `e8616e0c…22514`）与 `TinyPix-4.0-Windows-x64-Portable.zip`（180,966,774 B / 172.58 MiB，
+  SHA-256 `cee50c4c…8471a`）。Mac 侧与 VM 侧两次独立哈希计算完全一致。
+- 新增 `docs/DELIVERY-2026-10-14.md`：打包命令、产物路径/体积/哈希、内置引擎说明、
+  干净机器六步验证流程，以及"已实测 / 未实测"边界表。
+- 更新 `docs/architecture/IMPLEMENTATION-STATUS.md`：Phase 1/2 由"契约级"上调为
+  "Windows 10 19045 真实转码已验证"，并写明 UI 窗口启动仍欠手动确认及其原因。
+- `.gitignore` 追加忽略 `artifacts/SHA256.txt`（数百 MB 产物回传目录不进版本库）。
+
 ### 2026-09-29 首次真实编译贯通、LGPL 编码器替换与双形态打包
 
 - 首次在 Windows 上真正编译通过 `TinyPix.sln`。此前项目从未编译成功：本次暴露并修复 21 处编译错误
