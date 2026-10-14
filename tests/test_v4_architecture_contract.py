@@ -166,8 +166,8 @@ def test_project_has_a_stable_fast_retrieval_index() -> None:
         assert (ROOT / relative_dir).is_dir()
 
     assert (
-        "| 当前门禁 | Windows 10 可丢弃原型已通过；Windows 11 干净 VM "
-        "尚未提供，整体门禁未完成 |"
+        "| 当前门禁 | 编译、单测、真实转码、源文件哈希已过；"
+        "**窗口启动与 Windows 11 干净机门禁未完成**，整体门禁仍开 |"
     ) in index
     assert "设置弹窗静态冻结证据已通过" in index
     assert index.index("Windows 可行性门禁：静态 UI 冻结后的入口") < index.index(

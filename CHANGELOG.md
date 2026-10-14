@@ -15,6 +15,10 @@
   干净机器六步验证流程，以及"已实测 / 未实测"边界表。
 - 更新 `docs/architecture/IMPLEMENTATION-STATUS.md`：Phase 1/2 由"契约级"上调为
   "Windows 10 19045 真实转码已验证"，并写明 UI 窗口启动仍欠手动确认及其原因。
+- 新增 `docs/PHASE-CLOSEOUT-2026-10-14.md`：阶段交接报告（进度/验证/Gated/下一步 P1–P5/VM 操作硬知识）。
+- 更新 `PROJECT-INDEX.md`：部署形态改为"Portable ZIP 正式 + 单文件 exe 可选"；迁移与门禁行按实测重写；
+  新增"当前产物"行、出包与编码器合规路由、交接/交付文档路径、macOS 验证注意事项、两条禁止误判。
+- 同步 `tests/test_v4_architecture_contract.py` 中钉住的门禁状态原文（新措辞同样声明门禁未完成）。
 - `.gitignore` 追加忽略 `artifacts/SHA256.txt`（数百 MB 产物回传目录不进版本库）。
 
 ### 2026-09-29 首次真实编译贯通、LGPL 编码器替换与双形态打包
