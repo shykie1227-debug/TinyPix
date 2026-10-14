@@ -21,6 +21,20 @@
 - 同步 `tests/test_v4_architecture_contract.py` 中钉住的门禁状态原文（新措辞同样声明门禁未完成）。
 - `.gitignore` 追加忽略 `artifacts/SHA256.txt`（数百 MB 产物回传目录不进版本库）。
 
+### 2026-10-14 修复 CI publish 的 NU1004 与 PowerShell 5.1 兼容问题
+
+- **NU1004**：`publish` 强制 `-r win-x64`，而提交的 `packages.lock.json` 是无 RID 生成的，
+  NuGet 直接拒绝还原。两种改法都不可行——用 `-r win-x64` 重新生成全部 lock 会让 CI 的无 RID
+  `--locked-mode` 还原失败；`-p:RestorePackagesWithLockFile=false` 因 lock 文件存在被 NU1005 拒绝。
+  最终方案：publish 时 `-p:RestoreLockedMode=false`（依赖版本已由前置 `--locked-mode` 还原步骤钉死），
+  并在脚本内**快照并在 finally 中还原 lock 文件**，避免发布流程把 RID 写回仓库。
+- **PowerShell 5.1 兼容**（CI 用 pwsh 7，本机 Windows PowerShell 5.1 会踩）：
+  `Set-Content -Encoding utf8NoBOM` → `[System.IO.File]::WriteAllText` + `UTF8Encoding($false)`；
+  `[System.IO.Path]::GetRelativePath` → `System.Uri.MakeRelativeUri` 实现；
+  压缩前补 `Add-Type -AssemblyName System.IO.Compression.FileSystem`。
+- VM 复验（Windows PowerShell 5.1）：NU1004/NU1005 均为 0，发布 469 个文件且 `TinyPix.exe` 存在，
+  **lock 文件零改动**，便携 ZIP 与 `.sha256` 正常产出。
+
 ### 2026-10-14 CI 首次跑通构建阶段，并修正 LGPL 门禁误伤
 
 - 推送后 GitHub Actions（run 38534470640）首次跑过 `Restore solution` / `Build solution` /

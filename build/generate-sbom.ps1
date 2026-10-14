@@ -18,6 +18,18 @@ $dependenciesFile = [System.IO.Path]::GetFullPath($DependenciesPath)
 
 $projectDirectory = [System.IO.Path]::GetDirectoryName($projectPath)
 $assetsFile = Join-Path $projectDirectory 'obj/project.assets.json'
+
+# [System.IO.Path]::GetRelativePath is .NET Core / PowerShell 7 only. Windows
+# PowerShell 5.1 runs on .NET Framework, so compute the relative path through
+# System.Uri instead. Keeps this script usable from either host.
+function Get-RelativePortablePath {
+    param([string]$BasePath, [string]$TargetPath)
+
+    $baseUri = New-Object System.Uri(($BasePath.TrimEnd('\', '/')) + '\')
+    $targetUri = New-Object System.Uri($TargetPath)
+    $relative = $baseUri.MakeRelativeUri($targetUri).ToString()
+    return [System.Uri]::UnescapeDataString($relative) -replace '/', '\'
+}
 if (-not (Test-Path -LiteralPath $assetsFile)) {
     throw "NuGet restore output is missing: $assetsFile"
 }
@@ -52,7 +64,11 @@ $dependencyInventory = [ordered]@{
     project = [System.IO.Path]::GetFileName($projectPath)
     packages = @($packageInventory | Sort-Object name, version)
 }
-$dependencyInventory | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $dependenciesFile -Encoding utf8NoBOM
+# UTF-8 without BOM via .NET so the script also runs on Windows PowerShell 5.1,
+# where `Set-Content -Encoding utf8NoBOM` (PowerShell 6+) does not exist.
+$dependencyJson = $dependencyInventory | ConvertTo-Json -Depth 5
+[System.IO.File]::WriteAllText(
+    $dependenciesFile, $dependencyJson, (New-Object System.Text.UTF8Encoding($false)))
 
 foreach ($assetDirectory in @('Engines', 'Models')) {
     $assetRoot = Join-Path $portablePath $assetDirectory
@@ -60,7 +76,7 @@ foreach ($assetDirectory in @('Engines', 'Models')) {
         continue
     }
     foreach ($file in Get-ChildItem -LiteralPath $assetRoot -File -Recurse) {
-        $relativePath = [System.IO.Path]::GetRelativePath($portablePath, $file.FullName).Replace('\', '/')
+        $relativePath = (Get-RelativePortablePath -BasePath $portablePath -TargetPath $file.FullName).Replace('\', '/')
         $sha256 = (Get-FileHash -LiteralPath $file.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
         $componentsByKey["file:$relativePath"] = [ordered]@{
             type = 'file'
@@ -81,4 +97,6 @@ $sbom = [ordered]@{
     }
     components = @($componentsByKey.Keys | Sort-Object | ForEach-Object { $componentsByKey[$_] })
 }
-$sbom | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $outputFile -Encoding utf8NoBOM
+$sbomJson = $sbom | ConvertTo-Json -Depth 8
+[System.IO.File]::WriteAllText(
+    $outputFile, $sbomJson, (New-Object System.Text.UTF8Encoding($false)))

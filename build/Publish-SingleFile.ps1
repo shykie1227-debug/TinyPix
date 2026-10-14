@@ -46,15 +46,43 @@ if (Test-Path -LiteralPath $outputRoot) {
 }
 New-Item -ItemType Directory -Path $outputRoot -Force | Out-Null
 
+# Lock file guard: see the long comment in publish-portable.ps1. The -r win-x64
+# publish needs the lock disabled (NU1004), and that lets NuGet rewrite the lock
+# files, so they are snapshotted and restored around the publish.
+$lockFiles = @(Get-ChildItem -Path (Join-Path $repoRoot 'src'), (Join-Path $repoRoot 'tests') `
+        -Recurse -Filter 'packages.lock.json' -File -ErrorAction SilentlyContinue)
+$lockBackup = Join-Path ([IO.Path]::GetTempPath()) ('tinypix-locks-' + [guid]::NewGuid().ToString('N'))
+foreach ($lock in $lockFiles) {
+    $relative = $lock.FullName.Substring($repoRoot.Length).TrimStart([IO.Path]::DirectorySeparatorChar, [IO.Path]::AltDirectorySeparatorChar)
+    $target = Join-Path $lockBackup $relative
+    New-Item -ItemType Directory -Path (Split-Path $target) -Force | Out-Null
+    Copy-Item -LiteralPath $lock.FullName -Destination $target -Force
+}
+
 Write-Host '==> Publishing single-file win-x64 self-contained bundle'
-dotnet publish $appProject `
-    -c $Configuration `
-    -r win-x64 `
-    --self-contained true `
-    -p:PublishSingleFile=true `
-    -p:IncludeAllContentForSelfExtract=true `
-    -o $outputRoot
-if ($LASTEXITCODE -ne 0) { throw 'dotnet publish (single file) failed.' }
+try {
+    dotnet publish $appProject `
+        -c $Configuration `
+        -r win-x64 `
+        --self-contained true `
+        -p:PublishSingleFile=true `
+        -p:IncludeAllContentForSelfExtract=true `
+        -p:RestoreLockedMode=false `
+        -o $outputRoot
+    if ($LASTEXITCODE -ne 0) { throw 'dotnet publish (single file) failed.' }
+}
+finally {
+    foreach ($lock in $lockFiles) {
+        $relative = $lock.FullName.Substring($repoRoot.Length).TrimStart([IO.Path]::DirectorySeparatorChar, [IO.Path]::AltDirectorySeparatorChar)
+        $source = Join-Path $lockBackup $relative
+        if (Test-Path -LiteralPath $source) {
+            Copy-Item -LiteralPath $source -Destination $lock.FullName -Force
+        }
+    }
+    if (Test-Path -LiteralPath $lockBackup) {
+        Remove-Item -LiteralPath $lockBackup -Recurse -Force
+    }
+}
 
 $exe = Join-Path $outputRoot 'TinyPix.exe'
 if (-not (Test-Path -LiteralPath $exe)) {
