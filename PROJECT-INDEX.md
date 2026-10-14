@@ -8,9 +8,10 @@
 1. 确认仓库：`git rev-parse --show-toplevel` 应返回当前项目根目录（Windows 使用实际克隆路径）。
 2. 确认状态：`git status --short --branch`，不得覆盖其他分支或工作区的未提交改动。
 3. 先读硬约束：[LOCAL_RULES.md](LOCAL_RULES.md)。
-4. 按任务查下方“任务到文件路由”，只加载相关文件。
-5. `.pen` 文件只能通过 Pencil MCP 读取或修改，禁止用文本工具解析。
-6. 宣布完成前读取：[UI 质量门禁](design/UI-QUALITY-GATE.md) 与 [Windows 可行性门禁](docs/architecture/WINDOWS-FEASIBILITY-GATE.md)。
+4. 中断恢复先看最新阶段交接：[PHASE-CLOSEOUT-2026-10-14.md](docs/PHASE-CLOSEOUT-2026-10-14.md)（含 VM 操作坑与出包命令）。
+5. 按任务查下方“任务到文件路由”，只加载相关文件。
+6. `.pen` 文件只能通过 Pencil MCP 读取或修改，禁止用文本工具解析。
+7. 宣布完成前读取：[UI 质量门禁](design/UI-QUALITY-GATE.md) 与 [Windows 可行性门禁](docs/architecture/WINDOWS-FEASIBILITY-GATE.md)。
 
 ## 1｜当前产品与迁移状态
 
@@ -19,12 +20,13 @@
 | 产品 | TinyPix 4.0，Windows 10 22H2 / Windows 11 x64，本地媒体工作站 |
 | 目标 UI | C#、.NET 10、WinUI 3、Windows App SDK 2.2.x |
 | 架构 | 单进程模块化单体：App → Core / Media / Infrastructure |
-| 部署 | Unpackaged、自包含、文件夹发布、Portable ZIP，不做单文件 EXE |
+| 部署 | Unpackaged、自包含、文件夹发布；**Portable ZIP 为正式形态，单文件 `TinyPix.exe` 为可选附加产物**（见 `LOCAL_RULES.md` §2） |
 | 数据 | 仅保存路径、参数、任务与输出记录；源文件只读 |
 | 网络 | 运行时完全离线，无账号、遥测、更新检查或云服务 |
-| 迁移 | WinUI 骨架和核心合同已建立；正式 Shell、业务页、全部媒体 Handler 和 Portable 验收未完成 |
+| 迁移 | 已于 2026-09-29 首次真正编译通过（此前从未编译成功）；视频类 handler 在 Windows 10 19045 上真实跑通；图片/PDF/证件照等 38/50 工具仍无 handler |
 | 旧 Tauri | `src/` React 与 `src-tauri/` Rust 仍是 3.5.1 行为事实基线，暂不删除 |
-| 当前门禁 | Windows 10 可丢弃原型已通过；Windows 11 干净 VM 尚未提供，整体门禁未完成 |
+| 当前产物 | `artifacts/TinyPix.exe` 160.58 MiB、便携 ZIP 172.58 MiB（含 LGPL ffmpeg/ffprobe），见 `docs/DELIVERY-2026-10-14.md` |
+| 当前门禁 | 编译、单测、真实转码、源文件哈希已过；**窗口启动与 Windows 11 干净机门禁未完成**，整体门禁仍开 |
 
 完成边界以 [IMPLEMENTATION-STATUS.md](docs/architecture/IMPLEMENTATION-STATUS.md) 为准，不从目录存在推断功能已经完成。
 
@@ -54,6 +56,8 @@
 | OCR、PDF、二维码、模型 | `DEPENDENCY-BASELINE.md`、功能矩阵 | 后续 `TinyPix.Media` Handler | 模型哈希、许可证、真实格式矩阵 |
 | WinUI Shell 与自包含启动 | `WINUI-CONTROL-MAPPING.md`、Windows 门禁 | `src/TinyPix.App/` | Windows VM 原型、真实窗口和 UIA |
 | Portable 打包、SBOM、许可证 | `ADR-002`、架构文档 | `build/*.ps1`、`assets/Portable/` | `verify-portable-layout.ps1`、全新 VM |
+| 出 exe、单文件、FFmpeg 引擎 | `LOCAL_RULES.md` §2/§5、`DEPENDENCY-BASELINE.md` §6 | `build/publish-portable.ps1`、`build/Publish-SingleFile.ps1`、`build/Get-FfmpegEngine.ps1` | VM 内真实发布 + 无 UI 冒烟（转码 + 源哈希） |
+| 编码器合规 | `DEPENDENCY-BASELINE.md` §6 | `src/TinyPix.Media/Ffmpeg/LgplVideoCodec.cs` | `Get-FfmpegEngine.ps1` 的 libopenh264 硬门禁、CI 关键字扫描 |
 | 旧版行为回归 | `README.md`、`docs/MEDIA_CAPABILITIES.md` | `src/`、`src-tauri/` | Vitest、Cargo、旧版 Windows 基线 |
 | 产品/UI 审计 | UI 规格、功能矩阵、当前截图 | `docs/audit/` | 同视口截图、布局快照、运行态限制说明 |
 
@@ -62,9 +66,9 @@
 ```text
 TinyPix.sln
 src/
-├── TinyPix.App/             WinUI 组合根和正式 UI（尚未形成完整 Shell）
+├── TinyPix.App/             WinUI 组合根和正式 UI（Shell 已成型，业务页绑定待补）
 ├── TinyPix.Core/            业务模型、接口、校验、工具目录、任务队列
-├── TinyPix.Media/           FFmpeg 与后续图片/OCR/PDF/二维码/模型实现
+├── TinyPix.Media/           FFmpeg（`Ffmpeg/LgplVideoCodec.cs` 为编码器合规入口）与后续图片/OCR/PDF/二维码/模型实现
 ├── TinyPix.Infrastructure/  Portable、设置、SQLite、缓存、日志、文件系统
 ├── components/              旧 Tauri React UI，仅用于行为等价与迁移参考
 └── App.tsx                  旧 Tauri 前端入口
@@ -75,8 +79,12 @@ tests/
 └── components|hooks|...     旧版 Vitest 行为回归
 design/                      Pencil、功能矩阵、UI 规格、控件映射、导出图
 docs/architecture/           ADR、实现状态、Windows 门禁
+docs/DELIVERY-2026-10-14.md  产物清单、打包命令、干净机验证步骤
+docs/PHASE-CLOSEOUT-*.md     阶段交接报告（最新：2026-10-14）
+docs/SURVEY-2026-09-28.md    仓库完整调研：盘点、演进、技术栈、同类对比、分阶段计划
 assets/Portable/             Portable 发布目录模板
-build/                       PowerShell 发布、SBOM、布局验证脚本
+build/                       PowerShell 发布（含 Publish-SingleFile / Get-FfmpegEngine）、SBOM、布局验证脚本
+artifacts/                   回传的构建产物（不进版本库）
 ```
 
 依赖方向固定为：`TinyPix.App → TinyPix.Core / TinyPix.Media / TinyPix.Infrastructure`，Media 和 Infrastructure 只依赖 Core，Core 不依赖任何外层项目。
@@ -100,6 +108,11 @@ rg -n "尚未|未完成|未验证|Gated|gate" docs/architecture design --glob '!
 python3 -m pytest -q tests/test_v4_design_contracts.py tests/test_v4_architecture_contract.py
 git diff --check
 ```
+
+macOS 上 pytest 需加 `--basetemp=/tmp/pytest-tp`（默认临时目录在沙箱下报 EEXIST）。
+Core / Media / Infrastructure 三个 `net10.0` 库在 macOS 也能编译和测试，SDK 在
+`/Users/huashu/TinyPix/.workbuddy/tools/dotnet`；App 项目只能 restore（`-p:EnableWindowsTargeting=true`），
+**出 exe 必须用 Parallels `Windows 10` VM**，细节见 `docs/PHASE-CLOSEOUT-2026-10-14.md` 第 3 节。
 
 ### Windows 上的新架构
 
@@ -143,5 +156,8 @@ cd src-tauri && cargo test --lib && cargo check
 - 有目录、接口或工具 ID，不等于功能已经实现。
 - 有 Pencil 页面，不等于 WinUI 控件、键盘或无障碍已经工作。
 - 有打包脚本，不等于 Portable ZIP 已在全新 Windows VM 通过。
+- **有 `TinyPix.exe`，不等于窗口已经跑起来**：自动化通道（`prlctl exec`）是 SYSTEM 非交互会话，
+  WinUI 必然 fail-fast；窗口必须人工双击确认（已用最小 WinUI 应用对照排除代码原因）。
+- 有编译通过，不等于 Windows 11 / DPI / 主题 / UIA / Narrator 门禁已过。
 - 不把旧 Tauri 页面直接复制成 WinUI 架构，也不在功能等价前删除旧源码。
 - 不从 Desktop、临时目录或其他 worktree 的 `.pen` 覆盖仓库设计源。
