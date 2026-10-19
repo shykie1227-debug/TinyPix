@@ -341,7 +341,9 @@ public sealed class ImageHandlerTests : IDisposable
     [Fact]
     public async Task Watermark_TextDefault_ChangesPixels()
     {
-        string input = await WriteImageAsync("wm-src.png", 320, 240, MagickColors.White);
+        // Dark source: the frozen default watermark is WHITE text (70% opacity),
+        // which is invisible on white - the probe must use a dark canvas.
+        string input = await WriteImageAsync("wm-src.png", 320, 240, new MagickColor("#101010"));
         var handler = new ImageWatermarkHandler();
 
         ToolExecutionResult result = await RunAsync(handler, Request("image.watermark", new[] { input }));
@@ -351,12 +353,32 @@ public sealed class ImageHandlerTests : IDisposable
         using MagickImage source = Load(input);
         using MagickImage marked = Load(output);
         Assert.True(Differ(source, marked), "the default text watermark must alter pixels");
+
+        // The default is white fill: the bottom-right text area must brighten well
+        // above the dark source (white 70% over #101010 lands near 8-bit 183).
+        using MagickImage region = (MagickImage)marked.Clone();
+        region.Crop(new MagickGeometry(240, 208, 80, 32));
+        double brightest = 0;
+        var pixels = region.GetPixels();
+        for (int y = 0; y < (int)region.Height; y++)
+        {
+            for (int x = 0; x < (int)region.Width; x++)
+            {
+                double channel = pixels.GetPixel(x, y).ToColor()?.R ?? 0;
+                if (channel > brightest)
+                {
+                    brightest = channel;
+                }
+            }
+        }
+
+        Assert.True(brightest > 100 * Quantum8, $"white watermark fill must brighten the text area (max={brightest})");
     }
 
     [Fact]
     public async Task Watermark_Tile_ChangesPixels()
     {
-        string input = await WriteImageAsync("wm-tile.png", 320, 240, MagickColors.White);
+        string input = await WriteImageAsync("wm-tile.png", 320, 240, new MagickColor("#101010"));
         var handler = new ImageWatermarkHandler();
 
         ToolExecutionResult result = await RunAsync(handler, Request("image.watermark", new[] { input },
@@ -365,15 +387,33 @@ public sealed class ImageHandlerTests : IDisposable
         using MagickImage source = Load(input);
         using MagickImage marked = Load(Assert.Single(result.OutputPaths));
         Assert.True(Differ(source, marked), "the tiled watermark must alter pixels");
+
+        // 50% white over #101010 lands near 8-bit 135; sample the whole canvas.
+        double brightest = 0;
+        var allPixels = marked.GetPixels();
+        for (int y = 0; y < (int)marked.Height; y++)
+        {
+            for (int x = 0; x < (int)marked.Width; x++)
+            {
+                double channel = allPixels.GetPixel(x, y).ToColor()?.R ?? 0;
+                if (channel > brightest)
+                {
+                    brightest = channel;
+                }
+            }
+        }
+
+        Assert.True(brightest > 80 * Quantum8, $"tiled watermark must brighten the canvas (max={brightest})");
     }
 
     [Fact]
     public async Task Watermark_ImageMark_KeepsSemiTransparency()
     {
-        // A 50%-transparent PNG mark: compositing it must stay a blend, not a
-        // solid stamp (regression: AlphaAction.Set used to flatten it).
+        // A 50%-transparent red PNG mark (Q16 quantum values: full red = 65535,
+        // half alpha = 32768). Compositing it must stay a blend, not a solid
+        // stamp (regression: AlphaAction.Set used to flatten it).
         string mark = Path.Combine(_root, "mark.png");
-        using (var markImage = new MagickImage(new MagickColor(255, 0, 0, 32768), 64, 64))
+        using (var markImage = new MagickImage(new MagickColor(ushort.MaxValue, 0, 0, 32768), 64, 64))
         {
             markImage.Format = MagickFormat.Png;
             await markImage.WriteAsync(mark);
@@ -551,7 +591,9 @@ public sealed class ImageHandlerTests : IDisposable
     [Fact]
     public async Task Batch_WatermarkStep_ChangesPixels()
     {
-        string input = await WriteImageAsync("batch-wm.png", 320, 240, MagickColors.White);
+        // Dark source so the frozen white fill stays visible (white-on-white is
+        // invisible by design).
+        string input = await WriteImageAsync("batch-wm.png", 320, 240, new MagickColor("#101010"));
         var handler = new ImageBatchHandler();
 
         ToolExecutionResult result = await RunAsync(handler, Request("image.batch", new[] { input },

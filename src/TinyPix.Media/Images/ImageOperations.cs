@@ -332,7 +332,10 @@ public static class ImageOperations
 
         double fontSize = Math.Clamp(shortSide * sizePercent / 100.0, 16, 192);
         int margin = Math.Max(4, (int)Math.Round(shortSide * 0.03));
-        byte alpha = (byte)Math.Clamp((int)Math.Round(opacityPercent * 2.55), 0, 255);
+        // Q16 quantum alpha: MagickColor's (r,g,b,a) overload takes quantum values
+        // (0-65535), NOT 8-bit bytes. Passing a 0-255 byte renders the watermark
+        // at ~0.3% opacity (regression found by the VM probe).
+        ushort alpha = AlphaQuantum(opacityPercent);
 
         MagickColor fill = ResolveWatermarkColor(request, opacityPercent);
         string font = ResolveTextFont(image, text);
@@ -380,7 +383,7 @@ public static class ImageOperations
         int strokeWidth,
         double fontPointsize,
         MagickColor fill,
-        byte alpha)
+        ushort alpha)
     {
         var drawables = new List<IDrawable>
         {
@@ -433,9 +436,16 @@ public static class ImageOperations
         image.Composite(mark, x, y, CompositeOperator.Over);
     }
 
+    /// <summary>
+    /// Converts a 0-100 opacity percentage into the Q16 quantum value expected by
+    /// <see cref="MagickColor"/>'s (red, green, blue, alpha) constructor.
+    /// </summary>
+    private static ushort AlphaQuantum(int opacityPercent) =>
+        (ushort)Math.Clamp(Math.Round(opacityPercent / 100.0 * ushort.MaxValue), 0, ushort.MaxValue);
+
     private static MagickColor ResolveWatermarkColor(JobRequest request, int opacityPercent)
     {
-        byte alpha = (byte)Math.Clamp((int)Math.Round(opacityPercent * 2.55), 0, 255);
+        ushort alpha = AlphaQuantum(opacityPercent);
         if (request.Parameters.TryGetValue("color", out string? text) &&
             !string.IsNullOrWhiteSpace(text))
         {
@@ -452,7 +462,10 @@ public static class ImageOperations
             }
         }
 
-        return new MagickColor(255, 255, 255, alpha);
+        // Frozen default: 白字 (white fill). Full white in Q16 is ushort.MaxValue,
+        // not 255 - the numeric MagickColor overload interprets every channel as
+        // a quantum value.
+        return new MagickColor(ushort.MaxValue, ushort.MaxValue, ushort.MaxValue, alpha);
     }
 
     private static (int X, int Y) WatermarkOrigin(
