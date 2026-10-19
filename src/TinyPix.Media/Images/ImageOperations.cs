@@ -183,6 +183,33 @@ public static class ImageOperations
         _ => FilterType.Lanczos,
     };
 
+    /// <summary>
+    /// Normalises a composite/draw destination so blends survive. VM probe: a
+    /// bilevel grayscale source (1-bit PNG, what a solid-white canvas writes as)
+    /// turns a 50%-alpha red mark composited with <see cref="CompositeOperator.Over"/>
+    /// into pure white - the blend is quantised away by the destination's 1-bit
+    /// depth and grayscale colour space. Widening the colour type preserves the
+    /// existing alpha presence; colourspace and depth are metadata-only for
+    /// in-memory pixels, so no pixel value changes.
+    /// </summary>
+    public static void EnsureBlendable(MagickImage image)
+    {
+        if (image.ColorType is not (ColorType.TrueColor or ColorType.TrueColorAlpha))
+        {
+            image.ColorType = image.HasAlpha ? ColorType.TrueColorAlpha : ColorType.TrueColor;
+        }
+
+        if (image.ColorSpace != ColorSpace.sRGB)
+        {
+            image.ColorSpace = ColorSpace.sRGB;
+        }
+
+        if (image.Depth < 8)
+        {
+            image.Depth = 8;
+        }
+    }
+
     // ---- colour -------------------------------------------------------------
 
     public static void ApplyColor(
@@ -321,6 +348,9 @@ public static class ImageOperations
         int opacityPercent,
         int tile)
     {
+        // The draw destination must be able to hold anti-aliased blends.
+        EnsureBlendable(image);
+
         int shortSide = (int)Math.Min(image.Width, image.Height);
         double sizePercent = 4.0;
         if (request.Parameters.TryGetValue("sizePercent", out string? sizeText) &&
@@ -407,6 +437,10 @@ public static class ImageOperations
         int opacityPercent,
         JobRequest request)
     {
+        // Over-compositing onto a low-depth/grayscale destination quantises the
+        // blend away (see EnsureBlendable).
+        EnsureBlendable(image);
+
         int shortSide = (int)Math.Min(image.Width, image.Height);
         int margin = Math.Max(4, (int)Math.Round(shortSide * 0.03));
 
