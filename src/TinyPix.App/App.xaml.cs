@@ -30,12 +30,13 @@ public partial class App : Application
 
     public App()
     {
-        // MUST run before InitializeComponent(): the Windows App SDK auto-initializer
-        // (module initializer injected into this assembly) unconditionally sets
-        // MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY to AppContext.BaseDirectory, which in
-        // single-file mode is the exe directory while the WinUI framework DLLs actually live
-        // in the .NET bundle extraction directory. Re-point the variable before any XAML DLL
-        // gets loaded through the SxS redirector. No-op in multi-file mode (DLLs next to exe).
+        // Safety net for the Windows App SDK bootstrap: make sure
+        // MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY points at the directory that
+        // actually holds the framework DLLs before any XAML DLL loads through the
+        // SxS redirector. On .NET 10 single-file the SDK auto-initializer already
+        // gets this right (BaseDirectory == extraction dir, verified 2026-10-19),
+        // so this is normally a no-op; it self-corrects if that ever changes.
+        // See WindowsAppRuntimeBaseDirectory. Runs before InitializeComponent().
         StartupTrace.Write("App ctor enter");
         StartupTrace.WriteEnvironment("MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY");
         StartupTrace.WriteModule("Microsoft.WindowsAppRuntime.dll");
@@ -54,7 +55,21 @@ public partial class App : Application
         }
 
         StartupTrace.Write("InitializeComponent ok");
-        Services = BuildServices();
+        StartupTrace.Write("BuildServices enter");
+        try
+        {
+            Services = BuildServices();
+        }
+        catch (Exception ex)
+        {
+            // A startup failure thrown from this ctor escapes through the WinRT/COM
+            // ABI boundary and becomes a bare 0xC0000005 (no managed stack anywhere),
+            // so always log the full exception first - see AppPaths for the details.
+            StartupTrace.Write($"BuildServices FAILED: {ex}");
+            throw;
+        }
+
+        StartupTrace.Write("BuildServices done");
     }
 
     internal static IServiceProvider Services { get; private set; } = default!;
@@ -70,7 +85,12 @@ public partial class App : Application
 
     private static IServiceProvider BuildServices()
     {
-        string executableDirectory = AppContext.BaseDirectory;
+        // MUST be AppPaths.ExecutableDirectory, NOT AppContext.BaseDirectory: in the
+        // single-file publish BaseDirectory is the .NET bundle extraction directory
+        // (%TEMP%\.net\TinyPix\<hash>\) and portable.flag lives next to the exe.
+        // See AppPaths - the wrong choice crashes the process with 0xC0000005.
+        string executableDirectory = AppPaths.ExecutableDirectory;
+        StartupTrace.Write($"BuildServices: exe dir = {executableDirectory}");
         if (!File.Exists(Path.Combine(executableDirectory, "portable.flag")))
         {
             // portable.flag is the portable/offline boundary. Without it the shell
@@ -80,6 +100,7 @@ public partial class App : Application
         }
 
         PortableWorkspace workspace = PortableWorkspace.Open(executableDirectory);
+        StartupTrace.Write("BuildServices: workspace ok");
 
         var services = new ServiceCollection();
         services.AddSingleton(workspace);
@@ -128,37 +149,53 @@ public partial class App : Application
         services.AddSingleton<OutputPreflightService>();
 
         IServiceProvider provider = services.BuildServiceProvider();
+        StartupTrace.Write("BuildServices: provider built");
 
         // Phase 1 (视频输出) + Phase 2 (GIF 制作) + Phase 3 (视频编辑): register the
         // media handlers implemented so far so the job queue can resolve them by
         // their frozen ToolCatalog ids.
         var registry = provider.GetRequiredService<ToolHandlerRegistry>();
-        registry.Register(provider.GetRequiredService<VideoConvertHandler>());
-        registry.Register(provider.GetRequiredService<VideoCompressHandler>());
-        registry.Register(provider.GetRequiredService<GifMakerHandler>());
-        registry.Register(provider.GetRequiredService<VideoTrimHandler>());
-        registry.Register(provider.GetRequiredService<VideoSplitHandler>());
-        registry.Register(provider.GetRequiredService<VideoMergeHandler>());
-        registry.Register(provider.GetRequiredService<VideoGeometryHandler>());
-        registry.Register(provider.GetRequiredService<VideoSpeedVolumeHandler>());
-        registry.Register(provider.GetRequiredService<VideoAudioHandler>());
-        registry.Register(provider.GetRequiredService<VideoOverlayHandler>());
-        registry.Register(provider.GetRequiredService<VideoFramesHandler>());
-        registry.Register(provider.GetRequiredService<VideoMetadataHandler>());
+        Register(registry, provider, typeof(VideoConvertHandler));
+        Register(registry, provider, typeof(VideoCompressHandler));
+        Register(registry, provider, typeof(GifMakerHandler));
+        Register(registry, provider, typeof(VideoTrimHandler));
+        Register(registry, provider, typeof(VideoSplitHandler));
+        Register(registry, provider, typeof(VideoMergeHandler));
+        Register(registry, provider, typeof(VideoGeometryHandler));
+        Register(registry, provider, typeof(VideoSpeedVolumeHandler));
+        Register(registry, provider, typeof(VideoAudioHandler));
+        Register(registry, provider, typeof(VideoOverlayHandler));
+        Register(registry, provider, typeof(VideoFramesHandler));
+        Register(registry, provider, typeof(VideoMetadataHandler));
 
         // 图片工作台: same frozen ToolCatalog ids as the video handlers above.
-        registry.Register(provider.GetRequiredService<ImageResizeHandler>());
-        registry.Register(provider.GetRequiredService<ImageCropHandler>());
-        registry.Register(provider.GetRequiredService<ImageTransformHandler>());
-        registry.Register(provider.GetRequiredService<ImageConvertHandler>());
-        registry.Register(provider.GetRequiredService<ImageCompressHandler>());
-        registry.Register(provider.GetRequiredService<ImageColorHandler>());
-        registry.Register(provider.GetRequiredService<ImageWatermarkHandler>());
-        registry.Register(provider.GetRequiredService<ImageExifHandler>());
-        registry.Register(provider.GetRequiredService<ImageCollageHandler>());
-        registry.Register(provider.GetRequiredService<ImageBatchHandler>());
-        registry.Register(provider.GetRequiredService<ImageBackgroundHandler>());
+        Register(registry, provider, typeof(ImageResizeHandler));
+        Register(registry, provider, typeof(ImageCropHandler));
+        Register(registry, provider, typeof(ImageTransformHandler));
+        Register(registry, provider, typeof(ImageConvertHandler));
+        Register(registry, provider, typeof(ImageCompressHandler));
+        Register(registry, provider, typeof(ImageColorHandler));
+        Register(registry, provider, typeof(ImageWatermarkHandler));
+        Register(registry, provider, typeof(ImageExifHandler));
+        Register(registry, provider, typeof(ImageCollageHandler));
+        Register(registry, provider, typeof(ImageBatchHandler));
+        Register(registry, provider, typeof(ImageBackgroundHandler));
 
+        StartupTrace.Write("BuildServices: handlers registered");
         return provider;
+    }
+
+    /// <summary>
+    /// Resolves one handler with per-type tracing: the single-file probe reads the
+    /// last line of the startup log to see exactly which registration crashed the
+    /// process (a native access violation is not catchable in managed code).
+    /// </summary>
+    private static void Register(
+        ToolHandlerRegistry registry, IServiceProvider provider, Type handlerType)
+    {
+        StartupTrace.Write($"BuildServices: resolving {handlerType.Name}");
+        IToolHandler handler = (IToolHandler)provider.GetRequiredService(handlerType);
+        registry.Register(handler);
+        StartupTrace.Write($"BuildServices: registered {handlerType.Name}");
     }
 }

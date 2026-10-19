@@ -5,24 +5,25 @@ using System.IO;
 namespace TinyPix.App.Services;
 
 /// <summary>
-/// Single-file runtime base directory fix (verified 2026-10-16, Win10 22H2).
+/// Single-file runtime base directory fix (verified 2026-10-19, Win10 22H2).
 ///
 /// In a .NET single-file bundle the Windows App SDK framework DLLs are extracted
-/// to <c>%SystemTemp%\.net\&lt;app&gt;\&lt;hash&gt;\</c>, but
-/// <see cref="AppContext.BaseDirectory"/> returns the directory of the EXE. The
-/// SDK's own auto-initializer
+/// to <c>%SystemTemp%\.net\&lt;app&gt;\&lt;hash&gt;\</c>. Verified empirically on
+/// .NET 10: <see cref="AppContext.BaseDirectory"/> ALSO returns that extraction
+/// directory, so the SDK's own auto-initializer
 /// (<c>UndockedRegFreeWinRTCS.AutoInitialize</c>, injected via
-/// <c>WindowsAppSdkUndockedRegFreeWinRTInitialize</c>) sets
-/// <c>MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY</c> to
-/// <see cref="AppContext.BaseDirectory"/> - the wrong directory for single-file -
-/// so the XAML framework can never locate its sibling DLLs and fail-fasts with
-/// STATUS_STOWED_EXCEPTION 0xC000027B in Microsoft.UI.Xaml.dll before any window
-/// appears.
+/// <c>WindowsAppSdkUndockedRegFreeWinRTInitialize</c>) already points
+/// <c>MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY</c> at the right place, and XAML
+/// loads fine. Earlier fail-fasts with STATUS_STOWED_EXCEPTION 0xC000027B in
+/// Microsoft.UI.Xaml.dll were actually the portable.flag lookup failing (it used
+/// the same BaseDirectory assumption - see AppPaths).
 ///
-/// This helper runs before the first XAML type is touched (App constructor) and
-/// repoints the variable at the real extraction directory, discovered from the
-/// loaded native module list. Multi-file publishes need no fix (the DLLs already
-/// sit next to the exe), so the helper is a no-op there.
+/// This helper is kept as a self-correcting safety net: if the variable is unset
+/// or points at a directory without Microsoft.UI.Xaml.dll (e.g. an SDK change
+/// flips BaseDirectory back to the exe directory), it repoints the variable at
+/// the real extraction directory before the first XAML type is touched. It must
+/// still run before InitializeComponent. Multi-file publishes need no fix (the
+/// DLLs already sit next to the exe), so the helper is a no-op there.
 /// </summary>
 internal static class WindowsAppRuntimeBaseDirectory
 {
