@@ -342,11 +342,13 @@ public sealed class ImageHandlerTests : IDisposable
     public async Task Watermark_TextDefault_ChangesPixels()
     {
         // Dark source: the frozen default watermark is WHITE text (70% opacity),
-        // which is invisible on white - the probe must use a dark canvas.
-        string input = await WriteImageAsync("wm-src.png", 320, 240, new MagickColor("#101010"));
+        // which is invisible on white - the probe must use a dark canvas. A large
+        // canvas keeps the glyph interiors visible under the frozen 2px stroke.
+        string input = await WriteImageAsync("wm-src.png", 640, 480, new MagickColor("#101010"));
         var handler = new ImageWatermarkHandler();
 
-        ToolExecutionResult result = await RunAsync(handler, Request("image.watermark", new[] { input }));
+        ToolExecutionResult result = await RunAsync(handler, Request("image.watermark", new[] { input },
+            new() { ["sizePercent"] = "25" }));
 
         string output = Assert.Single(result.OutputPaths);
         Assert.EndsWith("wm-src_水印.png", output);
@@ -357,7 +359,7 @@ public sealed class ImageHandlerTests : IDisposable
         // The default is white fill: the bottom-right text area must brighten well
         // above the dark source (white 70% over #101010 lands near 8-bit 183).
         using MagickImage region = (MagickImage)marked.Clone();
-        region.Crop(new MagickGeometry(240, 208, 80, 32));
+        region.Crop(new MagickGeometry(150, 300, 490, 180));
         double brightest = 0;
         var pixels = region.GetPixels();
         for (int y = 0; y < (int)region.Height; y++)
@@ -372,17 +374,17 @@ public sealed class ImageHandlerTests : IDisposable
             }
         }
 
-        Assert.True(brightest > 100 * Quantum8, $"white watermark fill must brighten the text area (max={brightest})");
+        Assert.True(brightest > 150 * Quantum8, $"white watermark fill must brighten the text area (max={brightest})");
     }
 
     [Fact]
     public async Task Watermark_Tile_ChangesPixels()
     {
-        string input = await WriteImageAsync("wm-tile.png", 320, 240, new MagickColor("#101010"));
+        string input = await WriteImageAsync("wm-tile.png", 640, 480, new MagickColor("#101010"));
         var handler = new ImageWatermarkHandler();
 
         ToolExecutionResult result = await RunAsync(handler, Request("image.watermark", new[] { input },
-            new() { ["text"] = "机密", ["tile"] = "1", ["opacity"] = "50" }));
+            new() { ["text"] = "机密", ["tile"] = "1", ["opacity"] = "50", ["sizePercent"] = "25" }));
 
         using MagickImage source = Load(input);
         using MagickImage marked = Load(Assert.Single(result.OutputPaths));
@@ -403,18 +405,30 @@ public sealed class ImageHandlerTests : IDisposable
             }
         }
 
-        Assert.True(brightest > 80 * Quantum8, $"tiled watermark must brighten the canvas (max={brightest})");
+        Assert.True(brightest > 110 * Quantum8, $"tiled watermark must brighten the canvas (max={brightest})");
     }
 
     [Fact]
     public async Task Watermark_ImageMark_KeepsSemiTransparency()
     {
-        // A 50%-transparent red PNG mark (Q16 quantum values: full red = 65535,
-        // half alpha = 32768). Compositing it must stay a blend, not a solid
-        // stamp (regression: AlphaAction.Set used to flatten it).
+        // A 50%-transparent red PNG mark, written per-pixel so the alpha channel
+        // is guaranteed to exist (the MagickImage(color, w, h) constructor does
+        // not reliably honour a colour's alpha). Compositing it must stay a
+        // blend, not a solid stamp (regression: AlphaAction.Set used to flatten it).
         string mark = Path.Combine(_root, "mark.png");
-        using (var markImage = new MagickImage(new MagickColor(ushort.MaxValue, 0, 0, 32768), 64, 64))
+        using (var markImage = new MagickImage(new MagickColor(ushort.MaxValue, 0, 0), 64, 64))
         {
+            markImage.Alpha(AlphaAction.Activate);
+            Assert.True(markImage.HasAlpha, "Alpha(Activate) must create the alpha channel");
+            var markPixels = markImage.GetPixels();
+            for (int y = 0; y < 64; y++)
+            {
+                for (int x = 0; x < 64; x++)
+                {
+                    markPixels.SetPixel(x, y, new ushort[] { ushort.MaxValue, 0, 0, 32768 });
+                }
+            }
+
             markImage.Format = MagickFormat.Png;
             await markImage.WriteAsync(mark);
         }

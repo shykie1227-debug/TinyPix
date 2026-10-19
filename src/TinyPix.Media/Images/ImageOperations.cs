@@ -351,7 +351,10 @@ public static class ImageOperations
             return; // no font available: skip the text watermark rather than failing
         }
 
-        int stroke = Math.Max(1, (int)Math.Ceiling(fontSize / 12.0));
+        // Frozen matrix: 白字 2 px 黑描边 — a constant 2px stroke, not a
+        // font-size fraction (the old fontSize/12 made 192pt text carry a 16px
+        // stroke that swallowed thin glyphs entirely).
+        int stroke = 2;
         int textWidth = (int)Math.Ceiling(metrics.TextWidth) + stroke * 2;
         int textHeight = (int)Math.Ceiling(metrics.Ascent + metrics.Descent) + stroke * 2;
 
@@ -428,9 +431,14 @@ public static class ImageOperations
         int targetHeight = Math.Max(1, (int)Math.Round(mark.Height * scale));
         mark.Resize((uint)targetWidth, (uint)targetHeight);
 
-        using var alpha = mark.Separate(Channels.Alpha)[0];
-        alpha.Evaluate(Channels.Gray, EvaluateOperator.Multiply, opacityPercent / 100.0);
-        mark.Composite(alpha, CompositeOperator.CopyAlpha);
+        // Scale the mark's own alpha channel by the requested opacity. The
+        // previous Separate(Channels.Alpha) + Composite(CopyAlpha) round-trip
+        // silently dropped the channel on marks whose alpha had just been
+        // activated, stamping a fully transparent (invisible) watermark.
+        mark.Evaluate(
+            Channels.Alpha,
+            EvaluateOperator.Multiply,
+            Math.Clamp(opacityPercent / 100.0, 0, 1));
 
         (int x, int y) = WatermarkOrigin(position, image, targetWidth, targetHeight, margin);
         image.Composite(mark, x, y, CompositeOperator.Over);
