@@ -12,6 +12,14 @@
     <EnableMsixTooling>true</EnableMsixTooling>
     <WindowsPackageType>None</WindowsPackageType>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+    <!-- Self-contained: the framework DLLs ship beside the exe (multi-file) or in
+         the single-file extraction directory. The bootstrapper (framework-dependent
+         MSIX lookup) must stay OFF: with it on, the app shows the
+         "Required components of the Windows App Runtime are missing
+         (MSIX package version >= 2.1.3.0)" dialog because no runtime is installed.
+         The self-contained path is WindowsAppSdkUndockedRegFreeWinRTInitialize below.
+         Single-file additionally needs MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY
+         to point at the extraction directory - see WindowsAppRuntimeBaseDirectory. -->
     <WindowsAppSdkBootstrapInitialize>false</WindowsAppSdkBootstrapInitialize>
     <WindowsAppSdkUndockedRegFreeWinRTInitialize>true</WindowsAppSdkUndockedRegFreeWinRTInitialize>
     <SelfContained>true</SelfContained>

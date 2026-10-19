@@ -84,6 +84,16 @@ public sealed partial class MainWindow : Window
                 return;
             }
 
+            if (string.Equals(tag, "image", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!WorkbenchFrame.Navigate(typeof(ImageWorkbenchPage), _viewModel))
+                {
+                    System.Diagnostics.Debug.WriteLine("图片工作台 workbench navigation failed.");
+                }
+
+                return;
+            }
+
             _viewModel.SelectCategory(tag);
             if (!WorkbenchFrame.Navigate(typeof(VideoOutputPage), _viewModel))
             {

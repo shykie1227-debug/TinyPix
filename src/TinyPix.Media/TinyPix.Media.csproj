@@ -6,4 +6,9 @@
   <ItemGroup>
     <ProjectReference Include="../TinyPix.Core/TinyPix.Core.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <!-- E3 图片引擎（design/DEPENDENCY-BASELINE.md）：解码/缩放/裁切/色彩/合成/
+         EXIF/格式与压缩全部经 Magick.NET，不并列其他图像引擎。 -->
+    <PackageReference Include="Magick.NET-Q16-AnyCPU" />
+  </ItemGroup>
 </Project>

@@ -35,6 +35,11 @@
         "resolved": "3.1.5",
         "contentHash": "tKi7dSTwP4m5m9eXPM2Ime4Kn7xNf4x4zT9sdLO/G4hZVnQCRiMTWoSZqI/pYTVeI27oPPqHBKYI/DjJ9GsYgA=="
       },
+      "Magick.NET.Core": {
+        "type": "Transitive",
+        "resolved": "15.0.0",
+        "contentHash": "mP/VovMRuXBX2Rcnn1wWu0Zur6cjsf8IQhmTUCrasEk8cyAtN5sjHE7NxiH88whw8/2mjRvuphKUwj6bAZslpQ=="
+      },
       "Microsoft.CodeCoverage": {
         "type": "Transitive",
         "resolved": "17.14.1",
@@ -105,7 +110,17 @@
       "tinypix.media": {
         "type": "Project",
         "dependencies": {
+          "Magick.NET-Q16-AnyCPU": "[15.0.0, )",
           "TinyPix.Core": "[1.0.0, )"
+        }
+      },
+      "Magick.NET-Q16-AnyCPU": {
+        "type": "CentralTransitive",
+        "requested": "[15.0.0, )",
+        "resolved": "15.0.0",
+        "contentHash": "zcwOVCGvx4y+7xV+1Vlp1SMhfL5vc22xf7ahBMZ38xot/1Cmzi6lMZeZLlbjkD73PedRjStDu9v1qX8S0XmKjA==",
+        "dependencies": {
+          "Magick.NET.Core": "15.0.0"
         }
       }
     }
