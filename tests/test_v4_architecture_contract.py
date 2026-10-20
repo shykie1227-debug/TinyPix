@@ -24,6 +24,7 @@ def test_formal_solution_and_projects_are_versioned() -> None:
         "TinyPix.App",
         "TinyPix.Core",
         "TinyPix.Media",
+        "TinyPix.Capture",
         "TinyPix.Infrastructure",
     ):
         assert project(name).is_file()
@@ -39,9 +40,15 @@ def test_project_reference_direction_is_acyclic() -> None:
     assert references("TinyPix.Infrastructure") == {
         "../TinyPix.Core/TinyPix.Core.csproj"
     }
+    # TinyPix.Capture hosts the Windows-only E11/E1 capture engine and must only
+    # depend downward on the portable Media layer (contracts live there).
+    assert references("TinyPix.Capture") == {
+        "../TinyPix.Media/TinyPix.Media.csproj"
+    }
     assert references("TinyPix.App") == {
         "../TinyPix.Core/TinyPix.Core.csproj",
         "../TinyPix.Media/TinyPix.Media.csproj",
+        "../TinyPix.Capture/TinyPix.Capture.csproj",
         "../TinyPix.Infrastructure/TinyPix.Infrastructure.csproj",
     }
 

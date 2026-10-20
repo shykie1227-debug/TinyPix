@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!-- Windows-only capture engine: E11 Windows Graphics Capture + E1 Media
+         Foundation. Compiles on macOS with -p:EnableWindowsTargeting=true
+         (WinRT projections are compile-time; only the WinUI XAML compiler is
+         Windows-bound). No third-party packages — interop is hand-rolled P/Invoke
+         per the frozen dependency baseline. -->
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <RootNamespace>TinyPix.Capture</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../TinyPix.Media/TinyPix.Media.csproj" />
+  </ItemGroup>
+</Project>

@@ -36,6 +36,7 @@
   <ItemGroup>
     <ProjectReference Include="../TinyPix.Core/TinyPix.Core.csproj" />
     <ProjectReference Include="../TinyPix.Media/TinyPix.Media.csproj" />
+    <ProjectReference Include="../TinyPix.Capture/TinyPix.Capture.csproj" />
     <ProjectReference Include="../TinyPix.Infrastructure/TinyPix.Infrastructure.csproj" />
   </ItemGroup>
   <ItemGroup>

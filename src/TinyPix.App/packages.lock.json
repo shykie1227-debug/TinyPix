@@ -146,6 +146,12 @@
         "resolved": "8.0.1",
         "contentHash": "CoCRHFym33aUSf/NtWSVSZa99dkd0Hm7OCZUxORBjRB16LNhIEOf8THPqzIYlvKM0nNDAPTRBa1FxEECrgaxxA=="
       },
+      "tinypix.capture": {
+        "type": "Project",
+        "dependencies": {
+          "TinyPix.Media": "[1.0.0, )"
+        }
+      },
       "tinypix.core": {
         "type": "Project"
       },

@@ -9,6 +9,8 @@ using TinyPix.Core.Jobs;
 using TinyPix.Core.Settings;
 using TinyPix.Core.Storage;
 using TinyPix.Core.Tools;
+using TinyPix.Capture;
+using TinyPix.Media.Capture;
 using TinyPix.Media.Ffmpeg;
 using TinyPix.Media.Images;
 using TinyPix.Media.Tools;
@@ -153,6 +155,11 @@ public partial class App : Application
         services.AddSingleton<FileHashHandler>();
         services.AddSingleton<FileMetadataHandler>();
 
+        // Phase 4 工具箱: 屏幕录制 (E11 Windows Graphics Capture + E1 Media
+        // Foundation)。引擎在 TinyPix.Capture（Windows 专用），Media 只见抽象。
+        services.AddSingleton<IScreenCaptureEngine, WindowsScreenCaptureEngine>();
+        services.AddSingleton<CaptureRecordHandler>();
+
         // Output preflight (writability / disk space / source-overwrite) consumed by
         // JobSubmissionService. LocalOutputEnvironment has an optional probe, so it
         // can be constructed directly.
@@ -196,6 +203,7 @@ public partial class App : Application
         Register(registry, provider, typeof(FileRenameHandler));
         Register(registry, provider, typeof(FileHashHandler));
         Register(registry, provider, typeof(FileMetadataHandler));
+        Register(registry, provider, typeof(CaptureRecordHandler));
 
         StartupTrace.Write("BuildServices: handlers registered");
         return provider;
