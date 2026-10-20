@@ -110,6 +110,14 @@ public sealed class CodeScanHandler : IToolHandler
         var outputs = new List<string>();
         var failures = new List<JobError>();
 
+        // Export writes land in the output directory; create it up front so the
+        // atomic write below cannot fail with DirectoryNotFound and be
+        // misreported as a per-file read failure (seen on the VM run).
+        if (export)
+        {
+            Directory.CreateDirectory(context.Request.OutputDirectory);
+        }
+
         double done = 0;
         foreach (string input in context.Request.InputPaths)
         {
