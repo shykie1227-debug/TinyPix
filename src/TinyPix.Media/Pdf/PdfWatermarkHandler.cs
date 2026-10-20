@@ -107,10 +107,11 @@ public sealed class PdfWatermarkHandler : PdfToolHandlerBase
 
     private static PdfSharp.Drawing.XFont CreateWatermarkFont()
     {
+        // PDFsharp 6.x requires an explicit IFontResolver on all platforms.
+        SystemFontResolver.EnsureInstalled();
+
         // Frozen spec: Segoe UI 36 pt. Fallback to Helvetica for non-Windows
-        // environments (macOS CI) where Segoe UI is unavailable and PDFsharp
-        // has no font resolver. On Windows (the shipping target) Segoe UI is
-        // always present.
+        // environments where Segoe UI is unavailable.
         try
         {
             return new PdfSharp.Drawing.XFont("Segoe UI", 36, PdfSharp.Drawing.XFontStyleEx.Regular);

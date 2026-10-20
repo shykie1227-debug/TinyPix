@@ -6,6 +6,16 @@
 
 ## 变更记录
 
+### 2026-10-20 Phase 5 全部 11 工具完成
+
+- **PDF 页面管理 8 工具**（f095126）：pdf.merge/split/reorder/rotate/watermark/to-image/from-image/compress。
+  E7 PDFtoImage+PDFium+SkiaSharp 渲染，E8 PDFsharp 编辑 + PdfPig 读取。
+  修改型工具签名 PDF 入队前硬阻止。24 个测试。
+- **智能证件照 3 工具**（81a3b79）：idphoto.create/check/print + 7 内置模板。
+  E4 YuNet 人脸检测 + E5 MODNet 人像抠图（ONNX Runtime 1.20.1 CPU-only）。
+  10 个测试。
+- 全部 handler DI 注册，锁文件同步，Python 契约 72/72 绿。
+
 ### 2026-10-14 CI 首次全绿，两个 artifact 自动上传
 
 - run `38538164421` 全流程通过（Restore / Build solution / Test / LGPL 门禁 / 便携发布 /
