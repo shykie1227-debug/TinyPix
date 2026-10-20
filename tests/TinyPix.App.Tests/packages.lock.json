@@ -162,6 +162,11 @@
           "SQLitePCLRaw.core": "2.1.11"
         }
       },
+      "System.Security.Cryptography.Pkcs": {
+        "type": "Transitive",
+        "resolved": "8.0.1",
+        "contentHash": "CoCRHFym33aUSf/NtWSVSZa99dkd0Hm7OCZUxORBjRB16LNhIEOf8THPqzIYlvKM0nNDAPTRBa1FxEECrgaxxA=="
+      },
       "xunit.abstractions": {
         "type": "Transitive",
         "resolved": "2.0.3",
@@ -230,7 +235,10 @@
         "type": "Project",
         "dependencies": {
           "Magick.NET-Q16-AnyCPU": "[15.0.0, )",
-          "TinyPix.Core": "[1.0.0, )"
+          "PDFsharp": "[6.5.0, )",
+          "PdfPig": "[0.1.16, )",
+          "TinyPix.Core": "[1.0.0, )",
+          "ZXing.Net": "[0.16.11, )"
         }
       },
       "CommunityToolkit.Mvvm": {
@@ -300,11 +308,33 @@
           "Microsoft.WindowsAppSDK.InteractiveExperiences": "2.0.13"
         }
       },
+      "PdfPig": {
+        "type": "CentralTransitive",
+        "requested": "[0.1.16, )",
+        "resolved": "0.1.16",
+        "contentHash": "qQcbsNMYVY+K5ELptax2S8thNMk0+rSQq3H/KdYj3LLcko8yTCz8y5KIvsKxIyAuTN0ZYNnfsZkM+0EvxTwHVA=="
+      },
+      "PDFsharp": {
+        "type": "CentralTransitive",
+        "requested": "[6.5.0, )",
+        "resolved": "6.5.0",
+        "contentHash": "H9PYxFBvbevuYT5Q/d64MX7YxzEUuhl887fFTwN4By9vAKy9m54yBk5/Pm989KmBbtB2i6cUNa3Gve8loPSYkg==",
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.3",
+          "System.Security.Cryptography.Pkcs": "8.0.1"
+        }
+      },
       "SQLitePCLRaw.lib.e_sqlite3": {
         "type": "CentralTransitive",
         "requested": "[2.1.12, )",
         "resolved": "2.1.12",
         "contentHash": "fWi8Dbknuhgg72fWinIdjXVaqO1hHL4YBBwVLnr7e1c9TAZwJ0QE38j9syW1hwx6HaqEVTwI+O07WPdZn8Rp0w=="
+      },
+      "ZXing.Net": {
+        "type": "CentralTransitive",
+        "requested": "[0.16.11, )",
+        "resolved": "0.16.11",
+        "contentHash": "OZfAVu88hl87BffQ+rlWCj/vLvAhhCK4QnFaoveeF/MY8SjHNSYBQ3qyUEWlPKNgBQGh1syXhCDg10vUnCsqkg=="
       }
     },
     "net10.0-windows10.0.19041/win-x64": {
@@ -321,6 +351,11 @@
           "Microsoft.WindowsAppSDK.Base": "2.0.4",
           "Microsoft.WindowsAppSDK.InteractiveExperiences": "2.0.13"
         }
+      },
+      "System.Security.Cryptography.Pkcs": {
+        "type": "Transitive",
+        "resolved": "8.0.1",
+        "contentHash": "CoCRHFym33aUSf/NtWSVSZa99dkd0Hm7OCZUxORBjRB16LNhIEOf8THPqzIYlvKM0nNDAPTRBa1FxEECrgaxxA=="
       },
       "Magick.NET-Q16-AnyCPU": {
         "type": "CentralTransitive",

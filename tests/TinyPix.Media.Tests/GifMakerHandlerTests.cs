@@ -18,6 +18,8 @@ public sealed class GifMakerHandlerTests
         public FakeEngine(string path) => FfmpegExecutablePath = path;
 
         public string FfmpegExecutablePath { get; }
+
+        public string FfprobeExecutablePath => "ffprobe";
     }
 
     private static GifMakerHandler Handler() => new(new FakeEngine("ffmpeg"));

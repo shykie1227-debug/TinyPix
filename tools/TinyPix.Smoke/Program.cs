@@ -77,6 +77,10 @@ internal static class Program
         public EngineProvider(string ffmpeg) => FfmpegExecutablePath = ffmpeg;
 
         public string FfmpegExecutablePath { get; }
+
+        // ffprobe ships next to ffmpeg in the same pinned engine bundle.
+        public string FfprobeExecutablePath =>
+            Path.Combine(Path.GetDirectoryName(FfmpegExecutablePath) ?? ".", "ffprobe.exe");
     }
 
     private static bool RunVideoChecks(string? engine, string outDir, ref int failed, ref int skipped)

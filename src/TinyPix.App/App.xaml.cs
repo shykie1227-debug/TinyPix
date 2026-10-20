@@ -11,6 +11,7 @@ using TinyPix.Core.Storage;
 using TinyPix.Core.Tools;
 using TinyPix.Media.Ffmpeg;
 using TinyPix.Media.Images;
+using TinyPix.Media.Tools;
 using TinyPix.Media.Video;
 using TinyPix.Infrastructure.History;
 using TinyPix.Infrastructure.Portable;
@@ -142,6 +143,16 @@ public partial class App : Application
         services.AddSingleton<ImageBatchHandler>();
         services.AddSingleton<ImageBackgroundHandler>();
 
+        // Phase 4 工具箱: 二维码/条码 (E9 ZXing.Net + E3 Magick.NET).
+        services.AddSingleton<CodeGenerateHandler>();
+        services.AddSingleton<CodeScanHandler>();
+
+        // Phase 4 工具箱: 文件工具（file.rename / file.hash / file.metadata）。
+        // file.metadata 的 E2 分支复用同一 ffprobe 引擎（BtbN 包同目录）。
+        services.AddSingleton<FileRenameHandler>();
+        services.AddSingleton<FileHashHandler>();
+        services.AddSingleton<FileMetadataHandler>();
+
         // Output preflight (writability / disk space / source-overwrite) consumed by
         // JobSubmissionService. LocalOutputEnvironment has an optional probe, so it
         // can be constructed directly.
@@ -180,6 +191,11 @@ public partial class App : Application
         Register(registry, provider, typeof(ImageCollageHandler));
         Register(registry, provider, typeof(ImageBatchHandler));
         Register(registry, provider, typeof(ImageBackgroundHandler));
+        Register(registry, provider, typeof(CodeGenerateHandler));
+        Register(registry, provider, typeof(CodeScanHandler));
+        Register(registry, provider, typeof(FileRenameHandler));
+        Register(registry, provider, typeof(FileHashHandler));
+        Register(registry, provider, typeof(FileMetadataHandler));
 
         StartupTrace.Write("BuildServices: handlers registered");
         return provider;

@@ -21,7 +21,7 @@ public sealed class ImageExifHandler : ImageToolHandlerBase
     /// Tags preserved by 清理 (frozen matrix): 拍摄时间、方向、DPI。颜色配置走
     /// ICC profile（单独保留），不在此列。
     /// </summary>
-    private static readonly HashSet<ushort> KeepTags = new()
+    internal static readonly HashSet<ushort> KeepTags = new()
     {
         (ushort)ExifTag.DateTimeOriginal,
         (ushort)ExifTag.DateTimeDigitized,
@@ -74,6 +74,17 @@ public sealed class ImageExifHandler : ImageToolHandlerBase
         JobRequest request,
         CancellationToken cancellationToken)
     {
+        StripMetadata(image);
+        return Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// The frozen image.exif cleaning rules, shared with file.metadata's E3 clean
+    /// path so both surfaces remove exactly the same fields (GPS/序列号/作者/
+    /// 注释/内嵌缩略图，保留拍摄时间、方向、DPI 与 ICC).
+    /// </summary>
+    internal static void StripMetadata(MagickImage image)
+    {
         IExifProfile? profile = image.GetExifProfile();
         if (profile is not null)
         {
@@ -96,8 +107,6 @@ public sealed class ImageExifHandler : ImageToolHandlerBase
         image.RemoveProfile("8bim");
         image.RemoveProfile("comment");
         image.RemoveProfile("app13");
-
-        return Task.CompletedTask;
     }
 
     /// <summary>

@@ -21,6 +21,8 @@ public sealed class VideoEditHandlersTests
     private sealed class FakeEngine : IFfmpegEngineProvider
     {
         public string FfmpegExecutablePath => "ffmpeg";
+
+        public string FfprobeExecutablePath => "ffprobe";
     }
 
     private static JobRequest Request(

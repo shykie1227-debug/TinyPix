@@ -43,12 +43,13 @@ public sealed record JobRequest(
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(toolId);
         ArgumentException.ThrowIfNullOrWhiteSpace(outputDirectory);
+        // NOTE: file-based tools validate their own input requirements (every handler
+        // rejects an empty list with its own error code). Manual-input tools
+        // (code.generate / color.convert) legitimately have zero file inputs - their
+        // "input" is text carried in Parameters - so this factory must not reject
+        // empty input lists. All consumers of InputPaths are empty-safe.
         string[] inputs = inputPaths?.Where(path => !string.IsNullOrWhiteSpace(path)).ToArray()
             ?? throw new ArgumentNullException(nameof(inputPaths));
-        if (inputs.Length == 0)
-        {
-            throw new ArgumentException("At least one input path is required.", nameof(inputPaths));
-        }
 
         return new JobRequest(
             Guid.NewGuid(),

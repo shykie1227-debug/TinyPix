@@ -58,14 +58,14 @@ public sealed class FileHashHandler : IToolHandler
 
         foreach (string input in request.InputPaths)
         {
-            if (!File.Exists(input))
-            {
-                errors.Add(new JobError("file.hash.input.missing", $"文件不存在：{input}", false));
-            }
-            else if (Directory.Exists(input))
+            if (Directory.Exists(input))
             {
                 errors.Add(new JobError(
                     "file.hash.input.folder", $"不支持文件夹输入：{input}", false));
+            }
+            else if (!File.Exists(input))
+            {
+                errors.Add(new JobError("file.hash.input.missing", $"文件不存在：{input}", false));
             }
         }
 

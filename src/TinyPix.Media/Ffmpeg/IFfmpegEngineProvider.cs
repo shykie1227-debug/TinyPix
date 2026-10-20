@@ -8,4 +8,11 @@ namespace TinyPix.Media.Ffmpeg;
 public interface IFfmpegEngineProvider
 {
     string FfmpegExecutablePath { get; }
+
+    /// <summary>
+    /// ffprobe ships next to ffmpeg in the same pinned engine bundle (BtbN
+    /// release). file.metadata's view mode needs it to read container/stream
+    /// facts (编码/尺寸/时长) without decoding a single frame.
+    /// </summary>
+    string FfprobeExecutablePath { get; }
 }

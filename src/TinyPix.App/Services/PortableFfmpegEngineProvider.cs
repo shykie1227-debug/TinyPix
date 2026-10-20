@@ -24,4 +24,17 @@ public sealed class PortableFfmpegEngineProvider : IFfmpegEngineProvider
             return Path.Combine(_workspace.EnginesDirectory, fileName);
         }
     }
+
+    /// <summary>
+    /// ffprobe.exe ships in the same BtbN bundle as ffmpeg.exe (both hash-pinned
+    /// by the publish pipeline). Only the file name differs.
+    /// </summary>
+    public string FfprobeExecutablePath
+    {
+        get
+        {
+            string fileName = OperatingSystem.IsWindows() ? "ffprobe.exe" : "ffprobe";
+            return Path.Combine(_workspace.EnginesDirectory, fileName);
+        }
+    }
 }

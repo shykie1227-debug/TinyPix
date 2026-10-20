@@ -13,6 +13,8 @@ public sealed class VideoCompressHandlerTests
         public FakeEngine(string path) => FfmpegExecutablePath = path;
 
         public string FfmpegExecutablePath { get; }
+
+        public string FfprobeExecutablePath => "ffprobe";
     }
 
     [Fact]

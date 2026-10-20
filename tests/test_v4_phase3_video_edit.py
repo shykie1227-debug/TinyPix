@@ -56,8 +56,11 @@ def test_app_registers_video_edit_handlers():
     assert os.path.isfile(path), f"缺少 App.xaml.cs: {path}"
     src = _read(path)
     for class_name, _ in EXPECTED:
-        needle = f"registry.Register(provider.GetRequiredService<{class_name}>());"
+        # 注册走带 trace 的 Register(registry, provider, typeof(...)) 助手
+        # （单文件启动期定位崩溃注册项用）；DI 注册同行 AddSingleton 配对。
+        needle = f"Register(registry, provider, typeof({class_name}));"
         assert needle in src, f"App 未注册 {class_name}"
+        assert f"services.AddSingleton<{class_name}>();" in src, f"App 未注入 {class_name}"
 
 
 def test_video_editor_page_exists_and_wired():
