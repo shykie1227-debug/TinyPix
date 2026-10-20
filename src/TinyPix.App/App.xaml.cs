@@ -171,6 +171,11 @@ public partial class App : Application
         services.AddSingleton<PdfFromImageHandler>();
         services.AddSingleton<PdfCompressHandler>();
 
+        // Phase 5 智能证件照 (E3 + E4 YuNet + E5 MODNet)
+        services.AddSingleton<TinyPix.Media.IdPhoto.IdPhotoCreateHandler>();
+        services.AddSingleton<TinyPix.Media.IdPhoto.IdPhotoCheckHandler>();
+        services.AddSingleton<TinyPix.Media.IdPhoto.IdPhotoPrintHandler>();
+
         // Output preflight (writability / disk space / source-overwrite) consumed by
         // JobSubmissionService. LocalOutputEnvironment has an optional probe, so it
         // can be constructed directly.
@@ -225,6 +230,11 @@ public partial class App : Application
         Register(registry, provider, typeof(PdfToImageHandler));
         Register(registry, provider, typeof(PdfFromImageHandler));
         Register(registry, provider, typeof(PdfCompressHandler));
+
+        // Phase 5 智能证件照
+        Register(registry, provider, typeof(TinyPix.Media.IdPhoto.IdPhotoCreateHandler));
+        Register(registry, provider, typeof(TinyPix.Media.IdPhoto.IdPhotoCheckHandler));
+        Register(registry, provider, typeof(TinyPix.Media.IdPhoto.IdPhotoPrintHandler));
 
         StartupTrace.Write("BuildServices: handlers registered");
         return provider;

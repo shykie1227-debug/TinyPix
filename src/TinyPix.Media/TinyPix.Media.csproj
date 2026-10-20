@@ -23,5 +23,8 @@
     <PackageReference Include="PDFtoImage" />
     <PackageReference Include="bblanchon.PDFium.Win32" />
     <PackageReference Include="SkiaSharp" />
+    <!-- E4+E5 ONNX Runtime CPU: YuNet face detection + MODNet portrait matting.
+         CPUExecutionProvider only; no GPU/CUDA assets. -->
+    <PackageReference Include="Microsoft.ML.OnnxRuntime" />
   </ItemGroup>
 </Project>

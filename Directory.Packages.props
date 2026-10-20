@@ -42,5 +42,8 @@
     <PackageVersion Include="PDFtoImage" Version="5.2.1" />
     <PackageVersion Include="bblanchon.PDFium.Win32" Version="147.0.7690" />
     <PackageVersion Include="SkiaSharp" Version="3.119.2" />
+    <!-- E4+E5 ONNX Runtime CPU（YuNet 人脸检测 + MODNet 人像抠图）；
+         只用 CPUExecutionProvider，不带 GPU/CUDA 资产。 -->
+    <PackageVersion Include="Microsoft.ML.OnnxRuntime" Version="1.20.1" />
   </ItemGroup>
 </Project>

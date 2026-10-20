@@ -88,6 +88,11 @@
         "resolved": "10.0.0",
         "contentHash": "inRnbpCS0nwO/RuoZIAqxQUuyjaknOOnCEZB55KSMMjRhl0RQDttSmLSGsUJN3RQ3ocf5NDLFd2mOQViHqMK5w=="
       },
+      "Microsoft.ML.OnnxRuntime.Managed": {
+        "type": "Transitive",
+        "resolved": "1.20.1",
+        "contentHash": "+EVcEcKdq3gkw6iu8TYl2coJxfPnMi1YQc6eZ80BGNlw6mbBCxNGe6h4udDCwENYWsXFvYjoBc6412t40tl4ew=="
+      },
       "Microsoft.Web.WebView2": {
         "type": "Transitive",
         "resolved": "1.0.3719.77",
@@ -193,6 +198,7 @@
         "type": "Project",
         "dependencies": {
           "Magick.NET-Q16-AnyCPU": "[15.0.0, )",
+          "Microsoft.ML.OnnxRuntime": "[1.20.1, )",
           "PDFsharp": "[6.5.0, )",
           "PDFtoImage": "[5.2.1, )",
           "PdfPig": "[0.1.16, )",
@@ -237,6 +243,15 @@
           "Microsoft.Extensions.DependencyInjection": "10.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "10.0.0",
           "Microsoft.Extensions.Options": "10.0.0"
+        }
+      },
+      "Microsoft.ML.OnnxRuntime": {
+        "type": "CentralTransitive",
+        "requested": "[1.20.1, )",
+        "resolved": "1.20.1",
+        "contentHash": "NzUD79BC6R7TKROLyB3XCzXTpbNZ1YfOdVbult7hoFvd/xyRecOMiRO5HTzkPXvaFlcvZ91+WNCiroAPzUE7Dw==",
+        "dependencies": {
+          "Microsoft.ML.OnnxRuntime.Managed": "1.20.1"
         }
       },
       "PdfPig": {
@@ -350,6 +365,15 @@
         "contentHash": "zcwOVCGvx4y+7xV+1Vlp1SMhfL5vc22xf7ahBMZ38xot/1Cmzi6lMZeZLlbjkD73PedRjStDu9v1qX8S0XmKjA==",
         "dependencies": {
           "Magick.NET.Core": "15.0.0"
+        }
+      },
+      "Microsoft.ML.OnnxRuntime": {
+        "type": "CentralTransitive",
+        "requested": "[1.20.1, )",
+        "resolved": "1.20.1",
+        "contentHash": "NzUD79BC6R7TKROLyB3XCzXTpbNZ1YfOdVbult7hoFvd/xyRecOMiRO5HTzkPXvaFlcvZ91+WNCiroAPzUE7Dw==",
+        "dependencies": {
+          "Microsoft.ML.OnnxRuntime.Managed": "1.20.1"
         }
       },
       "SQLitePCLRaw.lib.e_sqlite3": {
