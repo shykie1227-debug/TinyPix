@@ -13,6 +13,7 @@ using TinyPix.Capture;
 using TinyPix.Media.Capture;
 using TinyPix.Media.Ffmpeg;
 using TinyPix.Media.Images;
+using TinyPix.Media.Pdf;
 using TinyPix.Media.Tools;
 using TinyPix.Media.Video;
 using TinyPix.Infrastructure.History;
@@ -160,6 +161,16 @@ public partial class App : Application
         services.AddSingleton<IScreenCaptureEngine, WindowsScreenCaptureEngine>();
         services.AddSingleton<CaptureRecordHandler>();
 
+        // Phase 5 PDF 页面管理 (E7 + E8: PDFtoImage/PDFium + PDFsharp/PdfPig)
+        services.AddSingleton<PdfMergeHandler>();
+        services.AddSingleton<PdfSplitHandler>();
+        services.AddSingleton<PdfReorderHandler>();
+        services.AddSingleton<PdfRotateHandler>();
+        services.AddSingleton<PdfWatermarkHandler>();
+        services.AddSingleton<PdfToImageHandler>();
+        services.AddSingleton<PdfFromImageHandler>();
+        services.AddSingleton<PdfCompressHandler>();
+
         // Output preflight (writability / disk space / source-overwrite) consumed by
         // JobSubmissionService. LocalOutputEnvironment has an optional probe, so it
         // can be constructed directly.
@@ -204,6 +215,16 @@ public partial class App : Application
         Register(registry, provider, typeof(FileHashHandler));
         Register(registry, provider, typeof(FileMetadataHandler));
         Register(registry, provider, typeof(CaptureRecordHandler));
+
+        // Phase 5 PDF 页面管理: pdf.merge/split/reorder/rotate/watermark/to-image/from-image/compress
+        Register(registry, provider, typeof(PdfMergeHandler));
+        Register(registry, provider, typeof(PdfSplitHandler));
+        Register(registry, provider, typeof(PdfReorderHandler));
+        Register(registry, provider, typeof(PdfRotateHandler));
+        Register(registry, provider, typeof(PdfWatermarkHandler));
+        Register(registry, provider, typeof(PdfToImageHandler));
+        Register(registry, provider, typeof(PdfFromImageHandler));
+        Register(registry, provider, typeof(PdfCompressHandler));
 
         StartupTrace.Write("BuildServices: handlers registered");
         return provider;

@@ -18,5 +18,10 @@
          页面级编辑等 Phase 5 pdf.* 工具同样落在这两个包上。 -->
     <PackageReference Include="PdfPig" />
     <PackageReference Include="PDFsharp" />
+    <!-- E7 页面栅格化（WINUI-CONTROL-MAPPING 模板 5）：PDFtoImage 托管调用 +
+         PDFium 渲染 + SkiaSharp 位图/编码，单页串行，无 Windows.Data.Pdf fallback。 -->
+    <PackageReference Include="PDFtoImage" />
+    <PackageReference Include="bblanchon.PDFium.Win32" />
+    <PackageReference Include="SkiaSharp" />
   </ItemGroup>
 </Project>

@@ -68,6 +68,33 @@ public static class PdfRules
         return null;
     }
 
+    /// <summary>
+    /// 修改型工具（FEATURE-MATRIX §2.2）统一入队前门禁：签名 PDF 硬阻止
+    /// （不提供"仍然继续"），加密 PDF 在添加阶段阻止。返回 null 表示允许。
+    /// </summary>
+    public static string? CheckModifyAllowed(string path)
+    {
+        if (PdfSignatureScanner.HasSignature(path))
+        {
+            return "修改副本会使原签名失效，请改用只读导出。";
+        }
+
+        try
+        {
+            using UglyToad.PdfPig.PdfDocument document = PdfDocument.Open(path);
+            if (document.IsEncrypted)
+            {
+                return "该 PDF 已加密，TinyPix 不接收密码，无法处理。";
+            }
+        }
+        catch (Exception error)
+        {
+            return $"无法解析该 PDF：{error.Message}";
+        }
+
+        return null;
+    }
+
     public static IReadOnlyList<(string Group, string Name, string Value)> ReadRows(string path)
     {
         var rows = new List<(string, string, string)>();
