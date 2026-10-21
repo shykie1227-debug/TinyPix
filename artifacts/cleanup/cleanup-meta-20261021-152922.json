@@ -1,0 +1,28 @@
+{
+  "timestamp": "20261021-152922",
+  "categories": {
+    "A_build_cache": {
+      "files": 1018,
+      "bytes": 1487928942
+    },
+    "B_artifacts_portable": {
+      "files": 477,
+      "bytes": 446500794
+    },
+    "D_pml_capture": {
+      "files": 2,
+      "bytes": 1533652400
+    },
+    "E_runtime_cache": {
+      "files": 6,
+      "bytes": 28819
+    },
+    "F_old_ui_shots": {
+      "files": 24,
+      "bytes": 702985
+    }
+  },
+  "totalFiles": 1527,
+  "totalBytes": 3468813940,
+  "manifest": "artifacts/cleanup/cleanup-manifest-20261021-152922.txt"
+}

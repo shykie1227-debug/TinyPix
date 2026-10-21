@@ -28,6 +28,7 @@ logs/
 .build-backups/
 __pycache__/
 .pytest_cache/
+.hypothesis/
 coverage/
 *.dmg
 *.app
@@ -81,3 +82,12 @@ artifacts/SHA256.txt
 
 # Baseline binaries + report captured on the VM (hundreds of MB; never versioned).
 artifacts/baseline/
+
+# Publish staging output (framework-dependent layout). Regenerate with
+# build/publish-portable.ps1; it had been partially swept into git by a bare
+# `git add -A` because .winmd/.pri/.mui are not covered by the *.dll rule.
+artifacts/portable/
+
+# Superseded evidence: the pre-4.0-UI screenshot round (see artifacts/ui-shots2
+# and ui-shots3 for current evidence). Kept out to avoid re-adding by accident.
+artifacts/ui-shots/
