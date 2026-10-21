@@ -6,6 +6,24 @@
 
 ## 变更记录
 
+### 2026-10-21 Windows 10 虚拟机从 443 GB 压到 74 GB + 配置调优
+
+- **空间回收（−369 GB）**：`.pvm` 443 GB → **74 GB**，镜像 73.73 GB；宿主可用 5.3 GB → 378 GB。
+  客户机 C: 已用 243.95 GB → **78.81 GB**。
+- **主因是两个非常规项**：① `%TEMP%` 里积累了 **2,851 个 `_MEI*` 目录** + `.net\TinyPix` 自解压残留，
+  单目录 143 GB（单文件 exe 每次启动解包 ≈450 MB）；② 3 个磁盘层中只被 2026-07-19 旧快照引用的
+  历史块 371 GB（`compact -i` 显示 445 GB 里 419 GB 仍被判 used，不删快照无法回收）。
+- **手法**：客户机清理 157.26 GB → `prl_disk_tool merge` 合并快照（331 GB 单层）→ `compact`
+  122.71 GB → SYSTEM 会话 `Optimize-Volume -ReTrim` → 再 `compact` **73.73 GB** →
+  `prlctl snapshot-delete` 清元数据与 `Snapshots/`（2.2 GB）。
+- **配置**：CPU 8→6、内存 6144→5120 MB、垂直同步关、自动压缩虚拟磁盘开、
+  关闭窗口由「挂起」改「保持运行」（避免写 5 GB 内存镜像）、共享配置文件的三处目录共享关、
+  SmartMount 网络共享与光驱关、清掉指向已删 ISO 的失效光驱引用；网络（共享 NAT + virtio）
+  与 `\\Mac\Home` 共享文件夹保留。
+- **验证**：启动正常、快照列表为空、单层磁盘链、`dotnet 10.0.302` 可编译（冒烟 exit 0 / 6.6 s）、
+  `\\Mac\Home` 可访问、IP 10.211.55.5。详见
+  `artifacts/vm-cleanup-20261021/VMCLEANUP-REPORT-2026-10-21.md`。
+
 ### 2026-10-21 UI 按 Pencil 设计稿 1:1 重建 + 重新出包
 
 - **外壳**：MainWindow 三行 `72 / * / 108`；左栏 232（`LeftFilePanelControl`）、右栏 300、

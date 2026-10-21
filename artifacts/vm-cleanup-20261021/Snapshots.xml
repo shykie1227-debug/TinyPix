@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ParallelsSavedStates>
+    <SavedStateItem state="poweroff" guid="">
+        <Name></Name>
+        <DateTime></DateTime>
+        <Creator></Creator>
+        <ScreenShot></ScreenShot>
+        <Description><![CDATA[]]></Description>
+        <AutoCreatedForLinkedClone>-1</AutoCreatedForLinkedClone>
+        <SavedStateItem state="poweron" guid="{894ab129-c45c-486d-bafd-15854d1a2843}">
+            <Name>Before TinyPix WinUI toolchain 2026-07-19</Name>
+            <DateTime>2026-07-19 15:35:56</DateTime>
+            <Creator></Creator>
+            <ScreenShot>{894ab129-c45c-486d-bafd-15854d1a2843}.png</ScreenShot>
+            <Description><![CDATA[Windows 10 22H2 pre-install snapshot for TinyPix .NET 10 / WinUI feasibility gate]]></Description>
+            <AutoCreatedForLinkedClone>0</AutoCreatedForLinkedClone>
+            <SavedStateItem state="poweron" guid="{ebae005e-9abf-4794-a0ee-ddc7b25810fd}" current="yes">
+                <Name>Before TinyPix DPI gate 2026-07-19</Name>
+                <DateTime>2026-07-19 17:30:17</DateTime>
+                <Creator></Creator>
+                <ScreenShot>{ebae005e-9abf-4794-a0ee-ddc7b25810fd}.png</ScreenShot>
+                <Description><![CDATA[Toolchain and WinUI gate evidence preserved before display scaling changes]]></Description>
+                <AutoCreatedForLinkedClone>0</AutoCreatedForLinkedClone>
+            </SavedStateItem>
+        </SavedStateItem>
+    </SavedStateItem>
+</ParallelsSavedStates>

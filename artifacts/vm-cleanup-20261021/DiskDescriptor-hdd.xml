@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Parallels_disk_image Version="1.0">
+    <Disk_Parameters>
+        <Disk_size>1073741824</Disk_size>
+        <Cylinders>2097152</Cylinders>
+        <PhysicalSectorSize>4096</PhysicalSectorSize>
+        <LogicSectorSize>512</LogicSectorSize>
+        <Heads>16</Heads>
+        <Sectors>32</Sectors>
+        <Padding>0</Padding>
+        <Encryption>
+            <Engine>{00000000-0000-0000-0000-000000000000}</Engine>
+            <Data></Data>
+            <Salt></Salt>
+        </Encryption>
+        <UID>{087abb6a-07ad-4543-ad2d-ab002ce6ca4e}</UID>
+        <Name>Windows 10-0 SSD</Name>
+        <Miscellaneous>
+            <CompatLevel>level2</CompatLevel>
+            <SuspendState>0</SuspendState>
+            <DupBlocksCnt>0</DupBlocksCnt>
+            <CorruptBlocksCnt>0</CorruptBlocksCnt>
+            <UnrefBlocksCnt>0</UnrefBlocksCnt>
+            <OutOfDiskBlocksCnt>0</OutOfDiskBlocksCnt>
+            <BatOverlapBlocksCnt>0</BatOverlapBlocksCnt>
+            <BlocksCnt>0</BlocksCnt>
+            <TruncatedBlocksCnt>0</TruncatedBlocksCnt>
+            <ReferencedBlocksCnt>0</ReferencedBlocksCnt>
+            <Bootable>1</Bootable>
+            <ChangeState>0</ChangeState>
+            <GuestToolsVersion>26.3.1-57396</GuestToolsVersion>
+            <ShutdownState>0</ShutdownState>
+            <FragmentationRatio>:blocksTotal=67864:contigGroups=44698</FragmentationRatio>
+        </Miscellaneous>
+    </Disk_Parameters>
+    <StorageData>
+        <Storage>
+            <Start>0</Start>
+            <End>1073741824</End>
+            <Blocksize>2048</Blocksize>
+            <Image>
+                <GUID>{5fbaabe3-6958-40ff-92a7-860e329aab41}</GUID>
+                <Type>Compressed</Type>
+                <File>Windows 10-0.hdd.0.{5fbaabe3-6958-40ff-92a7-860e329aab41}.hds</File>
+            </Image>
+            <Image>
+                <GUID>{894ab129-c45c-486d-bafd-15854d1a2843}</GUID>
+                <Type>Compressed</Type>
+                <File>Windows 10-0.hdd.0.{894ab129-c45c-486d-bafd-15854d1a2843}.hds</File>
+            </Image>
+            <Image>
+                <GUID>{ebae005e-9abf-4794-a0ee-ddc7b25810fd}</GUID>
+                <Type>Compressed</Type>
+                <File>Windows 10-0.hdd.0.{ebae005e-9abf-4794-a0ee-ddc7b25810fd}.hds</File>
+            </Image>
+        </Storage>
+    </StorageData>
+    <Snapshots>
+        <Shot>
+            <GUID>{5fbaabe3-6958-40ff-92a7-860e329aab41}</GUID>
+            <ParentGUID>{ebae005e-9abf-4794-a0ee-ddc7b25810fd}</ParentGUID>
+        </Shot>
+        <Shot>
+            <GUID>{894ab129-c45c-486d-bafd-15854d1a2843}</GUID>
+            <ParentGUID>{00000000-0000-0000-0000-000000000000}</ParentGUID>
+        </Shot>
+        <Shot>
+            <GUID>{ebae005e-9abf-4794-a0ee-ddc7b25810fd}</GUID>
+            <ParentGUID>{894ab129-c45c-486d-bafd-15854d1a2843}</ParentGUID>
+        </Shot>
+    </Snapshots>
+</Parallels_disk_image>
