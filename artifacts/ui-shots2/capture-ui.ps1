@@ -1,8 +1,12 @@
 ﻿# capture-ui.ps1 - TinyPix real-UI screenshot capture (run interactively as huashu)
 # Registered via Task Scheduler with InteractiveToken; PNGs go to the shared dir.
+param(
+    [string]$Exe = 'C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\TinyPix.exe',
+    [string]$OutDir = 'C:\Mac\Home\TinyPix\3.5pro\artifacts\ui-shots2'
+)
 $ErrorActionPreference = 'Continue'
-$out = 'C:\Mac\Home\TinyPix\3.5pro\artifacts\ui-shots2'
-$exe = 'C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\TinyPix.exe'
+$out = $OutDir
+$exe = $Exe
 $log = Join-Path $out 'capture-log.txt'
 New-Item -ItemType Directory -Path $out -Force | Out-Null
 "=== capture start $(Get-Date -Format o) session=$((Get-Process -Id $PID).SessionId) user=$([Security.Principal.WindowsIdentity]::GetCurrent().Name) ===" |

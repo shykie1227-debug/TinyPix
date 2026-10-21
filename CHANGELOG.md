@@ -6,6 +6,26 @@
 
 ## 变更记录
 
+### 2026-10-21 UI 按 Pencil 设计稿 1:1 重建 + 重新出包
+
+- **外壳**：MainWindow 三行 `72 / * / 108`；左栏 232（`LeftFilePanelControl`）、右栏 300、
+  底部任务队列 108；设置改为 shell 内 820×620 遮罩（`SettingsOverlay`），Esc 可关。
+- **9 个设计模板全部落地**：视频输出、GIF、视频时间剪辑（218 高非破坏单轨时间轴）、图片处理
+  （11 工具 + 高级参数）、智能证件照、PDF 页面管理、OCR 与二维码识别、生成器与文件工具、设置弹窗。
+  统一骨架：Center 标题+副标+适应窗口 → 预览卡 → 4 张预设卡 → 右栏参数组 → 48 高主按钮。
+- **新增组件**：`LeftFilePanelControl` / `TaskQueueControl` / `CenterHeaderControl` /
+  `PreviewStageControl` / `PresetRowControl` / `TimelineEditorControl` / `SettingsDialogContent`；
+  删除 7 个不再引用的 placeholder 期控件。
+- **修三个真实崩溃**：①缺 `portable.flag` 致启动 `0xC000027B`；②`SelectionChanged` 内同步重建
+  `ItemsSource` 致 `0x80004003`(E_POINTER)，改 `DispatcherQueue` 延迟路由；③生成器页 XAML
+  `SelectedIndex` 解析期触发事件致 NRE，加 `_ready` 守卫。另修模式 pill 程序化 `IsChecked`
+  不驱动视觉状态（改为直接设背景/字重）与 OCR 页预设卡高亮不同步。
+- **重新出包**（`artifacts/vm/ui-publish.ps1` / `ui-publish-portable.ps1`）：
+  单文件 `TinyPix.exe` 223.40 MiB `3b5a3bde…a87a5cb`；便携 ZIP 218.63 MB `c5fa3302…4afaaff`。
+- **验证**：`artifacts/ui-shots3/` 11 张实拍取自**发布出来的 exe 本体**（console 会话
+  session 1 + `PrintWindow`），启动跟踪显示自解压正常、exe 目录解析正确、46 handler 注册、
+  8 页导航全 ok、本轮 0 异常；Python 契约 72/72 绿。详见 `docs/DELIVERY-2026-10-21.md`。
+
 ### 2026-10-20 Phase 5 全部 11 工具完成
 
 - **PDF 页面管理 8 工具**（f095126）：pdf.merge/split/reorder/rotate/watermark/to-image/from-image/compress。
