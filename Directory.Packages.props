@@ -8,16 +8,42 @@
     <PackageVersion Include="SQLitePCLRaw.lib.e_sqlite3" Version="2.1.12" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.0" />
-    <PackageVersion Include="Microsoft.WindowsAppSDK.WinUI" Version="2.2.1" />
-    <!-- WinUI and Runtime must stay on the same Windows App SDK release train
-         (2.2.x with 2.2.x). Pairing WinUI 2.2.1 with Runtime 2.3.x builds fine but
-         the published app fail-fasts with STATUS_STOWED_EXCEPTION 0xC000027B in
-         Microsoft.UI.Xaml.dll, because the shipped XAML (3.2.x) does not match the
-         runtime the bootstrapper activates. Change both lines together. -->
-    <PackageVersion Include="Microsoft.WindowsAppSDK.Runtime" Version="2.2.0" />
+    <!-- WinUI and Runtime must stay on the same Windows App SDK release train.
+         2026-10-16 实测（VM Win10 22H2 交互会话 + 事件日志取证）：WinUI 2.2.1
+         自带 XAML 3.2.2.2606，而 Runtime 2.2.0/2.3.1/2.4.0 的框架 MSIX 内置
+         XAML 3.2.0.2511，二者错配 → 单文件 exe 启动即 fail-fast
+         0xC000027B（STATUS_STOWED_EXCEPTION，Microsoft.UI.Xaml.dll）。
+         唯一经验证的同源配对（MSIX 内 XAML 与 WinUI 包内 XAML 构建哈希完全
+         相同）：Runtime 2.1.3 ↔ WinUI 2.1.0（XAML 3.2.1.2605）；
+         Runtime 2.0.1 ↔ WinUI 2.0.12（XAML 3.2.0.2604）。换任一行都必须成对
+         更换，且以"窗口真实启动"为验收，不是"编译通过"。 -->
+    <PackageVersion Include="Microsoft.WindowsAppSDK.WinUI" Version="2.1.0" />
+    <PackageVersion Include="Microsoft.WindowsAppSDK.Runtime" Version="2.1.3" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />
     <PackageVersion Include="xunit" Version="2.9.3" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
+
+    <!-- E3 图片引擎：Magick.NET Q16（解码/缩放/裁切/色彩/合成/EXIF/格式与压缩）。
+         冻结依据 design/FEATURE-MATRIX.md E3 + design/DEPENDENCY-BASELINE.md。 -->
+    <PackageVersion Include="Magick.NET-Q16-AnyCPU" Version="15.0.0" />
+
+    <!-- E9 二维码/条码：ZXing.Net（QR/Code128/Code39/EAN-13/EAN-8/UPC-A）。 -->
+    <PackageVersion Include="ZXing.Net" Version="0.16.11" />
+
+    <!-- E8 PDF 编辑/读取：PDFsharp 只做创建与页面编辑，PdfPig 只做文本/结构读取。 -->
+    <PackageVersion Include="PDFsharp" Version="6.5.0" />
+    <PackageVersion Include="PdfPig" Version="0.1.16" />
+
+    <!-- E7 PDF 栅格化：PDFtoImage 5.2.1 + PDFium 147.0.7690（版本序列由
+         design/DEPENDENCY-BASELINE.md §2 冻结；PDFium 官方 notices 必须同包）。
+         SkiaSharp 3.119.2 为 PDFtoImage 5.2.1 锁定版本，pdf.compress 的 JPEG
+         编码同样直接使用它。 -->
+    <PackageVersion Include="PDFtoImage" Version="5.2.1" />
+    <PackageVersion Include="bblanchon.PDFium.Win32" Version="147.0.7690" />
+    <PackageVersion Include="SkiaSharp" Version="3.119.2" />
+    <!-- E4+E5 ONNX Runtime CPU（YuNet 人脸检测 + MODNet 人像抠图）；
+         只用 CPUExecutionProvider，不带 GPU/CUDA 资产。 -->
+    <PackageVersion Include="Microsoft.ML.OnnxRuntime" Version="1.20.1" />
   </ItemGroup>
 </Project>

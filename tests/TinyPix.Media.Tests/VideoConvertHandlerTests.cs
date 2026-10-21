@@ -18,6 +18,8 @@ public sealed class VideoConvertHandlerTests
         public FakeEngine(string path) => FfmpegExecutablePath = path;
 
         public string FfmpegExecutablePath { get; }
+
+        public string FfprobeExecutablePath => "ffprobe";
     }
 
     private static VideoConvertHandler Handler() => new(new FakeEngine("ffmpeg"));

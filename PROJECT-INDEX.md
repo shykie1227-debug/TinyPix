@@ -23,10 +23,10 @@
 | 部署 | Unpackaged、自包含、文件夹发布；**Portable ZIP 为正式形态，单文件 `TinyPix.exe` 为可选附加产物**（见 `LOCAL_RULES.md` §2） |
 | 数据 | 仅保存路径、参数、任务与输出记录；源文件只读 |
 | 网络 | 运行时完全离线，无账号、遥测、更新检查或云服务 |
-| 迁移 | 已于 2026-09-29 首次真正编译通过（此前从未编译成功）；视频类 handler 在 Windows 10 19045 上真实跑通；图片/PDF/证件照等 38/50 工具仍无 handler |
+| 迁移 | 已于 2026-09-29 首次真正编译通过；Phase 1–5 全部 50 工具 handler 已实现（视频 11 + GIF 1 + 图片 11 + 码 2 + 文件 4 + 录屏 1 + PDF 8 + 证件照 3 + 生成器等）；VM 全量验证通过 |
 | 旧 Tauri | `src/` React 与 `src-tauri/` Rust 仍是 3.5.1 行为事实基线，暂不删除 |
-| 当前产物 | `artifacts/TinyPix.exe` 160.58 MiB、便携 ZIP 172.58 MiB（含 LGPL ffmpeg/ffprobe），见 `docs/DELIVERY-2026-10-14.md` |
-| 当前门禁 | 编译、单测、真实转码、源文件哈希已过；**窗口启动与 Windows 11 干净机门禁未完成**，整体门禁仍开 |
+| 当前产物 | `artifacts/TinyPix.exe`（Phase 5 后约 195 MB 含 ONNX Runtime），见 `docs/DELIVERY-2026-10-14.md` |
+| 当前门禁 | 编译、单测、真实转码、窗口启动（hwnd/title/responding 12 采样）已过；**Windows 10 干净机手动验证未完成** |
 | CI | `build-exe.yml` 在 push 到 `main` 时出包，run `38538164421` 首次全绿；artifact：`TinyPix-win-x64-single-file`、`TinyPix-win-x64-portable` |
 
 完成边界以 [IMPLEMENTATION-STATUS.md](docs/architecture/IMPLEMENTATION-STATUS.md) 为准，不从目录存在推断功能已经完成。

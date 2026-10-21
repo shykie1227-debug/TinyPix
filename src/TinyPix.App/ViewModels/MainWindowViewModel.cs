@@ -48,6 +48,15 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
+        // Only refresh when the category really changes. Re-raising VisibleTools
+        // for an already-active category rebuilds the left panel's ItemsSource,
+        // and doing that from inside the ListView's SelectionChanged handler
+        // re-enters the control and takes the process down with E_POINTER.
+        if (string.Equals(_selectedCategory, category, StringComparison.Ordinal))
+        {
+            return;
+        }
+
         SelectedCategory = category;
         OnPropertyChanged(nameof(VisibleTools));
     }

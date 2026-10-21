@@ -72,7 +72,7 @@ def test_video_output_page_is_wired_to_submission() -> None:
     page_code = (APP / "Pages" / "VideoOutputPage.xaml.cs").read_text(encoding="utf-8")
     for marker in (
         "JobSubmissionService",
-        "AddFilesButton_Click",
+        "AddFilesAsync",
         "StartOutputButton_Click",
         "video.convert",
     ):
@@ -81,10 +81,10 @@ def test_video_output_page_is_wired_to_submission() -> None:
     page_xaml = (APP / "Pages" / "VideoOutputPage.xaml").read_text(encoding="utf-8")
     for marker in (
         "视频输出",
-        "中央预览区域",
-        "输出格式",
+        "CenterHeaderControl",
+        "PreviewStageControl",
+        "输出设置",
         "开始输出",
-        "添加视频",
     ):
         assert marker in page_xaml, marker
 

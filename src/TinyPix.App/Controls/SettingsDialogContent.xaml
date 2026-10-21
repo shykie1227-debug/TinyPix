@@ -7,61 +7,395 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <!--
-      The one reusable SettingsDialog content. Hosted by a ContentDialog on the
-      app root XamlRoot, so the modal scrim covers the complete XamlRoot
-      (top navigation included) per the frozen settings-dialog evidence.
-      Standard width ~820 with a left category list.
-    -->
-    <Grid Width="820" MinHeight="488">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
+    <!-- design: 唯一设置弹窗 (frame 7VTHb) — 820×620 card, 72 header, 190 category
+         rail + 24-padded content, 72 footer. Hosted inside the shell scrim. -->
+    <Border
+        Width="820"
+        Height="620"
+        Background="{ThemeResource TinyPixSurfaceBrush}"
+        BorderBrush="{ThemeResource TinyPixControlBorderBrush}"
+        BorderThickness="1"
+        CornerRadius="14">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="72" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="72" />
+            </Grid.RowDefinitions>
 
-        <ListView x:Name="SettingsCategoryList" Grid.Column="0" AutomationProperties.Name="设置分类">
-            <ListViewItem Content="通用" IsSelected="True" />
-            <ListViewItem Content="输出" />
-            <ListViewItem Content="缓存" />
-            <ListViewItem Content="离线引擎与许可证" />
-        </ListView>
+            <!-- ================= Dialog Header ================= -->
+            <Border
+                Grid.Row="0"
+                Padding="24,0"
+                BorderBrush="{ThemeResource TinyPixBorderBrush}"
+                BorderThickness="0,0,0,1">
+                <Grid>
+                    <StackPanel VerticalAlignment="Center" Spacing="4">
+                        <TextBlock
+                            Text="设置"
+                            FontFamily="{ThemeResource TinyPixCjkFontFamily}"
+                            FontSize="22"
+                            FontWeight="Bold"
+                            Foreground="{ThemeResource TinyPixInkBrush}" />
+                        <TextBlock
+                            Text="所有配置仅保存在本机 TinyPix 目录"
+                            FontFamily="{ThemeResource TinyPixCjkFontFamily}"
+                            FontSize="12"
+                            Foreground="{ThemeResource TinyPixMutedBrush}" />
+                    </StackPanel>
 
-        <ScrollViewer Grid.Column="1">
-            <StackPanel Spacing="12" Padding="16">
-                <TextBlock Text="设置" Style="{ThemeResource TitleTextBlockStyle}" />
+                    <Button
+                        Width="44"
+                        Height="44"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Padding="0"
+                        Background="Transparent"
+                        BorderBrush="{ThemeResource TinyPixControlBorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="10"
+                        Click="OnCloseClick"
+                        AutomationProperties.Name="关闭设置">
+                        <FontIcon Glyph="&#xE711;" FontSize="16" Foreground="{ThemeResource TinyPixInkBrush}" />
+                    </Button>
+                </Grid>
+            </Border>
 
-                <TextBox
-                    x:Name="OutputDirectoryBox"
-                    Header="输出目录"
-                    Text="{x:Bind ViewModel.OutputDirectory, Mode=TwoWay}"
-                    AutomationProperties.Name="输出目录" />
+            <!-- ================= Dialog Content ================= -->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="190" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-                <ComboBox
-                    x:Name="ThemeBox"
-                    Header="主题"
-                    SelectedValue="{x:Bind ViewModel.Theme, Mode=TwoWay}"
-                    SelectedValuePath="Tag">
-                    <ComboBoxItem Content="跟随系统" Tag="System" />
-                    <ComboBoxItem Content="浅色" Tag="Light" />
-                    <ComboBoxItem Content="深色" Tag="Dark" />
-                </ComboBox>
+                <!-- Settings Categories -->
+                <StackPanel
+                    Grid.Column="0"
+                    Background="{ThemeResource TinyPixSurfaceMutedBrush}"
+                    BorderBrush="{ThemeResource TinyPixBorderBrush}"
+                    BorderThickness="0,0,1,0"
+                    Padding="16"
+                    Spacing="8">
 
-                <ToggleSwitch
-                    x:Name="ReduceMotionSwitch"
-                    Header="减少动画"
-                    IsOn="{x:Bind ViewModel.ReduceMotion, Mode=TwoWay}" />
+                    <Border x:Name="CatGeneral" Height="44" CornerRadius="10" Padding="12,0" Tag="0" Tapped="OnCategoryTapped" AutomationProperties.Name="常规">
+                        <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                            <FontIcon x:Name="CatGeneralIcon" Glyph="&#xE713;" FontSize="16" Foreground="{ThemeResource TinyPixDeepLimeBrush}" />
+                            <TextBlock x:Name="CatGeneralText" Text="常规" FontFamily="{ThemeResource TinyPixCjkFontFamily}" FontSize="13" FontWeight="Bold" Foreground="{ThemeResource TinyPixInkBrush}" />
+                        </StackPanel>
+                    </Border>
 
-                <ToggleSwitch
-                    x:Name="ConfirmReplaceSwitch"
-                    Header="覆盖已有输出前确认"
-                    IsOn="{x:Bind ViewModel.ConfirmBeforeReplacingExistingOutput, Mode=TwoWay}" />
+                    <Border x:Name="CatOutput" Height="44" CornerRadius="10" Padding="12,0" Tag="1" Tapped="OnCategoryTapped" AutomationProperties.Name="输出">
+                        <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                            <FontIcon x:Name="CatOutputIcon" Glyph="&#xE8B7;" FontSize="16" Foreground="{ThemeResource TinyPixInkBrush}" />
+                            <TextBlock x:Name="CatOutputText" Text="输出" FontFamily="{ThemeResource TinyPixCjkFontFamily}" FontSize="13" Foreground="{ThemeResource TinyPixInkBrush}" />
+                        </StackPanel>
+                    </Border>
 
-                <Button
-                    x:Name="SaveSettingsButton"
-                    Content="保存设置"
-                    Style="{ThemeResource AccentButtonStyle}"
-                    Command="{x:Bind ViewModel.SaveSettingsCommand}" />
-            </StackPanel>
-        </ScrollViewer>
-    </Grid>
+                    <Border x:Name="CatCache" Height="44" CornerRadius="10" Padding="12,0" Tag="2" Tapped="OnCategoryTapped" AutomationProperties.Name="缓存与历史">
+                        <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                            <FontIcon x:Name="CatCacheIcon" Glyph="&#xE81C;" FontSize="16" Foreground="{ThemeResource TinyPixInkBrush}" />
+                            <TextBlock x:Name="CatCacheText" Text="缓存与历史" FontFamily="{ThemeResource TinyPixCjkFontFamily}" FontSize="13" Foreground="{ThemeResource TinyPixInkBrush}" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border x:Name="CatEngine" Height="44" CornerRadius="10" Padding="12,0" Tag="3" Tapped="OnCategoryTapped" AutomationProperties.Name="引擎">
+                        <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                            <FontIcon x:Name="CatEngineIcon" Glyph="&#xE946;" FontSize="16" Foreground="{ThemeResource TinyPixInkBrush}" />
+                            <TextBlock x:Name="CatEngineText" Text="引擎" FontFamily="{ThemeResource TinyPixCjkFontFamily}" FontSize="13" Foreground="{ThemeResource TinyPixInkBrush}" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border x:Name="CatLicense" Height="44" CornerRadius="10" Padding="12,0" Tag="4" Tapped="OnCategoryTapped" AutomationProperties.Name="许可证与离线安全">
+                        <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                            <FontIcon x:Name="CatLicenseIcon" Glyph="&#xE72E;" FontSize="16" Foreground="{ThemeResource TinyPixInkBrush}" />
+                            <TextBlock x:Name="CatLicenseText" Text="许可证与离线安全" FontFamily="{ThemeResource TinyPixCjkFontFamily}" FontSize="13" Foreground="{ThemeResource TinyPixInkBrush}" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- Category pages -->
+                <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <Grid Padding="24">
+
+                        <!-- 常规 -->
+                        <StackPanel x:Name="PanelGeneral" Spacing="16">
+                            <TextBlock
+                                Text="常规"
+                                FontFamily="{ThemeResource TinyPixCjkFontFamily}"
+                                FontSize="18"
+                                FontWeight="Bold"
+                                Foreground="{ThemeResource TinyPixInkBrush}" />
+
+                            <StackPanel Spacing="7">
+                                <TextBlock Text="默认输出目录" Style="{StaticResource TinyPixLabelStyle}" FontSize="12" Foreground="{ThemeResource TinyPixInkBrush}" FontWeight="SemiBold" />
+                                <Grid ColumnSpacing="8" Height="42">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="88" />
+                                    </Grid.ColumnDefinitions>
+                                    <Border Grid.Column="0" BorderBrush="{ThemeResource TinyPixControlBorderBrush}" BorderThickness="1" CornerRadius="10" Padding="12,0">
+                                        <TextBox
+                                            x:Name="OutputDirectoryBox"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            Padding="0"
+                                            VerticalAlignment="Center"
+                                            FontFamily="{ThemeResource TinyPixUiFontFamily}"
+                                            FontSize="13"
+                                            AutomationProperties.Name="默认输出目录" />
+                                    </Border>
+                                    <Button
+                                        Grid.Column="1"
+                                        Padding="0"
+                                        HorizontalContentAlignment="Center"
+                                        Background="Transparent"
+                                        BorderBrush="{ThemeResource TinyPixControlBorderBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="10"
+                                        Click="OnBrowseOutputClick"
+                                        AutomationProperties.Name="浏览输出目录">
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <FontIcon Glyph="&#xE8B7;" FontSize="14" Foreground="{ThemeResource TinyPixInkBrush}" />
+                                            <TextBlock Text="浏览" FontFamily="{ThemeResource TinyPixCjkFontFamily}" FontSize="13" Foreground="{ThemeResource TinyPixInkBrush}" />
+                                        </StackPanel>
+                                    </Button>
+                                </Grid>
+                            </StackPanel>
+
+                            <Grid Height="52">
+                                <StackPanel Spacing="3" VerticalAlignment="Center">
+                                    <TextBlock Text="便携模式" FontFamily="{ThemeResource TinyPixCjkFontFamily}" FontSize="13" FontWeight="SemiBold" Foreground="{ThemeResource TinyPixInkBrush}" />
+                                    <TextBlock Text="设置、历史、缓存均写入软件目录" Style="{StaticResource TinyPixMetaStyle}" FontSize="11" />
+                                </StackPanel>
+                                <ToggleSwitch
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    IsOn="True"
+                                    IsEnabled="False"
+                                    Style="{StaticResource TinyPixToggleSwitchStyle}"
+                                    AutomationProperties.Name="便携模式" />
+                            </Grid>
+
+                            <Grid Height="52">
+                                <StackPanel Spacing="3" VerticalAlignment="Center">
+                                    <TextBlock Text="保留处理历史" FontFamily="{ThemeResource TinyPixCjkFontFamily}" FontSize="13" FontWeight="SemiBold" Foreground="{ThemeResource TinyPixInkBrush}" />
+                                    <TextBlock Text="仅保存文件路径、参数与输出记录" Style="{StaticResource TinyPixMetaStyle}" FontSize="11" />
+                                </StackPanel>
+                                <ToggleSwitch
+                                    x:Name="HistorySwitch"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    IsOn="True"
+                                    Style="{StaticResource TinyPixToggleSwitchStyle}"
+                                    AutomationProperties.Name="保留处理历史" />
+                            </Grid>
+
+                            <Grid Height="52">
+                                <StackPanel Spacing="3" VerticalAlignment="Center">
+                                    <TextBlock Text="覆盖同名文件" FontFamily="{ThemeResource TinyPixCjkFontFamily}" FontSize="13" FontWeight="SemiBold" Foreground="{ThemeResource TinyPixInkBrush}" />
+                                    <TextBlock Text="默认关闭；执行前提示冲突" Style="{StaticResource TinyPixMetaStyle}" FontSize="11" />
+                                </StackPanel>
+                                <ToggleSwitch
+                                    x:Name="OverwriteSwitch"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    IsOn="False"
+                                    Style="{StaticResource TinyPixToggleSwitchStyle}"
+                                    AutomationProperties.Name="覆盖同名文件" />
+                            </Grid>
+
+                            <Border
+                                Height="50"
+                                Background="{ThemeResource TinyPixLimeSoftBrush}"
+                                BorderBrush="{ThemeResource TinyPixSuccessBrush}"
+                                BorderThickness="1"
+                                CornerRadius="10"
+                                Padding="14,0">
+                                <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                                    <FontIcon Glyph="&#xE72E;" FontSize="16" Foreground="{ThemeResource TinyPixDeepLimeBrush}" />
+                                    <TextBlock
+                                        Text="完全离线：无账号、无遥测、无网络请求"
+                                        FontFamily="{ThemeResource TinyPixCjkFontFamily}"
+                                        FontSize="12"
+                                        FontWeight="SemiBold"
+                                        Foreground="{ThemeResource TinyPixInkBrush}" />
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+                        <!-- 输出 -->
+                        <StackPanel x:Name="PanelOutput" Spacing="16" Visibility="Collapsed">
+                            <TextBlock Text="输出" Style="{StaticResource TinyPixPageTitleStyle}" FontSize="18" Foreground="{ThemeResource TinyPixInkBrush}" />
+
+                            <StackPanel Spacing="7">
+                                <TextBlock Text="主题" Style="{StaticResource TinyPixLabelStyle}" FontSize="12" Foreground="{ThemeResource TinyPixInkBrush}" FontWeight="SemiBold" />
+                                <ComboBox x:Name="ThemeBox" Style="{StaticResource TinyPixComboBoxStyle}" AutomationProperties.Name="主题">
+                                    <ComboBoxItem Content="跟随系统" Tag="System" />
+                                    <ComboBoxItem Content="浅色" Tag="Light" />
+                                    <ComboBoxItem Content="深色" Tag="Dark" />
+                                </ComboBox>
+                            </StackPanel>
+
+                            <StackPanel Spacing="7">
+                                <TextBlock Text="界面语言" Style="{StaticResource TinyPixLabelStyle}" FontSize="12" Foreground="{ThemeResource TinyPixInkBrush}" FontWeight="SemiBold" />
+                                <ComboBox x:Name="LanguageBox" Style="{StaticResource TinyPixComboBoxStyle}" AutomationProperties.Name="界面语言">
+                                    <ComboBoxItem Content="简体中文" Tag="zh-CN" />
+                                    <ComboBoxItem Content="English" Tag="en-US" />
+                                </ComboBox>
+                            </StackPanel>
+
+                            <Grid Height="52">
+                                <StackPanel Spacing="3" VerticalAlignment="Center">
+                                    <TextBlock Text="减少动画" FontFamily="{ThemeResource TinyPixCjkFontFamily}" FontSize="13" FontWeight="SemiBold" Foreground="{ThemeResource TinyPixInkBrush}" />
+                                    <TextBlock Text="关闭过渡与淡入效果" Style="{StaticResource TinyPixMetaStyle}" FontSize="11" />
+                                </StackPanel>
+                                <ToggleSwitch
+                                    x:Name="ReduceMotionSwitch"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Style="{StaticResource TinyPixToggleSwitchStyle}"
+                                    AutomationProperties.Name="减少动画" />
+                            </Grid>
+                        </StackPanel>
+
+                        <!-- 缓存与历史 -->
+                        <StackPanel x:Name="PanelCache" Spacing="16" Visibility="Collapsed">
+                            <TextBlock Text="缓存与历史" Style="{StaticResource TinyPixPageTitleStyle}" FontSize="18" Foreground="{ThemeResource TinyPixInkBrush}" />
+
+                            <StackPanel Spacing="7">
+                                <TextBlock Text="缓存上限 (MB)" Style="{StaticResource TinyPixLabelStyle}" FontSize="12" Foreground="{ThemeResource TinyPixInkBrush}" FontWeight="SemiBold" />
+                                <NumberBox
+                                    x:Name="CacheLimitBox"
+                                    Minimum="128"
+                                    Maximum="102400"
+                                    SmallChange="128"
+                                    LargeChange="1024"
+                                    SpinButtonPlacementMode="Compact"
+                                    FontFamily="{ThemeResource TinyPixUiFontFamily}"
+                                    FontSize="13"
+                                    AutomationProperties.Name="缓存上限" />
+                            </StackPanel>
+
+                            <TextBlock
+                                Text="缓存只保存缩略图与中间产物，清理后不影响已导出的文件。"
+                                Style="{StaticResource TinyPixMetaStyle}"
+                                FontSize="11"
+                                TextWrapping="Wrap" />
+
+                            <Border Height="50" Background="{ThemeResource TinyPixSurfaceMutedBrush}" BorderBrush="{ThemeResource TinyPixBorderBrush}" BorderThickness="1" CornerRadius="10" Padding="14,0">
+                                <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                                    <FontIcon Glyph="&#xE81C;" FontSize="16" Foreground="{ThemeResource TinyPixMutedBrush}" />
+                                    <TextBlock
+                                        Text="历史记录仅保留路径与参数，不含文件内容"
+                                        FontFamily="{ThemeResource TinyPixCjkFontFamily}"
+                                        FontSize="12"
+                                        Foreground="{ThemeResource TinyPixInkBrush}" />
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+                        <!-- 引擎 -->
+                        <StackPanel x:Name="PanelEngine" Spacing="16" Visibility="Collapsed">
+                            <TextBlock Text="引擎" Style="{StaticResource TinyPixPageTitleStyle}" FontSize="18" Foreground="{ThemeResource TinyPixInkBrush}" />
+
+                            <Border Height="50" Background="{ThemeResource TinyPixLimeSoftBrush}" BorderBrush="{ThemeResource TinyPixSuccessBrush}" BorderThickness="1" CornerRadius="10" Padding="14,0">
+                                <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                                    <FontIcon Glyph="&#xE73E;" FontSize="16" Foreground="{ThemeResource TinyPixDeepLimeBrush}" />
+                                    <TextBlock
+                                        Text="FFmpeg 已就绪 · 本地引擎，无网络请求"
+                                        FontFamily="{ThemeResource TinyPixCjkFontFamily}"
+                                        FontSize="12"
+                                        FontWeight="SemiBold"
+                                        Foreground="{ThemeResource TinyPixInkBrush}" />
+                                </StackPanel>
+                            </Border>
+
+                            <StackPanel Spacing="7">
+                                <TextBlock Text="ffmpeg" Style="{StaticResource TinyPixLabelStyle}" FontSize="12" Foreground="{ThemeResource TinyPixInkBrush}" FontWeight="SemiBold" />
+                                <Border Style="{StaticResource TinyPixFieldStyle}" Height="42">
+                                    <TextBlock x:Name="FfmpegPathText" Text="…" Style="{StaticResource TinyPixMonoStyle}" FontSize="10" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                                </Border>
+                            </StackPanel>
+
+                            <StackPanel Spacing="7">
+                                <TextBlock Text="ffprobe" Style="{StaticResource TinyPixLabelStyle}" FontSize="12" Foreground="{ThemeResource TinyPixInkBrush}" FontWeight="SemiBold" />
+                                <Border Style="{StaticResource TinyPixFieldStyle}" Height="42">
+                                    <TextBlock x:Name="FfprobePathText" Text="…" Style="{StaticResource TinyPixMonoStyle}" FontSize="10" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                                </Border>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- 许可证与离线安全 -->
+                        <StackPanel x:Name="PanelLicense" Spacing="16" Visibility="Collapsed">
+                            <TextBlock Text="许可证与离线安全" Style="{StaticResource TinyPixPageTitleStyle}" FontSize="18" Foreground="{ThemeResource TinyPixInkBrush}" />
+
+                            <TextBlock
+                                Text="内置 FFmpeg / FFprobe 采用 LGPL 构建（含 libopenh264），不包含 GPL 编码器。全部处理在本机完成，不上传任何文件。"
+                                FontFamily="{ThemeResource TinyPixCjkFontFamily}"
+                                FontSize="12"
+                                Foreground="{ThemeResource TinyPixMutedBrush}"
+                                TextWrapping="Wrap" />
+
+                            <Border Height="50" Background="{ThemeResource TinyPixLimeSoftBrush}" BorderBrush="{ThemeResource TinyPixSuccessBrush}" BorderThickness="1" CornerRadius="10" Padding="14,0">
+                                <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                                    <FontIcon Glyph="&#xE72E;" FontSize="16" Foreground="{ThemeResource TinyPixDeepLimeBrush}" />
+                                    <TextBlock
+                                        Text="无账号 · 无遥测 · 无网络请求"
+                                        FontFamily="{ThemeResource TinyPixCjkFontFamily}"
+                                        FontSize="12"
+                                        FontWeight="SemiBold"
+                                        Foreground="{ThemeResource TinyPixInkBrush}" />
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+                </ScrollViewer>
+            </Grid>
+
+            <!-- ================= Dialog Footer ================= -->
+            <Border
+                Grid.Row="2"
+                Padding="24,0"
+                BorderBrush="{ThemeResource TinyPixBorderBrush}"
+                BorderThickness="0,1,0,0">
+                <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <Button
+                        Width="88"
+                        Height="42"
+                        Content="取消"
+                        HorizontalContentAlignment="Center"
+                        Background="Transparent"
+                        BorderBrush="{ThemeResource TinyPixControlBorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="10"
+                        FontFamily="{ThemeResource TinyPixCjkFontFamily}"
+                        FontSize="13"
+                        FontWeight="SemiBold"
+                        Foreground="{ThemeResource TinyPixInkBrush}"
+                        Click="OnCancelClick"
+                        AutomationProperties.Name="取消" />
+                    <Button
+                        Width="112"
+                        Height="42"
+                        Background="{ThemeResource TinyPixActionPrimaryBrush}"
+                        BorderBrush="{ThemeResource TinyPixControlBorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="10"
+                        Padding="0"
+                        Click="OnSaveClick"
+                        AutomationProperties.Name="保存设置">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE73E;" FontSize="14" Foreground="{ThemeResource TinyPixOnActionPrimaryBrush}" />
+                            <TextBlock
+                                Text="保存设置"
+                                FontFamily="{ThemeResource TinyPixCjkFontFamily}"
+                                FontSize="13"
+                                FontWeight="Bold"
+                                Foreground="{ThemeResource TinyPixOnActionPrimaryBrush}" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Border>
 </UserControl>

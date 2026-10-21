@@ -1,26 +1,27 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Navigation;
+using TinyPix.App.Controls;
 using TinyPix.App.Services;
 using TinyPix.App.ViewModels;
 using TinyPix.Core.Jobs;
-using TinyPix.Core.Tools;
 using Windows.Storage.Pickers;
 using WinRT.Interop;
 
 namespace TinyPix.App.Pages;
 
 /// <summary>
-/// 视频输出 workbench page. Receives the shell MainWindowViewModel through Frame
-/// navigation so page state and the shared task queue stay consistent. Phase 1
-/// wires the page to the video.convert handler via JobSubmissionService.
+/// Template 1 / 视频输出 — design frame rUrqE. Center preview + 常用预设, right
+/// 输出设置 panel wired to the video.convert handler through JobSubmissionService.
 /// </summary>
-public sealed partial class VideoOutputPage : Page
+public sealed partial class VideoOutputPage : Page, IWorkbenchFilePicker
 {
     private readonly List<string> _inputPaths = new();
     private JobSubmissionService? _submission;
@@ -28,6 +29,13 @@ public sealed partial class VideoOutputPage : Page
     public VideoOutputPage()
     {
         InitializeComponent();
+        Presets.SetPresets(new[]
+        {
+            new PresetCard("\uE73E", "原画质 MP4", "H.264 · 保持尺寸", true),
+            new PresetCard("\uE7B8", "高效压缩", "HEVC · 节省空间"),
+            new PresetCard("\uE774", "网页兼容", "WebM · 平衡质量"),
+            new PresetCard("\uE710", "自定义预设", "保存当前参数"),
+        });
     }
 
     public MainWindowViewModel? ViewModel { get; private set; }
@@ -35,12 +43,20 @@ public sealed partial class VideoOutputPage : Page
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
-        ViewModel = e.Parameter as MainWindowViewModel;
+
+        if (e.Parameter is WorkbenchNavigation navigation)
+        {
+            ViewModel = navigation.ViewModel;
+        }
+        else
+        {
+            ViewModel = e.Parameter as MainWindowViewModel;
+        }
+
         _submission = App.Services.GetRequiredService<JobSubmissionService>();
-        SetStatus("尚未添加文件。");
     }
 
-    private async void AddFilesButton_Click(object sender, RoutedEventArgs e)
+    public async Task AddFilesAsync()
     {
         var picker = new FileOpenPicker
         {
@@ -69,9 +85,53 @@ public sealed partial class VideoOutputPage : Page
             }
         }
 
-        SetStatus(_inputPaths.Count == 0
-            ? "尚未添加文件。"
-            : $"已添加 {_inputPaths.Count} 个文件。");
+        UpdateFileState();
+    }
+
+    private void UpdateFileState()
+    {
+        if (_inputPaths.Count == 0)
+        {
+            Preview.PreviewName = "尚未添加文件";
+            Preview.PreviewSpec = "支持 MP4 / MOV / MKV / WebM";
+            LeftFilePanelControl.Current?.ShowFile(null, null, null);
+            return;
+        }
+
+        string first = _inputPaths[0];
+        string name = Path.GetFileName(first);
+        long bytes = new FileInfo(first).Length;
+
+        Preview.PreviewName = _inputPaths.Count == 1 ? name : $"{name} 等 {_inputPaths.Count} 个文件";
+        Preview.PreviewSpec = $"{FormatSize(bytes)} · {Path.GetExtension(first).TrimStart('.').ToUpperInvariant()}";
+        OutputPathText.Text = Path.GetDirectoryName(first) ?? "与原文件相同";
+        LeftFilePanelControl.Current?.ShowFile(
+            name,
+            $"{FormatSize(bytes)}\n{Path.GetExtension(first).TrimStart('.').ToUpperInvariant()}",
+            "等待处理");
+    }
+
+    private void OnQualityChanged(object sender, RangeBaseValueChangedEventArgs e)
+    {
+        int value = (int)Math.Round(e.NewValue);
+        QualityValueText.Text = value switch
+        {
+            >= 90 => $"极高 · CRF 16",
+            >= 75 => $"高 · CRF 18",
+            >= 50 => $"标准 · CRF 23",
+            >= 25 => $"紧凑 · CRF 28",
+            _ => $"最小体积 · CRF 32",
+        };
+    }
+
+    private void OnResetClick(object sender, RoutedEventArgs e)
+    {
+        FormatBox.SelectedIndex = 0;
+        CodecBox.SelectedIndex = 0;
+        ResolutionBox.SelectedIndex = 0;
+        QualitySlider.Value = 82;
+        HardwareSwitch.IsOn = true;
+        StatusBar.IsOpen = false;
     }
 
     private async void StartOutputButton_Click(object sender, RoutedEventArgs e)
@@ -83,7 +143,7 @@ public sealed partial class VideoOutputPage : Page
 
         if (_inputPaths.Count == 0)
         {
-            SetStatus("请先添加至少一个视频文件。");
+            SetStatus("请先添加至少一个视频文件。", InfoBarSeverity.Warning);
             return;
         }
 
@@ -95,7 +155,7 @@ public sealed partial class VideoOutputPage : Page
         var parameters = new Dictionary<string, string>
         {
             ["format"] = format,
-            ["quality"] = quality.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            ["quality"] = quality.ToString(CultureInfo.InvariantCulture),
         };
 
         JobRequest request = JobRequest.Create(
@@ -105,14 +165,40 @@ public sealed partial class VideoOutputPage : Page
             JobWorkload.HeavyMedia,
             parameters);
 
-        SetStatus("正在提交任务…");
+        SetStatus("正在提交任务…", InfoBarSeverity.Informational);
+        TaskQueueControl.Current?.ShowTask(Path.GetFileName(_inputPaths[0]), $"{format.ToUpperInvariant()} · 正在输出", 0);
+
         JobRecord record = await _submission.SubmitAsync(request);
-        SetStatus(record.Status == JobStatus.Succeeded
-            ? $"完成：{record.OutputPaths.Count} 个文件已输出。"
-            : record.Error is not null
-                ? $"未能完成：{record.Error.Message}"
-                : record.Status.ToString());
+        TaskQueueControl.Current?.ShowIdle();
+
+        if (record.Status == JobStatus.Succeeded)
+        {
+            SetStatus($"完成：{record.OutputPaths.Count} 个文件已输出。", InfoBarSeverity.Success);
+        }
+        else if (record.Error is not null)
+        {
+            SetStatus($"未能完成：{record.Error.Message}", InfoBarSeverity.Error);
+        }
+        else
+        {
+            SetStatus(record.Status.ToString(), InfoBarSeverity.Warning);
+        }
     }
+
+    private void SetStatus(string message, InfoBarSeverity severity)
+    {
+        StatusBar.Message = message;
+        StatusBar.Severity = severity;
+        StatusBar.IsOpen = true;
+    }
+
+    private static string FormatSize(long bytes) => bytes switch
+    {
+        >= 1024L * 1024 * 1024 => $"{bytes / 1024.0 / 1024 / 1024:F2} GB",
+        >= 1024L * 1024 => $"{bytes / 1024.0 / 1024:F1} MB",
+        >= 1024 => $"{bytes / 1024.0:F0} KB",
+        _ => $"{bytes} B",
+    };
 
     private static string MapFormat(string? display) => display switch
     {
@@ -126,6 +212,4 @@ public sealed partial class VideoOutputPage : Page
         "FLAC（仅音频）" => "flac",
         _ => "mp4",
     };
-
-    private void SetStatus(string message) => StatusText.Text = message;
 }

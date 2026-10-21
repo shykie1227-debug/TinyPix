@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="TinyPix.App.Pages.ImageWorkbenchPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:TinyPix.App.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <!-- Template 6 / 图片处理 — design frame 4hTWM. Center preview + 常用预设,
+         right 图片参数. The tool-specific fields live in the 高级参数 expander so
+         every frozen image.* parameter stays reachable. -->
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <!-- ================= Center / Preview ================= -->
+        <Grid Grid.Column="0" Padding="20" RowSpacing="16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <controls:CenterHeaderControl
+                Grid.Row="0"
+                Title="图片处理"
+                Subtitle="裁切、尺寸、色彩、格式与批量输出" />
+
+            <controls:PreviewStageControl
+                x:Name="Preview"
+                Grid.Row="1"
+                Glyph="&#xE91B;"
+                PreviewName="尚未添加文件"
+                PreviewSpec="支持 JPG / PNG / WebP / BMP / TIFF" />
+
+            <controls:PresetRowControl
+                x:Name="Presets"
+                Grid.Row="2"
+                SectionTitle="常用预设" />
+
+            <InfoBar
+                x:Name="StatusBar"
+                Grid.Row="3"
+                IsOpen="False"
+                IsClosable="False"
+                Severity="Informational"
+                AutomationProperties.Name="处理状态" />
+        </Grid>
+
+        <!-- ================= Right / Image Settings ================= -->
+        <Border
+            Grid.Column="1"
+            Width="300"
+            Background="{ThemeResource TinyPixSurfaceBrush}"
+            BorderBrush="{ThemeResource TinyPixBorderBrush}"
+            BorderThickness="1,0,0,0">
+            <Grid Padding="18" RowSpacing="16">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0">
+                    <TextBlock
+                        Text="图片参数"
+                        FontFamily="{ThemeResource TinyPixCjkFontFamily}"
+                        FontSize="15"
+                        FontWeight="Bold"
+                        Foreground="{ThemeResource TinyPixInkBrush}"
+                        VerticalAlignment="Center" />
+                    <Button
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource TinyPixGhostButtonStyle}"
+                        Content="重置参数"
+                        Click="OnResetClick"
+                        AutomationProperties.Name="重置参数" />
+                </Grid>
+
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel Spacing="16">
+                        <StackPanel Spacing="7">
+                            <TextBlock Text="处理工具" Style="{StaticResource TinyPixLabelStyle}" />
+                            <ComboBox
+                                x:Name="ToolBox"
+                                Style="{StaticResource TinyPixComboBoxStyle}"
+                                SelectedIndex="0"
+                                SelectionChanged="ToolList_SelectionChanged"
+                                AutomationProperties.Name="处理工具" />
+                        </StackPanel>
+
+                        <StackPanel Spacing="7">
+                            <TextBlock Text="输出格式" Style="{StaticResource TinyPixLabelStyle}" />
+                            <ComboBox
+                                x:Name="FormatBox"
+                                Style="{StaticResource TinyPixComboBoxStyle}"
+                                SelectedIndex="0"
+                                AutomationProperties.Name="输出格式">
+                                <ComboBoxItem Content="保持原格式" Tag="" />
+                                <ComboBoxItem Content="JPG" Tag="jpg" />
+                                <ComboBoxItem Content="PNG" Tag="png" />
+                                <ComboBoxItem Content="WebP" Tag="webp" />
+                                <ComboBoxItem Content="BMP" Tag="bmp" />
+                                <ComboBoxItem Content="TIFF" Tag="tif" />
+                                <ComboBoxItem Content="GIF" Tag="gif" />
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Spacing="7">
+                            <TextBlock Text="尺寸" Style="{StaticResource TinyPixLabelStyle}" />
+                            <ComboBox
+                                x:Name="SizeBox"
+                                Style="{StaticResource TinyPixComboBoxStyle}"
+                                SelectedIndex="0"
+                                AutomationProperties.Name="输出尺寸">
+                                <ComboBoxItem Content="保持原始" Tag="0x0" />
+                                <ComboBoxItem Content="1920 × 1080" Tag="1920x1080" />
+                                <ComboBoxItem Content="1200 × 1500" Tag="1200x1500" />
+                                <ComboBoxItem Content="1080 × 1080" Tag="1080x1080" />
+                                <ComboBoxItem Content="800 × 800" Tag="800x800" />
+                                <ComboBoxItem Content="640 × 480" Tag="640x480" />
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Spacing="7">
+                            <TextBlock Text="裁切比例" Style="{StaticResource TinyPixLabelStyle}" />
+                            <ComboBox
+                                x:Name="RatioBox"
+                                Style="{StaticResource TinyPixComboBoxStyle}"
+                                SelectedIndex="0"
+                                AutomationProperties.Name="裁切比例">
+                                <ComboBoxItem Content="自由裁切" Tag="" />
+                                <ComboBoxItem Content="1 : 1" Tag="1:1" />
+                                <ComboBoxItem Content="4 : 3" Tag="4:3" />
+                                <ComboBoxItem Content="3 : 2" Tag="3:2" />
+                                <ComboBoxItem Content="16 : 9" Tag="16:9" />
+                                <ComboBoxItem Content="9 : 16" Tag="9:16" />
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Spacing="9">
+                            <Grid>
+                                <TextBlock Text="质量" Style="{StaticResource TinyPixLabelStyle}" VerticalAlignment="Center" />
+                                <TextBlock
+                                    x:Name="QualityValueText"
+                                    Text="90%"
+                                    HorizontalAlignment="Right"
+                                    Style="{StaticResource TinyPixValueStyle}"
+                                    FontSize="11" />
+                            </Grid>
+                            <Slider
+                                x:Name="QualitySlider"
+                                Style="{StaticResource TinyPixSliderStyle}"
+                                Minimum="1"
+                                Maximum="100"
+                                Value="90"
+                                AutomationProperties.Name="质量"
+                                ValueChanged="OnQualityChanged" />
+                            <Grid>
+                                <TextBlock Text="更小文件" FontSize="9" Foreground="{ThemeResource TinyPixMutedBrush}" />
+                                <TextBlock
+                                    Text="更高质量"
+                                    HorizontalAlignment="Right"
+                                    FontSize="9"
+                                    Foreground="{ThemeResource TinyPixMutedBrush}" />
+                            </Grid>
+                        </StackPanel>
+
+                        <Border Style="{StaticResource TinyPixDividerStyle}" />
+
+                        <Expander
+                            x:Name="AdvancedExpander"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Stretch"
+                            Header="高级参数"
+                            AutomationProperties.Name="高级参数">
+                            <StackPanel
+                                x:Name="FormHost"
+                                Spacing="12"
+                                Margin="0,4,0,4"
+                                AutomationProperties.Name="参数表单" />
+                        </Expander>
+
+                        <Grid Height="54">
+                            <StackPanel Spacing="3" VerticalAlignment="Center">
+                                <TextBlock Text="硬件加速" Style="{StaticResource TinyPixValueStyle}" />
+                                <TextBlock Text="自动选择可用设备" Style="{StaticResource TinyPixMetaStyle}" FontSize="9" />
+                            </StackPanel>
+                            <ToggleSwitch
+                                x:Name="HardwareSwitch"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                IsOn="True"
+                                Style="{StaticResource TinyPixToggleSwitchStyle}"
+                                AutomationProperties.Name="硬件加速" />
+                        </Grid>
+
+                        <StackPanel Spacing="7">
+                            <TextBlock Text="输出目录" Style="{StaticResource TinyPixLabelStyle}" />
+                            <Border Style="{StaticResource TinyPixFieldStyle}" Height="42">
+                                <Grid>
+                                    <TextBlock
+                                        x:Name="OutputPathText"
+                                        Text="与原文件相同"
+                                        Style="{StaticResource TinyPixMonoStyle}"
+                                        FontSize="10"
+                                        VerticalAlignment="Center"
+                                        TextTrimming="CharacterEllipsis"
+                                        Margin="0,0,42,0" />
+                                    <TextBlock
+                                        Text="浏览"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        FontFamily="{ThemeResource TinyPixCjkFontFamily}"
+                                        FontSize="10"
+                                        FontWeight="SemiBold"
+                                        Foreground="{ThemeResource TinyPixMutedBrush}" />
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <Button
+                    x:Name="StartButton"
+                    Grid.Row="2"
+                    Height="48"
+                    Style="{StaticResource TinyPixPrimaryButtonStyle}"
+                    Click="StartButton_Click"
+                    AutomationProperties.Name="导出图片">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <FontIcon Glyph="&#xE91B;" FontSize="14" Foreground="{ThemeResource TinyPixOnActionPrimaryBrush}" />
+                        <TextBlock
+                            Text="导出图片"
+                            FontFamily="{ThemeResource TinyPixCjkFontFamily}"
+                            FontSize="13"
+                            FontWeight="Bold"
+                            Foreground="{ThemeResource TinyPixOnActionPrimaryBrush}" />
+                    </StackPanel>
+                </Button>
+            </Grid>
+        </Border>
+    </Grid>
+</Page>

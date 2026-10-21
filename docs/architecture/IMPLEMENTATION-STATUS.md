@@ -1,8 +1,19 @@
 # TinyPix 4.0 implementation status
 
-Updated: 2026-10-14（CI 首次全绿后）
+Updated: 2026-10-20（Phase 5 全部工具完成）
 
 ## Implemented and locally verified
+
+- **Phase 4 工具箱**（2026-10-20）：code.generate/code.scan（ZXing.Net 0.16.11，
+  CHARACTER_SET=UTF-8 修复中文 QR）、file.hash/file.rename/file.metadata、
+  capture.record（TinyPix.Capture 新项目，WGC+MF P/Invoke COM，NV12 BT.601）。
+  VM run16 172/173 通过后 code.scan 输出目录修复 173/173。
+- **Phase 5 PDF 页面管理 8 工具**（2026-10-20）：pdf.merge/split/reorder/rotate/
+  watermark/to-image/from-image/compress。E7 PDFtoImage+PDFium+SkiaSharp 渲染；
+  E8 PDFsharp 编辑 + PdfPig 读取。修改型工具签名硬阻止。24 个测试。
+- **Phase 5 智能证件照 3 工具**（2026-10-20）：idphoto.create/check/print + 7 模板。
+  E4 YuNet（ONNX 320×320，置信度≥0.90）+ E5 MODNet（512×512 alpha matte）。
+  Microsoft.ML.OnnxRuntime 1.20.1 CPU-only。10 个测试。
 
 - Four-project modular-monolith solution and one-way project references.
 - Frozen 50-item built-in tool catalog and eight template categories; archive

@@ -1,0 +1,27 @@
+=== capture start 2026-10-20T14:55:35.1972677+08:00 session=1 user=F1B7\huashu ===
+14:55:35.762 DPI-aware set
+14:55:37.801 launch C:\TinyPixBuild\src\artifacts\TinyPix-single-file\TinyPix.exe
+14:55:41.825 window ready hwnd=459668 title='TinyPix' pid=1892
+14:55:45.463 printwindow 00-startup-window.png ok=True 1440x788
+14:55:46.073 desktop 00-startup-desktop.png 1440x788 at 40,40
+14:55:46.272 nav selected (SelectionItem): 图片工具
+14:55:48.341 printwindow 01-image-window.png ok=True 1440x788
+14:55:48.914 desktop 01-image-desktop.png 1440x788 at 40,40
+14:55:48.937 nav selected (SelectionItem): 视频工具
+14:55:51.023 printwindow 02-video-window.png ok=True 1440x788
+14:55:51.634 desktop 02-video-desktop.png 1440x788 at 40,40
+14:55:51.668 nav selected (SelectionItem): GIF 制作
+14:55:53.759 printwindow 03-gif-window.png ok=True 1440x788
+14:55:54.330 desktop 03-gif-desktop.png 1440x788 at 40,40
+14:55:54.352 nav selected (SelectionItem): 视频编辑
+14:55:56.498 printwindow 04-video-edit-window.png ok=True 1440x788
+14:55:57.082 desktop 04-video-edit-desktop.png 1440x788 at 40,40
+14:55:57.105 nav selected (SelectionItem): 工具箱
+14:55:59.226 printwindow 05-toolbox-window.png ok=True 1440x788
+14:55:59.817 desktop 05-toolbox-desktop.png 1440x788 at 40,40
+14:56:00.072 nav selected (SelectionItem): 设置
+14:56:02.684 desktop 06-settings-desktop.png 1440x788 at 40,40
+14:56:02.752 printwindow 06-settings-window.png ok=True 1440x788
+14:56:02.795 settings dialog closed
+14:56:04.359 fullscreen 99-fullscreen.png 1596x768
+14:56:05.426 TinyPix stopped, capture done

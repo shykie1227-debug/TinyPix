@@ -24,6 +24,7 @@ def test_formal_solution_and_projects_are_versioned() -> None:
         "TinyPix.App",
         "TinyPix.Core",
         "TinyPix.Media",
+        "TinyPix.Capture",
         "TinyPix.Infrastructure",
     ):
         assert project(name).is_file()
@@ -39,9 +40,15 @@ def test_project_reference_direction_is_acyclic() -> None:
     assert references("TinyPix.Infrastructure") == {
         "../TinyPix.Core/TinyPix.Core.csproj"
     }
+    # TinyPix.Capture hosts the Windows-only E11/E1 capture engine and must only
+    # depend downward on the portable Media layer (contracts live there).
+    assert references("TinyPix.Capture") == {
+        "../TinyPix.Media/TinyPix.Media.csproj"
+    }
     assert references("TinyPix.App") == {
         "../TinyPix.Core/TinyPix.Core.csproj",
         "../TinyPix.Media/TinyPix.Media.csproj",
+        "../TinyPix.Capture/TinyPix.Capture.csproj",
         "../TinyPix.Infrastructure/TinyPix.Infrastructure.csproj",
     }
 
@@ -121,8 +128,11 @@ def test_app_lock_excludes_unused_windows_sdk_components_and_vulnerable_sqlite()
         for name, metadata in framework.items()
     }
 
-    assert packages["Microsoft.WindowsAppSDK.WinUI"]["resolved"] == "2.2.1"
-    assert packages["Microsoft.WindowsAppSDK.Runtime"]["resolved"] == "2.2.0"
+    # 2026-10-16 VM 实证：唯一经验证的同源配对是 Runtime 2.1.3 ↔ WinUI 2.1.0
+    # （XAML 3.2.1.2605 两侧一致）；2.2.x/2.3.x 组合会 fail-fast 0xC000027B。
+    # 换任一行都必须成对更换，且以“窗口真实启动”为验收。
+    assert packages["Microsoft.WindowsAppSDK.WinUI"]["resolved"] == "2.1.0"
+    assert packages["Microsoft.WindowsAppSDK.Runtime"]["resolved"] == "2.1.3"
     assert packages["SQLitePCLRaw.lib.e_sqlite3"]["resolved"] == "2.1.12"
     assert not {
         "Microsoft.WindowsAppSDK",
@@ -166,8 +176,8 @@ def test_project_has_a_stable_fast_retrieval_index() -> None:
         assert (ROOT / relative_dir).is_dir()
 
     assert (
-        "| 当前门禁 | 编译、单测、真实转码、源文件哈希已过；"
-        "**窗口启动与 Windows 11 干净机门禁未完成**，整体门禁仍开 |"
+        "| 当前门禁 | 编译、单测、真实转码、窗口启动（hwnd/title/responding 12 采样）已过；"
+        "**Windows 10 干净机手动验证未完成** |"
     ) in index
     assert "设置弹窗静态冻结证据已通过" in index
     assert index.index("Windows 可行性门禁：静态 UI 冻结后的入口") < index.index(
@@ -404,15 +414,18 @@ def test_formal_winui_shell_has_one_native_shell_and_one_settings_dialog() -> No
         app_root / "Controls/SettingsDialogContent.xaml"
     ).read_text(encoding="utf-8")
 
+    # 4.0 shell = design frame: 72 top nav / body / 108 task queue, three mode
+    # pills instead of a NavigationView top pane, and a modal settings scrim
+    # instead of a ContentDialog (so the scrim covers the top nav too).
     for marker in (
-        'PaneDisplayMode="Top"',
+        'x:Name="ModeBar"',
         'Content="图片工具"',
         'Content="视频工具"',
         'Content="工具箱"',
         'x:Name="LeftFilePanel"',
         'x:Name="WorkbenchFrame"',
-        'x:Name="RightParameterPanel"',
         'x:Name="TaskQueue"',
+        'x:Name="SettingsOverlay"',
         'AutomationProperties.Name="任务队列区域"',
     ):
         assert marker in main_window

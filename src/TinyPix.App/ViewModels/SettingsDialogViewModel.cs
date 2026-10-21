@@ -35,6 +35,7 @@ public partial class SettingsDialogViewModel : ObservableObject
     private string _language = "zh-CN";
     private bool _reduceMotion;
     private long _maximumCacheBytes;
+    private int _historyLimit = 1000;
     private bool _confirmBeforeReplacingExistingOutput = true;
 
     public string OutputDirectory
@@ -67,6 +68,12 @@ public partial class SettingsDialogViewModel : ObservableObject
         set => SetProperty(ref _maximumCacheBytes, value);
     }
 
+    public int HistoryLimit
+    {
+        get => _historyLimit;
+        set => SetProperty(ref _historyLimit, value);
+    }
+
     public bool ConfirmBeforeReplacingExistingOutput
     {
         get => _confirmBeforeReplacingExistingOutput;
@@ -83,6 +90,7 @@ public partial class SettingsDialogViewModel : ObservableObject
         Language = _loaded.Language;
         ReduceMotion = _loaded.ReduceMotion;
         MaximumCacheBytes = _loaded.MaximumCacheBytes;
+        HistoryLimit = _loaded.HistoryLimit;
         ConfirmBeforeReplacingExistingOutput = _loaded.ConfirmBeforeReplacingExistingOutput;
     }
 
@@ -97,6 +105,7 @@ public partial class SettingsDialogViewModel : ObservableObject
             Language = Language,
             ReduceMotion = ReduceMotion,
             MaximumCacheBytes = MaximumCacheBytes,
+            HistoryLimit = HistoryLimit,
             ConfirmBeforeReplacingExistingOutput = ConfirmBeforeReplacingExistingOutput,
         };
         await _settingsStore.SaveAsync(updated, cancellationToken).ConfigureAwait(false);

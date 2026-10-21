@@ -6,4 +6,25 @@
   <ItemGroup>
     <ProjectReference Include="../TinyPix.Core/TinyPix.Core.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <!-- E3 图片引擎（design/DEPENDENCY-BASELINE.md）：解码/缩放/裁切/色彩/合成/
+         EXIF/格式与压缩全部经 Magick.NET，不并列其他图像引擎。 -->
+    <PackageReference Include="Magick.NET-Q16-AnyCPU" />
+    <!-- E9 码（design/FEATURE-MATRIX.md §7）：二维码/条码的生成与识别唯一引擎；
+         全产品不得并存 ZXing-C++ 或其他扫码引擎。版本见 Directory.Packages.props。 -->
+    <PackageReference Include="ZXing.Net" />
+    <!-- E8 PDF（design/FEATURE-MATRIX.md §8 file.metadata）：PdfPig 只做只读
+         结构读取（页数/版本/签名探测），PDFsharp 只做创建与 Info 元数据清理；
+         页面级编辑等 Phase 5 pdf.* 工具同样落在这两个包上。 -->
+    <PackageReference Include="PdfPig" />
+    <PackageReference Include="PDFsharp" />
+    <!-- E7 页面栅格化（WINUI-CONTROL-MAPPING 模板 5）：PDFtoImage 托管调用 +
+         PDFium 渲染 + SkiaSharp 位图/编码，单页串行，无 Windows.Data.Pdf fallback。 -->
+    <PackageReference Include="PDFtoImage" />
+    <PackageReference Include="bblanchon.PDFium.Win32" />
+    <PackageReference Include="SkiaSharp" />
+    <!-- E4+E5 ONNX Runtime CPU: YuNet face detection + MODNet portrait matting.
+         CPUExecutionProvider only; no GPU/CUDA assets. -->
+    <PackageReference Include="Microsoft.ML.OnnxRuntime" />
+  </ItemGroup>
 </Project>

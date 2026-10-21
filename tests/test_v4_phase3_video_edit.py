@@ -56,8 +56,11 @@ def test_app_registers_video_edit_handlers():
     assert os.path.isfile(path), f"缺少 App.xaml.cs: {path}"
     src = _read(path)
     for class_name, _ in EXPECTED:
-        needle = f"registry.Register(provider.GetRequiredService<{class_name}>());"
+        # 注册走带 trace 的 Register(registry, provider, typeof(...)) 助手
+        # （单文件启动期定位崩溃注册项用）；DI 注册同行 AddSingleton 配对。
+        needle = f"Register(registry, provider, typeof({class_name}));"
         assert needle in src, f"App 未注册 {class_name}"
+        assert f"services.AddSingleton<{class_name}>();" in src, f"App 未注入 {class_name}"
 
 
 def test_video_editor_page_exists_and_wired():
@@ -80,9 +83,11 @@ def test_main_window_navigates_to_video_editor():
     assert os.path.isfile(xaml) and os.path.isfile(code)
     xaml_src = _read(xaml)
     code_src = _read(code)
-    assert 'Tag="video-edit"' in xaml_src, "MainWindow 未加 video-edit 导航项"
+    # The 4.0 shell no longer carries a per-tool navigation item: the left file
+    # panel raises ToolInvoked and MainWindow routes the video.* ids.
+    assert 'LeftFilePanel.ToolInvoked += OnToolInvoked' in code_src
     assert "VideoEditorPage" in code_src, "MainWindow 未导航到 VideoEditorPage"
-    assert 'string.Equals(tag, "video-edit"' in code_src
+    assert '"video.trim" or "video.split" or "video.merge"' in code_src
 
 
 def test_job_submission_preview_supports_edit_handlers():

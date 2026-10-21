@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="TinyPix.App.Pages.GeneratorsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:TinyPix.App.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <!-- Template 8 / 生成器与文件工具 — design frame BlxnH. The right panel keeps
+         the design's four field groups + slider and relabels them per tool. -->
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <!-- ================= Center / Preview ================= -->
+        <Grid Grid.Column="0" Padding="20" RowSpacing="16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <controls:CenterHeaderControl
+                x:Name="Header"
+                Grid.Row="0"
+                Title="二维码生成器"
+                Subtitle="生成本地二维码，并导出 PNG 或 SVG" />
+
+            <controls:PreviewStageControl
+                x:Name="Preview"
+                Grid.Row="1"
+                Glyph="&#xE8C8;"
+                PreviewName="预览二维码"
+                PreviewSpec="400 × 400 · 错误修正 M" />
+
+            <controls:PresetRowControl
+                x:Name="Presets"
+                Grid.Row="2"
+                SectionTitle="常用文件工具" />
+
+            <InfoBar
+                x:Name="StatusBar"
+                Grid.Row="3"
+                IsOpen="False"
+                IsClosable="False"
+                Severity="Informational"
+                AutomationProperties.Name="生成状态" />
+        </Grid>
+
+        <!-- ================= Right / Generation Settings ================= -->
+        <Border
+            Grid.Column="1"
+            Width="300"
+            Background="{ThemeResource TinyPixSurfaceBrush}"
+            BorderBrush="{ThemeResource TinyPixBorderBrush}"
+            BorderThickness="1,0,0,0">
+            <Grid Padding="18" RowSpacing="16">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0">
+                    <TextBlock
+                        Text="生成设置"
+                        FontFamily="{ThemeResource TinyPixCjkFontFamily}"
+                        FontSize="15"
+                        FontWeight="Bold"
+                        Foreground="{ThemeResource TinyPixInkBrush}"
+                        VerticalAlignment="Center" />
+                    <Button
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource TinyPixGhostButtonStyle}"
+                        Content="重置参数"
+                        Click="OnResetClick"
+                        AutomationProperties.Name="重置参数" />
+                </Grid>
+
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel Spacing="16">
+                        <StackPanel Spacing="7">
+                            <TextBlock Text="任务类型" Style="{StaticResource TinyPixLabelStyle}" />
+                            <ComboBox
+                                x:Name="TaskBox"
+                                Style="{StaticResource TinyPixComboBoxStyle}"
+                                SelectedIndex="0"
+                                SelectionChanged="OnTaskChanged"
+                                AutomationProperties.Name="任务类型">
+                                <ComboBoxItem Content="二维码生成" Tag="code.generate" />
+                                <ComboBoxItem Content="批量重命名副本" Tag="file.rename" />
+                                <ComboBoxItem Content="文件校验值" Tag="file.hash" />
+                                <ComboBoxItem Content="文件与媒体信息" Tag="file.metadata" />
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel x:Name="Group1" Spacing="7">
+                            <TextBlock x:Name="Group1Label" Text="内容类型" Style="{StaticResource TinyPixLabelStyle}" />
+                            <ComboBox
+                                x:Name="Group1Box"
+                                Style="{StaticResource TinyPixComboBoxStyle}"
+                                SelectedIndex="0"
+                                AutomationProperties.Name="内容类型" />
+                        </StackPanel>
+
+                        <StackPanel x:Name="Group2" Spacing="7">
+                            <TextBlock x:Name="Group2Label" Text="尺寸" Style="{StaticResource TinyPixLabelStyle}" />
+                            <ComboBox
+                                x:Name="Group2Box"
+                                Style="{StaticResource TinyPixComboBoxStyle}"
+                                SelectedIndex="0"
+                                AutomationProperties.Name="尺寸" />
+                        </StackPanel>
+
+                        <StackPanel x:Name="Group3" Spacing="7">
+                            <TextBlock x:Name="Group3Label" Text="错误修正" Style="{StaticResource TinyPixLabelStyle}" />
+                            <ComboBox
+                                x:Name="Group3Box"
+                                Style="{StaticResource TinyPixComboBoxStyle}"
+                                SelectedIndex="0"
+                                AutomationProperties.Name="错误修正" />
+                        </StackPanel>
+
+                        <StackPanel x:Name="SliderGroup" Spacing="9">
+                            <Grid>
+                                <TextBlock x:Name="SliderLabel" Text="输出" Style="{StaticResource TinyPixLabelStyle}" VerticalAlignment="Center" />
+                                <TextBlock
+                                    x:Name="SliderValueText"
+                                    Text="PNG · 透明边距"
+                                    HorizontalAlignment="Right"
+                                    Style="{StaticResource TinyPixValueStyle}"
+                                    FontSize="11" />
+                            </Grid>
+                            <Slider
+                                x:Name="ValueSlider"
+                                Style="{StaticResource TinyPixSliderStyle}"
+                                Minimum="0"
+                                Maximum="100"
+                                Value="72"
+                                AutomationProperties.Name="生成强度"
+                                ValueChanged="OnSliderChanged" />
+                            <Grid>
+                                <TextBlock x:Name="SliderMinText" Text="更小文件" FontSize="9" Foreground="{ThemeResource TinyPixMutedBrush}" />
+                                <TextBlock
+                                    x:Name="SliderMaxText"
+                                    Text="更高质量"
+                                    HorizontalAlignment="Right"
+                                    FontSize="9"
+                                    Foreground="{ThemeResource TinyPixMutedBrush}" />
+                            </Grid>
+                        </StackPanel>
+
+                        <StackPanel x:Name="ContentGroup" Spacing="7">
+                            <TextBlock x:Name="ContentLabel" Text="内容" Style="{StaticResource TinyPixLabelStyle}" />
+                            <TextBox
+                                x:Name="ContentTextBox"
+                                Style="{StaticResource TinyPixTextBoxStyle}"
+                                PlaceholderText="输入网址或文本…"
+                                AutomationProperties.Name="二维码内容" />
+                        </StackPanel>
+
+                        <Border Style="{StaticResource TinyPixDividerStyle}" />
+
+                        <Grid Height="54">
+                            <StackPanel Spacing="3" VerticalAlignment="Center">
+                                <TextBlock Text="硬件加速" Style="{StaticResource TinyPixValueStyle}" />
+                                <TextBlock Text="自动选择可用设备" Style="{StaticResource TinyPixMetaStyle}" FontSize="9" />
+                            </StackPanel>
+                            <ToggleSwitch
+                                x:Name="HardwareSwitch"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                IsOn="True"
+                                Style="{StaticResource TinyPixToggleSwitchStyle}"
+                                AutomationProperties.Name="硬件加速" />
+                        </Grid>
+
+                        <StackPanel Spacing="7">
+                            <TextBlock Text="输出目录" Style="{StaticResource TinyPixLabelStyle}" />
+                            <Border Style="{StaticResource TinyPixFieldStyle}" Height="42">
+                                <Grid>
+                                    <TextBlock
+                                        x:Name="OutputPathText"
+                                        Text="与原文件相同"
+                                        Style="{StaticResource TinyPixMonoStyle}"
+                                        FontSize="10"
+                                        VerticalAlignment="Center"
+                                        TextTrimming="CharacterEllipsis"
+                                        Margin="0,0,42,0" />
+                                    <TextBlock
+                                        Text="浏览"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        FontFamily="{ThemeResource TinyPixCjkFontFamily}"
+                                        FontSize="10"
+                                        FontWeight="SemiBold"
+                                        Foreground="{ThemeResource TinyPixMutedBrush}" />
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <Button
+                    x:Name="StartButton"
+                    Grid.Row="2"
+                    Height="48"
+                    Style="{StaticResource TinyPixPrimaryButtonStyle}"
+                    Click="StartButton_Click"
+                    AutomationProperties.Name="生成二维码">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <FontIcon Glyph="&#xE8C8;" FontSize="14" Foreground="{ThemeResource TinyPixOnActionPrimaryBrush}" />
+                        <TextBlock
+                            x:Name="StartButtonText"
+                            Text="生成二维码"
+                            FontFamily="{ThemeResource TinyPixCjkFontFamily}"
+                            FontSize="13"
+                            FontWeight="Bold"
+                            Foreground="{ThemeResource TinyPixOnActionPrimaryBrush}" />
+                    </StackPanel>
+                </Button>
+            </Grid>
+        </Border>
+    </Grid>
+</Page>

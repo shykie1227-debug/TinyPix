@@ -1,0 +1,5 @@
+=== bootstrap 2026-10-21T11:57:22.9369482+08:00 ===
+11:57:23.026 script exists: True
+11:57:26.745 old task removed
+11:57:27.185 task registered
+11:57:27.246 task started
