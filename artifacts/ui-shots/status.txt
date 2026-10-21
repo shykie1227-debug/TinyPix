@@ -1,8 +1,0 @@
-state=Ready
-lastResult=1
-lastRun=10/20/2026 14:47:47
-nextRun=
-powershellProcs:
-  powershell pid=9320 session=0 hwnd=0 title=''
-done=False
-logExists=False
