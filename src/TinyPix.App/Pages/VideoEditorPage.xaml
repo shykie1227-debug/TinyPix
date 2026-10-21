@@ -3,66 +3,221 @@
     x:Class="TinyPix.App.Pages.VideoEditorPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:TinyPix.App.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <!--
-      视频编辑 — Phase 3 合并入口页，覆盖 video.trim / split / merge / geometry /
-      speed-volume / audio / overlay / frames / metadata 九个工具。页面通过
-      JobSubmissionService 把所选工具路由到对应 handler；参数采用各工具的保守默认值，
-      便于在 exe 电脑上先验证管线，后续再细化可视化参数面板。
-    -->
-    <Grid Padding="16">
-        <StackPanel Spacing="12">
-            <TextBlock
-                Text="视频编辑"
-                Style="{ThemeResource TitleTextBlockStyle}"
-                AutomationProperties.Name="视频编辑" />
+    <!-- Template 3 / 视频时间剪辑 — design frame fj5RE. Center preview + the
+         non-destructive single-track Timeline Editor, right 剪辑设置 panel. -->
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
 
-            <Border
-                x:Name="PreviewStage"
-                MinHeight="200"
-                AutomationProperties.Name="中央预览区域">
-                <TextBlock
-                    Text="添加视频后在此预览"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center" />
-            </Border>
+        <!-- ================= Center / Preview + Timeline ================= -->
+        <Grid Grid.Column="0" Padding="20" RowSpacing="16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-            <ComboBox
-                x:Name="ToolBox"
-                Header="工具"
-                AutomationProperties.Name="工具选择"
-                SelectedIndex="0">
-                <ComboBoxItem Tag="video.trim" Content="视频时间剪辑" />
-                <ComboBoxItem Tag="video.split" Content="视频分段" />
-                <ComboBoxItem Tag="video.merge" Content="视频合并" />
-                <ComboBoxItem Tag="video.geometry" Content="裁切、缩放与旋转" />
-                <ComboBoxItem Tag="video.speed-volume" Content="速度与音量" />
-                <ComboBoxItem Tag="video.audio" Content="音频处理" />
-                <ComboBoxItem Tag="video.overlay" Content="水印与字幕" />
-                <ComboBoxItem Tag="video.frames" Content="截图与帧提取" />
-                <ComboBoxItem Tag="video.metadata" Content="媒体信息与元数据清理" />
-            </ComboBox>
+            <controls:CenterHeaderControl
+                Grid.Row="0"
+                Title="视频剪辑"
+                Subtitle="时间剪辑 / 合并拼接 · 共用预览、时间轴与输出" />
 
-            <Button
-                x:Name="AddFilesButton"
-                Content="添加视频"
-                AutomationProperties.Name="添加视频"
-                Click="AddFilesButton_Click" />
+            <controls:PreviewStageControl
+                x:Name="Preview"
+                Grid.Row="1"
+                CardHeight="286"
+                Glyph="&#xE768;"
+                PreviewName="尚未添加文件"
+                PreviewSpec="支持 MP4 / MOV / MKV / WebM" />
 
-            <Button
-                x:Name="StartEditButton"
-                Content="开始处理"
-                Style="{ThemeResource AccentButtonStyle}"
-                AutomationProperties.Name="开始处理"
-                Click="StartEditButton_Click" />
+            <controls:TimelineEditorControl
+                x:Name="Timeline"
+                Grid.Row="2" />
 
-            <TextBlock
-                x:Name="StatusText"
-                AutomationProperties.Name="输出状态"
-                Foreground="{ThemeResource TinyPixMutedBrush}" />
-        </StackPanel>
+            <InfoBar
+                x:Name="StatusBar"
+                Grid.Row="3"
+                IsOpen="False"
+                IsClosable="False"
+                Severity="Informational"
+                AutomationProperties.Name="剪辑状态" />
+        </Grid>
+
+        <!-- ================= Right / Edit Settings ================= -->
+        <Border
+            Grid.Column="1"
+            Width="300"
+            Background="{ThemeResource TinyPixSurfaceBrush}"
+            BorderBrush="{ThemeResource TinyPixBorderBrush}"
+            BorderThickness="1,0,0,0">
+            <Grid Padding="18" RowSpacing="16">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0">
+                    <TextBlock
+                        Text="剪辑设置"
+                        FontFamily="{ThemeResource TinyPixCjkFontFamily}"
+                        FontSize="15"
+                        FontWeight="Bold"
+                        Foreground="{ThemeResource TinyPixInkBrush}"
+                        VerticalAlignment="Center" />
+                    <Button
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource TinyPixGhostButtonStyle}"
+                        Content="重置参数"
+                        Click="OnResetClick"
+                        AutomationProperties.Name="重置参数" />
+                </Grid>
+
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel Spacing="16">
+                        <StackPanel Spacing="7">
+                            <TextBlock Text="编辑模式" Style="{StaticResource TinyPixLabelStyle}" />
+                            <ComboBox
+                                x:Name="ModeBox"
+                                Style="{StaticResource TinyPixComboBoxStyle}"
+                                SelectedIndex="0"
+                                SelectionChanged="OnModeChanged"
+                                AutomationProperties.Name="编辑模式">
+                                <ComboBoxItem Content="时间剪辑" Tag="video.trim" />
+                                <ComboBoxItem Content="分段导出" Tag="video.split" />
+                                <ComboBoxItem Content="合并拼接" Tag="video.merge" />
+                                <ComboBoxItem Content="裁切缩放与旋转" Tag="video.geometry" />
+                                <ComboBoxItem Content="速度与音量" Tag="video.speed-volume" />
+                                <ComboBoxItem Content="音频处理" Tag="video.audio" />
+                                <ComboBoxItem Content="水印与字幕" Tag="video.overlay" />
+                                <ComboBoxItem Content="截图与帧提取" Tag="video.frames" />
+                                <ComboBoxItem Content="元数据清理" Tag="video.metadata" />
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Spacing="7">
+                            <TextBlock Text="剪切精度" Style="{StaticResource TinyPixLabelStyle}" />
+                            <ComboBox
+                                x:Name="PrecisionBox"
+                                Style="{StaticResource TinyPixComboBoxStyle}"
+                                SelectedIndex="0"
+                                AutomationProperties.Name="剪切精度">
+                                <ComboBoxItem Content="关键帧优先" Tag="0" />
+                                <ComboBoxItem Content="精确重编码" Tag="1" />
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Spacing="7">
+                            <TextBlock Text="导出范围" Style="{StaticResource TinyPixLabelStyle}" />
+                            <ComboBox
+                                x:Name="RangeBox"
+                                Style="{StaticResource TinyPixComboBoxStyle}"
+                                SelectedIndex="0"
+                                SelectionChanged="OnRangeChanged"
+                                AutomationProperties.Name="导出范围">
+                                <ComboBoxItem Content="入点至出点" Tag="inout" />
+                                <ComboBoxItem Content="仅保留片段" Tag="kept" />
+                                <ComboBoxItem Content="整段原始时长" Tag="all" />
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Spacing="9">
+                            <Grid>
+                                <TextBlock Text="音频" Style="{StaticResource TinyPixLabelStyle}" VerticalAlignment="Center" />
+                                <TextBlock
+                                    x:Name="AudioValueText"
+                                    Text="保留原音轨"
+                                    HorizontalAlignment="Right"
+                                    Style="{StaticResource TinyPixValueStyle}"
+                                    FontSize="11" />
+                            </Grid>
+                            <Slider
+                                x:Name="VolumeSlider"
+                                Style="{StaticResource TinyPixSliderStyle}"
+                                Minimum="0"
+                                Maximum="200"
+                                Value="100"
+                                AutomationProperties.Name="音量"
+                                ValueChanged="OnVolumeChanged" />
+                            <Grid>
+                                <TextBlock Text="静音" FontSize="9" Foreground="{ThemeResource TinyPixMutedBrush}" />
+                                <TextBlock
+                                    Text="200%"
+                                    HorizontalAlignment="Right"
+                                    FontSize="9"
+                                    Foreground="{ThemeResource TinyPixMutedBrush}" />
+                            </Grid>
+                        </StackPanel>
+
+                        <Border Style="{StaticResource TinyPixDividerStyle}" />
+
+                        <Grid Height="54">
+                            <StackPanel Spacing="3" VerticalAlignment="Center">
+                                <TextBlock Text="硬件加速" Style="{StaticResource TinyPixValueStyle}" />
+                                <TextBlock Text="自动选择可用设备" Style="{StaticResource TinyPixMetaStyle}" FontSize="9" />
+                            </StackPanel>
+                            <ToggleSwitch
+                                x:Name="HardwareSwitch"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                IsOn="True"
+                                Style="{StaticResource TinyPixToggleSwitchStyle}"
+                                AutomationProperties.Name="硬件加速" />
+                        </Grid>
+
+                        <StackPanel Spacing="7">
+                            <TextBlock Text="输出目录" Style="{StaticResource TinyPixLabelStyle}" />
+                            <Border Style="{StaticResource TinyPixFieldStyle}" Height="42">
+                                <Grid>
+                                    <TextBlock
+                                        x:Name="OutputPathText"
+                                        Text="与原文件相同"
+                                        Style="{StaticResource TinyPixMonoStyle}"
+                                        FontSize="10"
+                                        VerticalAlignment="Center"
+                                        TextTrimming="CharacterEllipsis"
+                                        Margin="0,0,42,0" />
+                                    <TextBlock
+                                        Text="浏览"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        FontFamily="{ThemeResource TinyPixCjkFontFamily}"
+                                        FontSize="10"
+                                        FontWeight="SemiBold"
+                                        Foreground="{ThemeResource TinyPixMutedBrush}" />
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <Button
+                    x:Name="StartButton"
+                    Grid.Row="2"
+                    Height="48"
+                    Style="{StaticResource TinyPixPrimaryButtonStyle}"
+                    Click="StartEditButton_Click"
+                    AutomationProperties.Name="导出剪辑">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <FontIcon Glyph="&#xE768;" FontSize="14" Foreground="{ThemeResource TinyPixOnActionPrimaryBrush}" />
+                        <TextBlock
+                            Text="导出剪辑"
+                            FontFamily="{ThemeResource TinyPixCjkFontFamily}"
+                            FontSize="13"
+                            FontWeight="Bold"
+                            Foreground="{ThemeResource TinyPixOnActionPrimaryBrush}" />
+                    </StackPanel>
+                </Button>
+            </Grid>
+        </Border>
     </Grid>
 </Page>

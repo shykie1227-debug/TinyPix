@@ -10,87 +10,176 @@
     Title="TinyPix">
 
     <!--
-      Formal TinyPix 4.0 shell, rebuilt from the Pencil design source with native
-      WinUI controls (the Windows 10 feasibility-gate prototype is throwaway and
-      must not be copied). Structure per design/WINUI-CONTROL-MAPPING.md:
-      top category NavigationView + two-row/three-column four-region workbench.
+      TinyPix 4.0 shell, rebuilt from design/TinyPix-4.0.pen:
+      Top Navigation (72) → Workbench Body (left 232 / workbench) → Task Queue (108).
+      The workbench region hosts a category page which renders the design's
+      two-column body (Center / Preview + Right parameters).
     -->
-    <Grid x:Name="ShellRoot">
-        <NavigationView
-            x:Name="CategoryNav"
-            PaneDisplayMode="Top"
-            IsBackButtonVisible="Collapsed"
-            IsSettingsVisible="True"
-            AutomationProperties.Name="顶部分类"
-            SelectionChanged="OnCategorySelectionChanged"
-            ItemInvoked="OnCategoryItemInvoked">
+    <Grid x:Name="ShellRoot" Background="{ThemeResource TinyPixCanvasBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="72" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="108" />
+        </Grid.RowDefinitions>
 
-            <NavigationView.MenuItems>
-                <NavigationViewItem
-                    x:Name="ImageCategoryItem"
-                    Content="图片工具"
-                    AutomationProperties.Name="图片工具"
-                    Tag="image" />
-                <NavigationViewItem
-                    x:Name="VideoCategoryItem"
-                    Content="视频工具"
-                    AutomationProperties.Name="视频工具"
-                    Tag="video" />
-                <NavigationViewItem
-                    x:Name="GifCategoryItem"
-                    Content="GIF 制作"
-                    AutomationProperties.Name="GIF 制作"
-                    Tag="video.gif" />
-                <NavigationViewItem
-                    x:Name="VideoEditCategoryItem"
-                    Content="视频编辑"
-                    AutomationProperties.Name="视频编辑"
-                    Tag="video-edit" />
-                <NavigationViewItem
-                    x:Name="ToolboxCategoryItem"
-                    Content="工具箱"
-                    AutomationProperties.Name="工具箱"
-                    Tag="toolbox" />
-            </NavigationView.MenuItems>
-
-            <!-- Four-region workbench: row 0 = file | workbench | parameters,
-                 row 1 = task queue spanning all three columns. -->
-            <Grid x:Name="WorkbenchGrid">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="92" />
-                </Grid.RowDefinitions>
+        <!-- ==================== Top Navigation ==================== -->
+        <Border
+            x:Name="TopNavigation"
+            Grid.Row="0"
+            Background="{ThemeResource TinyPixSurfaceBrush}"
+            BorderBrush="{ThemeResource TinyPixBorderBrush}"
+            BorderThickness="0,0,0,1"
+            Padding="24,0"
+            AutomationProperties.Name="顶部导航">
+            <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="240" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="250" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
+                <StackPanel
+                    Grid.Column="0"
+                    Orientation="Horizontal"
+                    Spacing="28"
+                    VerticalAlignment="Center">
+                    <TextBlock
+                        Text="TinyPix"
+                        FontFamily="{ThemeResource TinyPixUiFontFamily}"
+                        FontSize="19"
+                        FontWeight="ExtraBold"
+                        Foreground="{ThemeResource TinyPixInkBrush}"
+                        VerticalAlignment="Center" />
+
+                    <StackPanel
+                        x:Name="ModeBar"
+                        Orientation="Horizontal"
+                        Spacing="6"
+                        VerticalAlignment="Center"
+                        AutomationProperties.Name="顶部分类">
+                        <ToggleButton
+                            x:Name="ImageModeButton"
+                            Content="图片工具"
+                            Style="{StaticResource TinyPixModePillStyle}"
+                            AutomationProperties.Name="图片工具"
+                            Click="OnImageModeClick" />
+                        <ToggleButton
+                            x:Name="VideoModeButton"
+                            Content="视频工具"
+                            Style="{StaticResource TinyPixModePillStyle}"
+                            AutomationProperties.Name="视频工具"
+                            Click="OnVideoModeClick" />
+                        <ToggleButton
+                            x:Name="ToolboxModeButton"
+                            Content="工具箱"
+                            Style="{StaticResource TinyPixModePillStyle}"
+                            AutomationProperties.Name="工具箱"
+                            Click="OnToolboxModeClick" />
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel
+                    Grid.Column="2"
+                    Orientation="Horizontal"
+                    Spacing="18"
+                    VerticalAlignment="Center">
+                    <!-- Offline chip: green dot + 完全离线 -->
+                    <Border
+                        Background="{ThemeResource TinyPixSurfaceMutedBrush}"
+                        CornerRadius="18"
+                        Padding="12,8">
+                        <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                            <Ellipse
+                                Width="8"
+                                Height="8"
+                                Fill="{ThemeResource TinyPixSuccessBrush}"
+                                VerticalAlignment="Center" />
+                            <TextBlock
+                                Text="完全离线"
+                                FontFamily="{ThemeResource TinyPixCjkFontFamily}"
+                                FontSize="12"
+                                FontWeight="Medium"
+                                Foreground="{ThemeResource TinyPixMutedBrush}"
+                                VerticalAlignment="Center"
+                                AutomationProperties.Name="离线状态" />
+                        </StackPanel>
+                    </Border>
+
+                    <Button
+                        x:Name="SettingsButton"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Padding="0"
+                        AutomationProperties.Name="设置"
+                        Click="OnSettingsClick">
+                        <StackPanel Orientation="Horizontal" Spacing="7" VerticalAlignment="Center">
+                            <FontIcon
+                                Glyph="&#xE713;"
+                                FontSize="16"
+                                Foreground="{ThemeResource TinyPixInkBrush}"
+                                VerticalAlignment="Center" />
+                            <TextBlock
+                                Text="设置"
+                                FontFamily="{ThemeResource TinyPixCjkFontFamily}"
+                                FontSize="14"
+                                FontWeight="SemiBold"
+                                Foreground="{ThemeResource TinyPixInkBrush}"
+                                VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ==================== Workbench Body ==================== -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="232" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Border
+                Grid.Column="0"
+                Background="{ThemeResource TinyPixSurfaceBrush}"
+                BorderBrush="{ThemeResource TinyPixBorderBrush}"
+                BorderThickness="0,0,1,0">
                 <controls:LeftFilePanelControl
                     x:Name="LeftFilePanel"
-                    Grid.Row="0"
-                    Grid.Column="0"
                     AutomationProperties.Name="文件区域" />
+            </Border>
 
-                <Frame
-                    x:Name="WorkbenchFrame"
-                    Grid.Row="0"
-                    Grid.Column="1"
-                    AutomationProperties.Name="中央预览区域" />
+            <Frame
+                x:Name="WorkbenchFrame"
+                Grid.Column="1"
+                Background="{ThemeResource TinyPixCanvasBrush}"
+                AutomationProperties.Name="中央预览区域" />
+        </Grid>
 
-                <controls:RightParameterPanelControl
-                    x:Name="RightParameterPanel"
-                    Grid.Row="0"
-                    Grid.Column="2"
-                    AutomationProperties.Name="参数区域" />
+        <!-- ==================== Task Queue ==================== -->
+        <Border
+            Grid.Row="2"
+            Background="{ThemeResource TinyPixSurfaceBrush}"
+            BorderBrush="{ThemeResource TinyPixBorderBrush}"
+            BorderThickness="0,1,0,0">
+            <controls:TaskQueueControl
+                x:Name="TaskQueue"
+                AutomationProperties.Name="任务队列区域" />
+        </Border>
 
-                <controls:TaskQueueControl
-                    x:Name="TaskQueue"
-                    Grid.Row="1"
-                    Grid.Column="0"
-                    Grid.ColumnSpan="3"
-                    AutomationProperties.Name="任务队列区域" />
-            </Grid>
-        </NavigationView>
+        <!-- ==================== Settings Scrim + Dialog ==================== -->
+        <!-- design: Settings Modal Scrim covers the complete shell root, top
+             navigation included, and centres the single 820×620 dialog card. -->
+        <Grid
+            x:Name="SettingsOverlay"
+            Grid.Row="0"
+            Grid.RowSpan="3"
+            Visibility="Collapsed"
+            Background="{ThemeResource TinyPixScrimBrush}"
+            AutomationProperties.Name="设置遮罩">
+            <ContentControl
+                x:Name="SettingsHost"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center" />
+        </Grid>
     </Grid>
 </Window>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="TinyPix.App.Controls.PresetRowControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <!-- design: Common Presets — header (title + 管理预设) + one row of 4 cards. -->
+    <Grid RowSpacing="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <TextBlock
+                x:Name="SectionTitleText"
+                Text="常用预设"
+                Style="{StaticResource TinyPixSectionTitleStyle}"
+                VerticalAlignment="Center" />
+            <Button
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Style="{StaticResource TinyPixGhostButtonStyle}"
+                Content="管理预设"
+                AutomationProperties.Name="管理预设" />
+        </Grid>
+
+        <Grid x:Name="PresetGrid" Grid.Row="1" ColumnSpacing="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+        </Grid>
+    </Grid>
+</UserControl>

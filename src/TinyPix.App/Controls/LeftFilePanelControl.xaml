@@ -1,65 +1,258 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <UserControl
     x:Class="TinyPix.App.Controls.LeftFilePanelControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:TinyPix.App.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <!-- 20 Shell/LeftFilePanel: title + count, single primary add button,
-         file list, engine health. Tab order: add -> list mode -> file items.
-         Ctrl+O adds; Delete requests removal; F6 moves to the workbench. -->
-    <Grid RowSpacing="8" Padding="12">
+    <!--
+      Shell/LeftFilePanel — design frames: 左栏 232 wide, padding 18/16, gap 12.
+      title row → Add Media → File Tabs → Media File Card → 快捷入口 →
+      工具（分类内全部工具，设计稿未画出的补充区，复用同一行语言）→ 引擎状态.
+    -->
+    <Grid Padding="18,16" RowSpacing="10">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="6">
-            <TextBlock Text="文件" Style="{ThemeResource SubtitleTextBlockStyle}" />
+        <!-- title row -->
+        <Grid Grid.Row="0">
             <TextBlock
-                Text="{Binding FileCount}"
+                Text="文件"
+                FontFamily="{ThemeResource TinyPixCjkFontFamily}"
+                FontSize="15"
+                FontWeight="Bold"
+                Foreground="{ThemeResource TinyPixInkBrush}" />
+            <TextBlock
+                x:Name="FileCountText"
+                Text="0 个文件"
+                HorizontalAlignment="Right"
                 VerticalAlignment="Center"
-                Foreground="{ThemeResource TinyPixMutedBrush}" />
-        </StackPanel>
+                Style="{StaticResource TinyPixLabelStyle}" />
+        </Grid>
 
+        <!-- Add Media -->
         <Button
             x:Name="AddFilesButton"
             Grid.Row="1"
-            Content="添加媒体文件"
-            Command="{Binding AddFilesCommand}"
-            Style="{ThemeResource TinyPixPrimaryButtonStyle}"
+            Height="40"
             HorizontalAlignment="Stretch"
+            Background="{ThemeResource TinyPixActionPrimaryBrush}"
+            Foreground="{ThemeResource TinyPixOnActionPrimaryBrush}"
+            BorderBrush="{ThemeResource TinyPixControlBorderBrush}"
+            BorderThickness="1"
+            CornerRadius="10"
+            Padding="0"
             AutomationProperties.Name="添加媒体文件">
-            <Button.KeyboardAccelerators>
-                <KeyboardAccelerator Key="O" Modifiers="Control" />
-            </Button.KeyboardAccelerators>
+            <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <FontIcon
+                    Glyph="&#xE710;"
+                    FontSize="14"
+                    Foreground="{ThemeResource TinyPixOnActionPrimaryBrush}" />
+                <TextBlock
+                    Text="添加媒体文件"
+                    FontFamily="{ThemeResource TinyPixCjkFontFamily}"
+                    FontSize="13"
+                    FontWeight="Bold"
+                    Foreground="{ThemeResource TinyPixOnActionPrimaryBrush}" />
+            </StackPanel>
         </Button>
 
+        <!-- File Tabs -->
+        <Grid Grid.Row="2" Height="34" Background="{ThemeResource TinyPixSurfaceMutedBrush}" CornerRadius="10" Padding="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border
+                Grid.Column="0"
+                Background="{ThemeResource TinyPixSurfaceBrush}"
+                CornerRadius="8">
+                <TextBlock
+                    Text="文件列表"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontFamily="{ThemeResource TinyPixCjkFontFamily}"
+                    FontSize="12"
+                    FontWeight="Bold"
+                    Foreground="{ThemeResource TinyPixInkBrush}" />
+            </Border>
+            <TextBlock
+                Grid.Column="1"
+                Text="最近"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontFamily="{ThemeResource TinyPixCjkFontFamily}"
+                FontSize="12"
+                Foreground="{ThemeResource TinyPixMutedBrush}" />
+        </Grid>
+
+        <!-- Media file card / empty state -->
+        <Border
+            Grid.Row="3"
+            Background="{ThemeResource TinyPixSurfaceMutedBrush}"
+            BorderBrush="{ThemeResource TinyPixBorderBrush}"
+            BorderThickness="1"
+            CornerRadius="14"
+            Padding="10"
+            MinHeight="110">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Border
+                    Width="58"
+                    Height="70"
+                    CornerRadius="9"
+                    Background="{ThemeResource TinyPixMediaStageBrush}"
+                    VerticalAlignment="Center">
+                    <FontIcon
+                        Glyph="&#xE768;"
+                        FontSize="20"
+                        Foreground="{ThemeResource TinyPixLimeBrush}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center" />
+                </Border>
+                <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="6" VerticalAlignment="Center">
+                    <TextBlock
+                        x:Name="FileNameText"
+                        Text="尚未添加文件"
+                        FontFamily="{ThemeResource TinyPixCjkFontFamily}"
+                        FontSize="12"
+                        FontWeight="Bold"
+                        Foreground="{ThemeResource TinyPixInkBrush}"
+                        TextWrapping="Wrap" />
+                    <TextBlock
+                        x:Name="FileMetaText"
+                        Text="选择文件后在此显示尺寸与状态"
+                        Style="{StaticResource TinyPixMetaStyle}"
+                        TextWrapping="Wrap" />
+                    <Border
+                        Background="{ThemeResource TinyPixLimeSoftBrush}"
+                        CornerRadius="12"
+                        Padding="9,4"
+                        HorizontalAlignment="Left">
+                        <TextBlock
+                            x:Name="FileBadgeText"
+                            Text="等待添加"
+                            FontFamily="{ThemeResource TinyPixCjkFontFamily}"
+                            FontSize="10"
+                            FontWeight="SemiBold"
+                            Foreground="{ThemeResource TinyPixDeepLimeBrush}" />
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Shortcuts -->
+        <StackPanel Grid.Row="4" Spacing="8">
+            <TextBlock Text="快捷入口" Style="{StaticResource TinyPixLabelStyle}" FontWeight="Bold" Margin="0,4,0,0" />
+            <Button Style="{StaticResource TinyPixNavRowButtonStyle}" AutomationProperties.Name="处理历史">
+                <Grid>
+                    <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                        <FontIcon Glyph="&#xE81C;" FontSize="14" Foreground="{ThemeResource TinyPixInkBrush}" />
+                        <TextBlock Text="处理历史" Style="{StaticResource TinyPixValueStyle}" FontWeight="Medium" VerticalAlignment="Center" />
+                    </StackPanel>
+                    <TextBlock Text="0" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource TinyPixLabelStyle}" />
+                </Grid>
+            </Button>
+            <Button Style="{StaticResource TinyPixNavRowButtonStyle}" AutomationProperties.Name="批量任务">
+                <Grid>
+                    <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                        <FontIcon Glyph="&#xE8FD;" FontSize="14" Foreground="{ThemeResource TinyPixInkBrush}" />
+                        <TextBlock Text="批量任务" Style="{StaticResource TinyPixValueStyle}" FontWeight="Medium" VerticalAlignment="Center" />
+                    </StackPanel>
+                    <TextBlock x:Name="BatchCountText" Text="0" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource TinyPixLabelStyle}" />
+                </Grid>
+            </Button>
+            <Button Style="{StaticResource TinyPixNavRowButtonStyle}" AutomationProperties.Name="收藏预设">
+                <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                    <FontIcon Glyph="&#xE734;" FontSize="14" Foreground="{ThemeResource TinyPixInkBrush}" />
+                    <TextBlock Text="收藏预设" Style="{StaticResource TinyPixValueStyle}" FontWeight="Medium" VerticalAlignment="Center" />
+                </StackPanel>
+            </Button>
+        </StackPanel>
+
+        <TextBlock
+            Grid.Row="5"
+            Text="工具"
+            Style="{StaticResource TinyPixLabelStyle}"
+            FontWeight="Bold" />
+
+        <!-- Tool list takes the remaining height so every tool stays reachable
+             through scrolling instead of being clipped by a fixed MaxHeight. -->
         <ListView
-            x:Name="FileList"
-            Grid.Row="2"
-            ItemsSource="{Binding Files}"
-            SelectedItem="{Binding SelectedFile, Mode=TwoWay}"
-            AutomationProperties.Name="文件列表">
+            x:Name="ToolList"
+            Grid.Row="6"
+            VerticalAlignment="Stretch"
+            Style="{StaticResource TinyPixPlainListViewStyle}"
+            AutomationProperties.Name="工具列表">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Padding" Value="0" />
+                    <Setter Property="MinHeight" Value="34" />
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="CornerRadius" Value="10" />
+                </Style>
+            </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <local:FileCardItem />
+                    <StackPanel Orientation="Horizontal" Spacing="10" Padding="12,0" Height="34" VerticalAlignment="Center">
+                        <FontIcon Glyph="&#xE8FD;" FontSize="13" Foreground="{ThemeResource TinyPixInkBrush}" VerticalAlignment="Center" />
+                        <TextBlock
+                            Text="{Binding DisplayName}"
+                            FontFamily="{ThemeResource TinyPixCjkFontFamily}"
+                            FontSize="12"
+                            FontWeight="Medium"
+                            Foreground="{ThemeResource TinyPixInkBrush}"
+                            VerticalAlignment="Center"
+                            TextTrimming="CharacterEllipsis" />
+                    </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
 
-        <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="6">
-            <FontIcon Glyph="{Binding EngineHealthGlyph}" FontSize="12" />
-            <TextBlock
-                Text="{Binding EngineHealthText}"
-                FontSize="11"
-                Foreground="{ThemeResource TinyPixMutedBrush}"
-                AutomationProperties.Name="引擎状态" />
-        </StackPanel>
+        <!-- Engine status -->
+        <Border
+            Grid.Row="7"
+            Height="54"
+            Background="{ThemeResource TinyPixSurfaceMutedBrush}"
+            CornerRadius="12"
+            Padding="12,0"
+            VerticalAlignment="Bottom">
+            <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                <Border
+                    Width="22"
+                    Height="22"
+                    CornerRadius="11"
+                    Background="{ThemeResource TinyPixLimeBrush}">
+                    <FontIcon Glyph="&#xE73E;" FontSize="11" Foreground="{ThemeResource TinyPixInkBrush}" />
+                </Border>
+                <StackPanel Spacing="2" VerticalAlignment="Center">
+                    <TextBlock
+                        x:Name="EngineTitleText"
+                        Text="FFmpeg 已就绪"
+                        FontFamily="{ThemeResource TinyPixCjkFontFamily}"
+                        FontSize="11"
+                        FontWeight="Bold"
+                        Foreground="{ThemeResource TinyPixInkBrush}" />
+                    <TextBlock
+                        Text="本地引擎 · 无网络请求"
+                        FontFamily="{ThemeResource TinyPixCjkFontFamily}"
+                        FontSize="9"
+                        Foreground="{ThemeResource TinyPixMutedBrush}" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
     </Grid>
 </UserControl>

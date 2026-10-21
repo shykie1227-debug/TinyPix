@@ -414,15 +414,18 @@ def test_formal_winui_shell_has_one_native_shell_and_one_settings_dialog() -> No
         app_root / "Controls/SettingsDialogContent.xaml"
     ).read_text(encoding="utf-8")
 
+    # 4.0 shell = design frame: 72 top nav / body / 108 task queue, three mode
+    # pills instead of a NavigationView top pane, and a modal settings scrim
+    # instead of a ContentDialog (so the scrim covers the top nav too).
     for marker in (
-        'PaneDisplayMode="Top"',
+        'x:Name="ModeBar"',
         'Content="图片工具"',
         'Content="视频工具"',
         'Content="工具箱"',
         'x:Name="LeftFilePanel"',
         'x:Name="WorkbenchFrame"',
-        'x:Name="RightParameterPanel"',
         'x:Name="TaskQueue"',
+        'x:Name="SettingsOverlay"',
         'AutomationProperties.Name="任务队列区域"',
     ):
         assert marker in main_window

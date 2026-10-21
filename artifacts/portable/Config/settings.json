@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "outputDirectory": "",
+  "theme": "System",
+  "language": "zh-CN",
+  "reduceMotion": true,
+  "cacheLimitBytes": 5368709120,
+  "recentFileLimit": 200,
+  "historyLimit": 1000,
+  "confirmBeforeReplacingExistingOutput": true
+}

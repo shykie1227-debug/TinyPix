@@ -74,6 +74,15 @@ public partial class App : Application
         }
 
         StartupTrace.Write("BuildServices done");
+
+        // Last-resort diagnostics: a XAML/WinRT failure raised outside managed
+        // code surfaces as a bare 0xC000027B, so record whatever managed detail
+        // the framework still hands us before the process goes down.
+        UnhandledException += (_, e) =>
+        {
+            StartupTrace.Write(
+                $"UNHANDLED hr=0x{e.Exception?.HResult:X8} msg={e.Exception?.Message}: {e.Exception}");
+        };
     }
 
     internal static IServiceProvider Services { get; private set; } = default!;

@@ -83,9 +83,11 @@ def test_main_window_navigates_to_video_editor():
     assert os.path.isfile(xaml) and os.path.isfile(code)
     xaml_src = _read(xaml)
     code_src = _read(code)
-    assert 'Tag="video-edit"' in xaml_src, "MainWindow 未加 video-edit 导航项"
+    # The 4.0 shell no longer carries a per-tool navigation item: the left file
+    # panel raises ToolInvoked and MainWindow routes the video.* ids.
+    assert 'LeftFilePanel.ToolInvoked += OnToolInvoked' in code_src
     assert "VideoEditorPage" in code_src, "MainWindow 未导航到 VideoEditorPage"
-    assert 'string.Equals(tag, "video-edit"' in code_src
+    assert '"video.trim" or "video.split" or "video.merge"' in code_src
 
 
 def test_job_submission_preview_supports_edit_handlers():

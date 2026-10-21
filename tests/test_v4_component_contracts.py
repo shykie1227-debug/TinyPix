@@ -73,54 +73,43 @@ def test_shared_styles_for_native_button_components() -> None:
 # ------------------------------------------------------- composite controls ----
 
 # component file -> required XAML markers (automation / structure / tokens)
+# The 4.0 redesign replaced the placeholder-era splits (FileCardItem /
+# TaskCardItem / PresetCardItem / PageTitle / EmptyState / EditorCommandBar /
+# PathPicker / RightParameterPanel) with the design's own region components.
 COMPOSITE = {
-    "Controls/PathPickerControl.xaml": (
-        "PathPickerControl",
-        "浏览",
-        "AutomationProperties.Name",
-    ),
-    "Controls/FileCardItem.xaml": (
-        "FileCardItem",
-        "AutomationProperties.Name",
-        "Delete",
-    ),
-    "Controls/TaskCardItem.xaml": (
-        "TaskCardItem",
-        "ProgressBar",
-        "AutomationProperties.Name",
-    ),
-    "Controls/PresetCardItem.xaml": (
-        "PresetCardItem",
-        "AutomationProperties.Name",
-    ),
-    "Controls/EmptyStateControl.xaml": (
-        "EmptyStateControl",
-        "添加",
-        "AutomationProperties.Name",
-    ),
     "Controls/LeftFilePanelControl.xaml": (
         "LeftFilePanelControl",
         "添加媒体文件",
         "AutomationProperties.Name",
-    ),
-    "Controls/RightParameterPanelControl.xaml": (
-        "RightParameterPanelControl",
-        "AutomationProperties.Name",
-        "TinyPixPrimaryButtonStyle",
     ),
     "Controls/TaskQueueControl.xaml": (
         "TaskQueueControl",
         "任务队列",
         "AutomationProperties.Name",
     ),
-    "Controls/PageTitleControl.xaml": (
-        "PageTitleControl",
-        "AutomationProperties.HeadingLevel",
+    "Controls/CenterHeaderControl.xaml": (
+        "CenterHeaderControl",
+        "适应窗口",
+        "AutomationProperties.Name",
     ),
-    "Controls/EditorCommandBarControl.xaml": (
-        "EditorCommandBarControl",
-        "CommandBar",
-        "KeyboardAccelerator",
+    "Controls/PreviewStageControl.xaml": (
+        "PreviewStageControl",
+        "AutomationProperties.Name",
+    ),
+    "Controls/PresetRowControl.xaml": (
+        "PresetRowControl",
+        "管理预设",
+        "AutomationProperties.Name",
+    ),
+    "Controls/TimelineEditorControl.xaml": (
+        "TimelineEditorControl",
+        "非破坏单轨",
+        "AutomationProperties.Name",
+    ),
+    "Controls/SettingsDialogContent.xaml": (
+        "SettingsDialogContent",
+        "保存设置",
+        "AutomationProperties.Name",
     ),
 }
 
@@ -141,10 +130,13 @@ def test_composite_usercontrols_have_codebehind() -> None:
 
 def test_shell_uses_real_region_components_not_placeholders() -> None:
     main_window = read("MainWindow.xaml")
-    # region x:Names are kept (shell contract) but now host real UserControls
+    # Shell regions host real UserControls: the left file panel, the workbench
+    # frame (each category page owns its own right-hand parameter column) and
+    # the task queue, plus the modal settings overlay.
     for region in (
         "LeftFilePanelControl",
-        "RightParameterPanelControl",
         "TaskQueueControl",
+        "WorkbenchFrame",
+        "SettingsOverlay",
     ):
         assert region in main_window, region

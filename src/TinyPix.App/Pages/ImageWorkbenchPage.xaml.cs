@@ -8,24 +8,25 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Navigation;
+using TinyPix.App.Controls;
 using TinyPix.App.Services;
 using TinyPix.App.ViewModels;
 using TinyPix.Core.Jobs;
-using TinyPix.Core.Tools;
 using Windows.Storage.Pickers;
 using WinRT.Interop;
 
 namespace TinyPix.App.Pages;
 
 /// <summary>
-/// 图片工作台 (image) — Phase 3. One page hosts all eleven frozen image tools
-/// (design/FEATURE-MATRIX §4). The parameter form is generated from the
-/// declarative schema below so every tool keeps a single source of truth for its
-/// control set; submission goes through the same JobSubmissionService as the
-/// video and GIF workbenches.
+/// Template 6 / 图片处理 — design frame 4hTWM. One page hosts all eleven frozen
+/// image tools: the shared fields (format / size / ratio / quality) sit in the
+/// right panel next to the design's own rows, and each tool's full parameter
+/// surface stays reachable through the 高级参数 expander generated from
+/// <see cref="Forms"/>.
 /// </summary>
-public sealed partial class ImageWorkbenchPage : Page
+public sealed partial class ImageWorkbenchPage : Page, IWorkbenchFilePicker
 {
     /// <summary>Parameter field kinds rendered by <see cref="FormHost"/>.</summary>
     private enum FieldKind
@@ -55,11 +56,13 @@ public sealed partial class ImageWorkbenchPage : Page
         public required IReadOnlyList<Field> Fields { get; init; }
     }
 
-    /// <summary>ListView row: stable tool id plus its frozen display title.</summary>
+    /// <summary>ComboBox row: stable tool id plus its frozen display title.</summary>
     private sealed class ToolItem
     {
         public required string Id { get; init; }
         public required string Title { get; init; }
+
+        public override string ToString() => Title;
     }
 
     // Frozen tool ids and their parameter surface. Every key here is consumed by
@@ -242,7 +245,7 @@ public sealed partial class ImageWorkbenchPage : Page
         ["image.background"] = new()
         {
             Title = "人像背景移除与替换",
-            Hint = "契约级实现：边界取色 + 容差透明化，适合纯色/影棚背景；复杂场景需 MODNet 模型（未内置）。",
+            Hint = "边界取色 + 容差透明化，适合纯色/影棚背景；复杂场景需 MODNet 模型。",
             Fields = new[]
             {
                 new Field
@@ -268,12 +271,32 @@ public sealed partial class ImageWorkbenchPage : Page
 
     private readonly List<string> _inputPaths = new();
     private readonly Dictionary<string, UIElement> _controls = new(StringComparer.Ordinal);
-    private string _toolId = "image.resize";
+    private string _toolId = "image.convert";
     private JobSubmissionService? _submission;
+    private bool _loading;
 
     public ImageWorkbenchPage()
     {
         InitializeComponent();
+
+        _loading = true;
+        foreach (KeyValuePair<string, ToolForm> pair in Forms.OrderBy(p => p.Key, StringComparer.Ordinal))
+        {
+            ToolBox.Items.Add(new ComboBoxItem { Content = pair.Value.Title, Tag = pair.Key });
+        }
+
+        _loading = false;
+
+        Presets.SetPresets(new[]
+        {
+            new PresetCard("\uE740", "保持原尺寸", "仅换格式", true),
+            new PresetCard("\uE774", "社交媒体", "1080 × 1080"),
+            new PresetCard("\uE715", "邮件附件", "压缩优先"),
+            new PresetCard("\uE710", "自定义预设", "保存当前参数"),
+        });
+
+        Presets.PresetInvoked += OnPresetInvoked;
+        ToolBox.SelectedIndex = GetToolIndex("image.convert");
     }
 
     public MainWindowViewModel? ViewModel { get; private set; }
@@ -281,28 +304,94 @@ public sealed partial class ImageWorkbenchPage : Page
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
-        ViewModel = e.Parameter as MainWindowViewModel;
-        _submission = App.Services.GetRequiredService<JobSubmissionService>();
 
-        ToolList.ItemsSource = Forms
-            .OrderBy(pair => pair.Key, StringComparer.Ordinal)
-            .Select(pair => new ToolItem { Id = pair.Key, Title = pair.Value.Title })
-            .ToList();
-        ToolList.SelectedIndex = 0;
-        SetStatus("尚未添加文件。");
+        if (e.Parameter is WorkbenchNavigation navigation)
+        {
+            ViewModel = navigation.ViewModel;
+            if (navigation.ToolId is { Length: > 0 } toolId)
+            {
+                SelectTool(toolId);
+            }
+        }
+        else
+        {
+            ViewModel = e.Parameter as MainWindowViewModel;
+        }
+
+        _submission = App.Services.GetRequiredService<JobSubmissionService>();
+    }
+
+    private int GetToolIndex(string toolId)
+    {
+        for (int i = 0; i < ToolBox.Items.Count; i++)
+        {
+            if (ToolBox.Items[i] is ComboBoxItem item
+                && string.Equals(item.Tag as string, toolId, StringComparison.Ordinal))
+            {
+                return i;
+            }
+        }
+
+        return 0;
+    }
+
+    private void SelectTool(string toolId)
+    {
+        _loading = true;
+        ToolBox.SelectedIndex = GetToolIndex(toolId);
+        _loading = false;
+        ApplyForm(toolId);
     }
 
     private void ToolList_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (ToolList.SelectedItem is not ToolItem item || !Forms.TryGetValue(item.Id, out ToolForm? form))
+        if (_loading)
         {
             return;
         }
 
-        _toolId = item.Id;
-        ToolTitle.Text = form.Title;
-        ToolHint.Text = form.Hint;
+        if ((ToolBox.SelectedItem as ComboBoxItem)?.Tag is string toolId)
+        {
+            ApplyForm(toolId);
+        }
+    }
+
+    private void ApplyForm(string toolId)
+    {
+        if (!Forms.TryGetValue(toolId, out ToolForm? form))
+        {
+            return;
+        }
+
+        _toolId = toolId;
         BuildForm(form);
+        StatusBar.IsOpen = false;
+
+        if (_inputPaths.Count > 0)
+        {
+            Preview.PreviewSpec = $"{Path.GetExtension(_inputPaths[0]).TrimStart('.').ToUpperInvariant()} · {FormatSize(new FileInfo(_inputPaths[0]).Length)} · {form.Title}";
+        }
+    }
+
+    private void OnPresetInvoked(object? sender, int index)
+    {
+        switch (index)
+        {
+            case 0:
+                SizeBox.SelectedIndex = 0;
+                RatioBox.SelectedIndex = 0;
+                break;
+            case 1:
+                SizeBox.SelectedIndex = 3;
+                RatioBox.SelectedIndex = 1;
+                FormatBox.SelectedIndex = 1;
+                break;
+            case 2:
+                SizeBox.SelectedIndex = 5;
+                QualitySlider.Value = 70;
+                FormatBox.SelectedIndex = 1;
+                break;
+        }
     }
 
     private void BuildForm(ToolForm form)
@@ -333,7 +422,9 @@ public sealed partial class ImageWorkbenchPage : Page
             Value = field.Default,
             Minimum = field.Minimum,
             Maximum = field.Maximum,
-            SpinButtonPlacementMode = NumberBoxSpinButtonPlacementMode.Inline,
+            SpinButtonPlacementMode = NumberBoxSpinButtonPlacementMode.Compact,
+            FontFamily = (Microsoft.UI.Xaml.Media.FontFamily)Application.Current.Resources["TinyPixCjkFontFamily"],
+            FontSize = 12,
         };
         AutomationProperties.SetName(box, field.Label);
         return box;
@@ -345,6 +436,9 @@ public sealed partial class ImageWorkbenchPage : Page
         {
             Header = field.Label,
             Text = field.Text ?? string.Empty,
+            Style = (Style)Application.Current.Resources["TinyPixTextBoxStyle"],
+            FontFamily = (Microsoft.UI.Xaml.Media.FontFamily)Application.Current.Resources["TinyPixCjkFontFamily"],
+            FontSize = 12,
         };
         AutomationProperties.SetName(box, field.Label);
         return box;
@@ -358,6 +452,9 @@ public sealed partial class ImageWorkbenchPage : Page
             IsOn = field.Default > 0.5,
             OnContent = "开",
             OffContent = "关",
+            Style = (Style)Application.Current.Resources["TinyPixToggleSwitchStyle"],
+            FontFamily = (Microsoft.UI.Xaml.Media.FontFamily)Application.Current.Resources["TinyPixCjkFontFamily"],
+            FontSize = 11,
         };
         AutomationProperties.SetName(toggle, field.Label);
         return toggle;
@@ -368,6 +465,9 @@ public sealed partial class ImageWorkbenchPage : Page
         var combo = new ComboBox
         {
             Header = field.Label,
+            Style = (Style)Application.Current.Resources["TinyPixComboBoxStyle"],
+            FontFamily = (Microsoft.UI.Xaml.Media.FontFamily)Application.Current.Resources["TinyPixCjkFontFamily"],
+            FontSize = 11,
         };
         AutomationProperties.SetName(combo, field.Label);
         foreach (string option in field.Options ?? Array.Empty<string>())
@@ -379,7 +479,7 @@ public sealed partial class ImageWorkbenchPage : Page
         return combo;
     }
 
-    private async void AddFilesButton_Click(object sender, RoutedEventArgs e)
+    public async Task AddFilesAsync()
     {
         var picker = new FileOpenPicker
         {
@@ -405,20 +505,44 @@ public sealed partial class ImageWorkbenchPage : Page
             }
         }
 
-        UpdateFileCount();
+        UpdateFileState();
     }
 
-    private void ClearFilesButton_Click(object sender, RoutedEventArgs e)
+    private void UpdateFileState()
     {
-        _inputPaths.Clear();
-        UpdateFileCount();
-        SetStatus("已清空文件列表。");
+        if (_inputPaths.Count == 0)
+        {
+            Preview.PreviewName = "尚未添加文件";
+            Preview.PreviewSpec = "支持 JPG / PNG / WebP / BMP / TIFF";
+            LeftFilePanelControl.Current?.ShowFile(null, null, null);
+            return;
+        }
+
+        string first = _inputPaths[0];
+        string name = Path.GetFileName(first);
+        long bytes = new FileInfo(first).Length;
+        string kind = Path.GetExtension(first).TrimStart('.').ToUpperInvariant();
+
+        Preview.PreviewName = _inputPaths.Count == 1 ? name : $"{name} 等 {_inputPaths.Count} 个文件";
+        Preview.PreviewSpec = $"{kind} · {FormatSize(bytes)} · {Forms[_toolId].Title}";
+        OutputPathText.Text = Path.GetDirectoryName(first) ?? "与原文件相同";
+        LeftFilePanelControl.Current?.ShowFile(name, $"{FormatSize(bytes)}\n{kind}", "等待处理");
     }
 
-    private void UpdateFileCount()
+    private void OnQualityChanged(object sender, RangeBaseValueChangedEventArgs e)
     {
-        FileCountText.Text = $"{_inputPaths.Count} 张图片";
-        SetStatus(_inputPaths.Count == 0 ? "尚未添加文件。" : $"已添加 {_inputPaths.Count} 个文件。");
+        QualityValueText.Text = $"{(int)Math.Round(e.NewValue)}%";
+    }
+
+    private void OnResetClick(object sender, RoutedEventArgs e)
+    {
+        FormatBox.SelectedIndex = 0;
+        SizeBox.SelectedIndex = 0;
+        RatioBox.SelectedIndex = 0;
+        QualitySlider.Value = 90;
+        HardwareSwitch.IsOn = true;
+        StatusBar.IsOpen = false;
+        ApplyForm(_toolId);
     }
 
     private async void StartButton_Click(object sender, RoutedEventArgs e)
@@ -430,7 +554,7 @@ public sealed partial class ImageWorkbenchPage : Page
 
         if (_inputPaths.Count == 0)
         {
-            SetStatus("请先添加至少一张图片。");
+            SetStatus("请先添加至少一张图片。", InfoBarSeverity.Warning);
             return;
         }
 
@@ -440,18 +564,20 @@ public sealed partial class ImageWorkbenchPage : Page
         }
 
         Dictionary<string, string> parameters = CollectParameters(form);
-        SetStatus("正在提交任务…");
+        ApplySharedParameters(parameters);
+
+        SetStatus("正在提交任务…", InfoBarSeverity.Informational);
+        TaskQueueControl.Current?.ShowTask(Path.GetFileName(_inputPaths[0]), $"{form.Title} · 正在处理", 0);
 
         int succeeded = 0;
         var lastError = string.Empty;
         foreach (string input in _inputPaths)
         {
-            string outputDirectory = Path.GetDirectoryName(input)!;
             JobRequest request = JobRequest.Create(
                 _toolId,
                 new[] { input },
-                outputDirectory,
-                TinyPix.Core.Jobs.JobWorkload.HeavyMedia,
+                Path.GetDirectoryName(input)!,
+                JobWorkload.HeavyMedia,
                 parameters);
 
             JobRecord record = await _submission.SubmitAsync(request);
@@ -465,14 +591,55 @@ public sealed partial class ImageWorkbenchPage : Page
             }
         }
 
-        SetStatus(succeeded == _inputPaths.Count
-            ? $"完成：{succeeded} 张图片已处理。"
-            : $"已完成 {succeeded}/{_inputPaths.Count} 张；{lastError}");
+        TaskQueueControl.Current?.ShowIdle();
+
+        if (succeeded == _inputPaths.Count)
+        {
+            SetStatus($"完成：{succeeded} 张图片已处理。", InfoBarSeverity.Success);
+        }
+        else
+        {
+            SetStatus($"已完成 {succeeded}/{_inputPaths.Count} 张；{lastError}", InfoBarSeverity.Error);
+        }
     }
 
     /// <summary>
-    /// Reads the generated controls back into the handler parameter dictionary.
-    /// Empty text and empty choices are omitted so the handler defaults apply.
+    /// Layers the always-visible panel rows (format / size / ratio / quality) on
+    /// top of the tool's advanced parameters. Tools that do not consume a key
+    /// simply ignore it.
+    /// </summary>
+    private void ApplySharedParameters(Dictionary<string, string> parameters)
+    {
+        if ((FormatBox.SelectedItem as ComboBoxItem)?.Tag is string format && format.Length > 0)
+        {
+            parameters["format"] = format;
+        }
+
+        if ((SizeBox.SelectedItem as ComboBoxItem)?.Tag is string size)
+        {
+            string[] parts = size.Split('x');
+            if (parts.Length == 2
+                && int.TryParse(parts[0], out int width)
+                && int.TryParse(parts[1], out int height)
+                && width > 0
+                && height > 0)
+            {
+                parameters["width"] = width.ToString(CultureInfo.InvariantCulture);
+                parameters["height"] = height.ToString(CultureInfo.InvariantCulture);
+            }
+        }
+
+        if ((RatioBox.SelectedItem as ComboBoxItem)?.Tag is string ratio && ratio.Length > 0)
+        {
+            parameters["ratio"] = ratio;
+        }
+
+        parameters["quality"] = ((int)Math.Round(QualitySlider.Value)).ToString(CultureInfo.InvariantCulture);
+    }
+
+    /// <summary>
+    /// Reads the generated advanced controls back into the handler parameter
+    /// dictionary. Empty text and empty choices are omitted so defaults apply.
     /// </summary>
     private Dictionary<string, string> CollectParameters(ToolForm form)
     {
@@ -519,5 +686,18 @@ public sealed partial class ImageWorkbenchPage : Page
         return parameters;
     }
 
-    private void SetStatus(string message) => StatusText.Text = message;
+    private void SetStatus(string message, InfoBarSeverity severity)
+    {
+        StatusBar.Message = message;
+        StatusBar.Severity = severity;
+        StatusBar.IsOpen = true;
+    }
+
+    private static string FormatSize(long bytes) => bytes switch
+    {
+        >= 1024L * 1024 * 1024 => $"{bytes / 1024.0 / 1024 / 1024:F2} GB",
+        >= 1024L * 1024 => $"{bytes / 1024.0 / 1024:F1} MB",
+        >= 1024 => $"{bytes / 1024.0:F0} KB",
+        _ => $"{bytes} B",
+    };
 }

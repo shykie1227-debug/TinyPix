@@ -1,13 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  TinyPix 4.0 semantic design tokens (DESIGN.md §5).
-  Every color/brush the components use is a ThemeResource; pages never hardcode.
-  Light/Dark carry the brand lime system; HighContrast defers to system colors so
-  Narrator + high-contrast users get correct Window/WindowText/Highlight pairing.
+  TinyPix 4.0 semantic design tokens, mirrored 1:1 from the Pencil design source
+  (design/TinyPix-4.0.pen → variables). Every color/value the shell uses is a
+  ThemeResource; pages never hardcode a hex value.
+
+  Token names follow the design: canvas / surface / surface-muted / ink / muted /
+  border / control-border / lime / lime-soft / deep-lime / success / warning /
+  danger / action-primary / on-action-primary / media-stage / on-media /
+  dialog-scrim.
+
+  Fonts: the design specifies Inter (UI) + Noto Sans SC (CJK) + Geist Mono
+  (numbers). Windows 10 ships neither, so each token keeps the design family
+  first and falls back to the closest shipped face — DirectWrite resolves the
+  first installed family and WinUI still font-falls-back for CJK glyphs.
 -->
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ===================== Typography ===================== -->
+    <FontFamily x:Key="TinyPixUiFontFamily">Inter, Segoe UI</FontFamily>
+    <FontFamily x:Key="TinyPixCjkFontFamily">Noto Sans SC, Microsoft YaHei UI</FontFamily>
+    <FontFamily x:Key="TinyPixMonoFontFamily">Geist Mono, Consolas</FontFamily>
+
+    <!-- ===================== Geometry ===================== -->
+    <x:Double x:Key="TinyPixControlHeight">40</x:Double>
+    <x:Double x:Key="TinyPixTouchTarget">44</x:Double>
+    <CornerRadius x:Key="TinyPixRadiusField">10</CornerRadius>
+    <CornerRadius x:Key="TinyPixRadiusCard">14</CornerRadius>
+    <CornerRadius x:Key="TinyPixRadiusStage">18</CornerRadius>
+    <Thickness x:Key="TinyPixPanelPadding">18,16,18,16</Thickness>
+    <Thickness x:Key="TinyPixCardPadding">12</Thickness>
 
     <ResourceDictionary.ThemeDictionaries>
 
@@ -23,12 +46,20 @@
             <Color x:Key="TinyPixMediaStageColor">#15161A</Color>
             <Color x:Key="TinyPixOnMediaColor">#FFFFFF</Color>
             <Color x:Key="TinyPixLimeColor">#B4F400</Color>
+            <Color x:Key="TinyPixLimeSoftColor">#E7F9B4</Color>
+            <Color x:Key="TinyPixDeepLimeColor">#435B00</Color>
             <Color x:Key="TinyPixOnLimeColor">#1D1D1F</Color>
+            <Color x:Key="TinyPixOnInkAccentColor">#B4F400</Color>
             <Color x:Key="TinyPixActionPrimaryColor">#1D1D1F</Color>
             <Color x:Key="TinyPixOnActionPrimaryColor">#B4F400</Color>
+            <Color x:Key="TinyPixSuccessColor">#217A43</Color>
+            <Color x:Key="TinyPixWarningColor">#9A5B00</Color>
             <Color x:Key="TinyPixDangerColor">#D93232</Color>
             <Color x:Key="TinyPixOnDangerColor">#FFFFFF</Color>
             <Color x:Key="TinyPixFocusColor">#0067C0</Color>
+            <Color x:Key="TinyPixDividerColor">#E5E5E8</Color>
+            <Color x:Key="TinyPixScrimColor">#66000000</Color>
+            <Color x:Key="TinyPixTrackBaseColor">#E3E3E7</Color>
 
             <SolidColorBrush x:Key="TinyPixCanvasBrush" Color="{StaticResource TinyPixCanvasColor}" />
             <SolidColorBrush x:Key="TinyPixSurfaceBrush" Color="{StaticResource TinyPixSurfaceColor}" />
@@ -40,12 +71,20 @@
             <SolidColorBrush x:Key="TinyPixMediaStageBrush" Color="{StaticResource TinyPixMediaStageColor}" />
             <SolidColorBrush x:Key="TinyPixOnMediaBrush" Color="{StaticResource TinyPixOnMediaColor}" />
             <SolidColorBrush x:Key="TinyPixLimeBrush" Color="{StaticResource TinyPixLimeColor}" />
+            <SolidColorBrush x:Key="TinyPixLimeSoftBrush" Color="{StaticResource TinyPixLimeSoftColor}" />
+            <SolidColorBrush x:Key="TinyPixDeepLimeBrush" Color="{StaticResource TinyPixDeepLimeColor}" />
             <SolidColorBrush x:Key="TinyPixOnLimeBrush" Color="{StaticResource TinyPixOnLimeColor}" />
+            <SolidColorBrush x:Key="TinyPixOnInkAccentBrush" Color="{StaticResource TinyPixOnInkAccentColor}" />
             <SolidColorBrush x:Key="TinyPixActionPrimaryBrush" Color="{StaticResource TinyPixActionPrimaryColor}" />
             <SolidColorBrush x:Key="TinyPixOnActionPrimaryBrush" Color="{StaticResource TinyPixOnActionPrimaryColor}" />
+            <SolidColorBrush x:Key="TinyPixSuccessBrush" Color="{StaticResource TinyPixSuccessColor}" />
+            <SolidColorBrush x:Key="TinyPixWarningBrush" Color="{StaticResource TinyPixWarningColor}" />
             <SolidColorBrush x:Key="TinyPixDangerBrush" Color="{StaticResource TinyPixDangerColor}" />
             <SolidColorBrush x:Key="TinyPixOnDangerBrush" Color="{StaticResource TinyPixOnDangerColor}" />
             <SolidColorBrush x:Key="TinyPixFocusBrush" Color="{StaticResource TinyPixFocusColor}" />
+            <SolidColorBrush x:Key="TinyPixDividerBrush" Color="{StaticResource TinyPixDividerColor}" />
+            <SolidColorBrush x:Key="TinyPixScrimBrush" Color="{StaticResource TinyPixScrimColor}" />
+            <SolidColorBrush x:Key="TinyPixTrackBaseBrush" Color="{StaticResource TinyPixTrackBaseColor}" />
         </ResourceDictionary>
 
         <!-- ===================== Dark ===================== -->
@@ -60,12 +99,20 @@
             <Color x:Key="TinyPixMediaStageColor">#15161A</Color>
             <Color x:Key="TinyPixOnMediaColor">#FFFFFF</Color>
             <Color x:Key="TinyPixLimeColor">#B4F400</Color>
+            <Color x:Key="TinyPixLimeSoftColor">#33460A</Color>
+            <Color x:Key="TinyPixDeepLimeColor">#DFFF74</Color>
             <Color x:Key="TinyPixOnLimeColor">#1D1D1F</Color>
+            <Color x:Key="TinyPixOnInkAccentColor">#1D1D1F</Color>
             <Color x:Key="TinyPixActionPrimaryColor">#1D1D1F</Color>
             <Color x:Key="TinyPixOnActionPrimaryColor">#B4F400</Color>
+            <Color x:Key="TinyPixSuccessColor">#52D17C</Color>
+            <Color x:Key="TinyPixWarningColor">#FFB340</Color>
             <Color x:Key="TinyPixDangerColor">#FF6961</Color>
             <Color x:Key="TinyPixOnDangerColor">#1D1D1F</Color>
             <Color x:Key="TinyPixFocusColor">#60CDFF</Color>
+            <Color x:Key="TinyPixDividerColor">#3A3A3C</Color>
+            <Color x:Key="TinyPixScrimColor">#99000000</Color>
+            <Color x:Key="TinyPixTrackBaseColor">#3A3A3C</Color>
 
             <SolidColorBrush x:Key="TinyPixCanvasBrush" Color="{StaticResource TinyPixCanvasColor}" />
             <SolidColorBrush x:Key="TinyPixSurfaceBrush" Color="{StaticResource TinyPixSurfaceColor}" />
@@ -77,32 +124,73 @@
             <SolidColorBrush x:Key="TinyPixMediaStageBrush" Color="{StaticResource TinyPixMediaStageColor}" />
             <SolidColorBrush x:Key="TinyPixOnMediaBrush" Color="{StaticResource TinyPixOnMediaColor}" />
             <SolidColorBrush x:Key="TinyPixLimeBrush" Color="{StaticResource TinyPixLimeColor}" />
+            <SolidColorBrush x:Key="TinyPixLimeSoftBrush" Color="{StaticResource TinyPixLimeSoftColor}" />
+            <SolidColorBrush x:Key="TinyPixDeepLimeBrush" Color="{StaticResource TinyPixDeepLimeColor}" />
             <SolidColorBrush x:Key="TinyPixOnLimeBrush" Color="{StaticResource TinyPixOnLimeColor}" />
+            <SolidColorBrush x:Key="TinyPixOnInkAccentBrush" Color="{StaticResource TinyPixOnInkAccentColor}" />
             <SolidColorBrush x:Key="TinyPixActionPrimaryBrush" Color="{StaticResource TinyPixActionPrimaryColor}" />
             <SolidColorBrush x:Key="TinyPixOnActionPrimaryBrush" Color="{StaticResource TinyPixOnActionPrimaryColor}" />
+            <SolidColorBrush x:Key="TinyPixSuccessBrush" Color="{StaticResource TinyPixSuccessColor}" />
+            <SolidColorBrush x:Key="TinyPixWarningBrush" Color="{StaticResource TinyPixWarningColor}" />
             <SolidColorBrush x:Key="TinyPixDangerBrush" Color="{StaticResource TinyPixDangerColor}" />
             <SolidColorBrush x:Key="TinyPixOnDangerBrush" Color="{StaticResource TinyPixOnDangerColor}" />
             <SolidColorBrush x:Key="TinyPixFocusBrush" Color="{StaticResource TinyPixFocusColor}" />
+            <SolidColorBrush x:Key="TinyPixDividerBrush" Color="{StaticResource TinyPixDividerColor}" />
+            <SolidColorBrush x:Key="TinyPixScrimBrush" Color="{StaticResource TinyPixScrimColor}" />
+            <SolidColorBrush x:Key="TinyPixTrackBaseBrush" Color="{StaticResource TinyPixTrackBaseColor}" />
         </ResourceDictionary>
 
         <!-- ===================== High Contrast (system colors) ===================== -->
         <ResourceDictionary x:Key="HighContrast">
+            <Color x:Key="TinyPixCanvasColor">#000000</Color>
+            <Color x:Key="TinyPixSurfaceColor">#000000</Color>
+            <Color x:Key="TinyPixSurfaceMutedColor">#000000</Color>
+            <Color x:Key="TinyPixInkColor">#FFFFFF</Color>
+            <Color x:Key="TinyPixMutedColor">#FFFFFF</Color>
+            <Color x:Key="TinyPixBorderColor">#FFFFFF</Color>
+            <Color x:Key="TinyPixControlBorderColor">#FFFFFF</Color>
+            <Color x:Key="TinyPixMediaStageColor">#000000</Color>
+            <Color x:Key="TinyPixOnMediaColor">#FFFFFF</Color>
+            <Color x:Key="TinyPixLimeColor">#FFFF00</Color>
+            <Color x:Key="TinyPixLimeSoftColor">#000000</Color>
+            <Color x:Key="TinyPixDeepLimeColor">#000000</Color>
+            <Color x:Key="TinyPixOnLimeColor">#000000</Color>
+            <Color x:Key="TinyPixOnInkAccentColor">#000000</Color>
+            <Color x:Key="TinyPixActionPrimaryColor">#FFFFFF</Color>
+            <Color x:Key="TinyPixOnActionPrimaryColor">#000000</Color>
+            <Color x:Key="TinyPixSuccessColor">#00FF00</Color>
+            <Color x:Key="TinyPixWarningColor">#FFFF00</Color>
+            <Color x:Key="TinyPixDangerColor">#FFFF00</Color>
+            <Color x:Key="TinyPixOnDangerColor">#000000</Color>
+            <Color x:Key="TinyPixFocusColor">#FFFFFF</Color>
+            <Color x:Key="TinyPixDividerColor">#FFFFFF</Color>
+            <Color x:Key="TinyPixScrimColor">#000000</Color>
+            <Color x:Key="TinyPixTrackBaseColor">#000000</Color>
+
             <SolidColorBrush x:Key="TinyPixCanvasBrush" Color="{ThemeResource SystemColorWindowColor}" />
             <SolidColorBrush x:Key="TinyPixSurfaceBrush" Color="{ThemeResource SystemColorWindowColor}" />
             <SolidColorBrush x:Key="TinyPixSurfaceMutedBrush" Color="{ThemeResource SystemColorWindowColor}" />
             <SolidColorBrush x:Key="TinyPixInkBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
-            <SolidColorBrush x:Key="TinyPixMutedBrush" Color="{ThemeResource SystemColorGrayTextColor}" />
+            <SolidColorBrush x:Key="TinyPixMutedBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
             <SolidColorBrush x:Key="TinyPixBorderBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
             <SolidColorBrush x:Key="TinyPixControlBorderBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
             <SolidColorBrush x:Key="TinyPixMediaStageBrush" Color="{ThemeResource SystemColorWindowColor}" />
             <SolidColorBrush x:Key="TinyPixOnMediaBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
             <SolidColorBrush x:Key="TinyPixLimeBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="TinyPixLimeSoftBrush" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="TinyPixDeepLimeBrush" Color="{ThemeResource SystemColorHighlightTextColor}" />
             <SolidColorBrush x:Key="TinyPixOnLimeBrush" Color="{ThemeResource SystemColorHighlightTextColor}" />
+            <SolidColorBrush x:Key="TinyPixOnInkAccentBrush" Color="{ThemeResource SystemColorHighlightTextColor}" />
             <SolidColorBrush x:Key="TinyPixActionPrimaryBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
             <SolidColorBrush x:Key="TinyPixOnActionPrimaryBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
-            <SolidColorBrush x:Key="TinyPixDangerBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
-            <SolidColorBrush x:Key="TinyPixOnDangerBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+            <SolidColorBrush x:Key="TinyPixSuccessBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="TinyPixWarningBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="TinyPixDangerBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="TinyPixOnDangerBrush" Color="{ThemeResource SystemColorHighlightTextColor}" />
             <SolidColorBrush x:Key="TinyPixFocusBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="TinyPixDividerBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+            <SolidColorBrush x:Key="TinyPixScrimBrush" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="TinyPixTrackBaseBrush" Color="{ThemeResource SystemColorWindowColor}" />
         </ResourceDictionary>
 
     </ResourceDictionary.ThemeDictionaries>

@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="TinyPix.App.Pages.IdPhotoPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:TinyPix.App.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <!-- Template 4 / 智能证件照 — design frame cQnR3. -->
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <!-- ================= Center / Preview ================= -->
+        <Grid Grid.Column="0" Padding="20" RowSpacing="16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <controls:CenterHeaderControl
+                Grid.Row="0"
+                Title="智能证件照"
+                Subtitle="本地人脸定位、换底色与标准排版" />
+
+            <controls:PreviewStageControl
+                x:Name="Preview"
+                Grid.Row="1"
+                Glyph="&#xE77B;"
+                PreviewName="尚未添加文件"
+                PreviewSpec="支持 JPG / PNG 人像照片" />
+
+            <controls:PresetRowControl
+                x:Name="Presets"
+                Grid.Row="2"
+                SectionTitle="常用证件模板" />
+
+            <InfoBar
+                x:Name="StatusBar"
+                Grid.Row="3"
+                IsOpen="False"
+                IsClosable="False"
+                Severity="Informational"
+                AutomationProperties.Name="证件照状态" />
+        </Grid>
+
+        <!-- ================= Right / Spec Settings ================= -->
+        <Border
+            Grid.Column="1"
+            Width="300"
+            Background="{ThemeResource TinyPixSurfaceBrush}"
+            BorderBrush="{ThemeResource TinyPixBorderBrush}"
+            BorderThickness="1,0,0,0">
+            <Grid Padding="18" RowSpacing="16">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0">
+                    <TextBlock
+                        Text="证件照规格"
+                        FontFamily="{ThemeResource TinyPixCjkFontFamily}"
+                        FontSize="15"
+                        FontWeight="Bold"
+                        Foreground="{ThemeResource TinyPixInkBrush}"
+                        VerticalAlignment="Center" />
+                    <Button
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource TinyPixGhostButtonStyle}"
+                        Content="重置参数"
+                        Click="OnResetClick"
+                        AutomationProperties.Name="重置参数" />
+                </Grid>
+
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel Spacing="16">
+                        <StackPanel Spacing="7">
+                            <TextBlock Text="模板" Style="{StaticResource TinyPixLabelStyle}" />
+                            <ComboBox
+                                x:Name="PresetBox"
+                                Style="{StaticResource TinyPixComboBoxStyle}"
+                                SelectedIndex="0"
+                                SelectionChanged="OnPresetChanged"
+                                AutomationProperties.Name="证件照模板">
+                                <ComboBoxItem Content="一寸 · 25 × 35 mm" Tag="office-1in" />
+                                <ComboBoxItem Content="二寸 · 35 × 49 mm" Tag="office-2in" />
+                                <ComboBoxItem Content="护照 · 33 × 48 mm" Tag="cn-passport-travel" />
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Spacing="7">
+                            <TextBlock Text="背景" Style="{StaticResource TinyPixLabelStyle}" />
+                            <ComboBox
+                                x:Name="BackgroundBox"
+                                Style="{StaticResource TinyPixComboBoxStyle}"
+                                SelectedIndex="0"
+                                AutomationProperties.Name="背景颜色">
+                                <ComboBoxItem Content="标准蓝 #438EDB" Tag="蓝" />
+                                <ComboBoxItem Content="纯白 #FFFFFF" Tag="白" />
+                                <ComboBoxItem Content="标准红 #FF0000" Tag="红" />
+                                <ComboBoxItem Content="浅灰 #D9D9D9" Tag="灰" />
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Spacing="7">
+                            <TextBlock Text="分辨率" Style="{StaticResource TinyPixLabelStyle}" />
+                            <ComboBox
+                                x:Name="DpiBox"
+                                Style="{StaticResource TinyPixComboBoxStyle}"
+                                SelectedIndex="0"
+                                AutomationProperties.Name="分辨率">
+                                <ComboBoxItem Content="295 × 413 · 300 DPI" Tag="300" />
+                                <ComboBoxItem Content="413 × 579 · 300 DPI" Tag="300" />
+                                <ComboBoxItem Content="390 × 567 · 300 DPI" Tag="300" />
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Spacing="9">
+                            <Grid>
+                                <TextBlock Text="头部比例" Style="{StaticResource TinyPixLabelStyle}" VerticalAlignment="Center" />
+                                <TextBlock
+                                    x:Name="RatioValueText"
+                                    Text="合格 · 68%"
+                                    HorizontalAlignment="Right"
+                                    Style="{StaticResource TinyPixValueStyle}"
+                                    FontSize="11" />
+                            </Grid>
+                            <Slider
+                                x:Name="RatioSlider"
+                                Style="{StaticResource TinyPixSliderStyle}"
+                                Minimum="55"
+                                Maximum="80"
+                                Value="68"
+                                AutomationProperties.Name="头部比例"
+                                ValueChanged="OnRatioChanged" />
+                            <Grid>
+                                <TextBlock Text="偏小" FontSize="9" Foreground="{ThemeResource TinyPixMutedBrush}" />
+                                <TextBlock
+                                    Text="偏大"
+                                    HorizontalAlignment="Right"
+                                    FontSize="9"
+                                    Foreground="{ThemeResource TinyPixMutedBrush}" />
+                            </Grid>
+                        </StackPanel>
+
+                        <Border Style="{StaticResource TinyPixDividerStyle}" />
+
+                        <Grid Height="54">
+                            <StackPanel Spacing="3" VerticalAlignment="Center">
+                                <TextBlock Text="硬件加速" Style="{StaticResource TinyPixValueStyle}" />
+                                <TextBlock Text="自动选择可用设备" Style="{StaticResource TinyPixMetaStyle}" FontSize="9" />
+                            </StackPanel>
+                            <ToggleSwitch
+                                x:Name="HardwareSwitch"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                IsOn="True"
+                                Style="{StaticResource TinyPixToggleSwitchStyle}"
+                                AutomationProperties.Name="硬件加速" />
+                        </Grid>
+
+                        <StackPanel Spacing="7">
+                            <TextBlock Text="输出目录" Style="{StaticResource TinyPixLabelStyle}" />
+                            <Border Style="{StaticResource TinyPixFieldStyle}" Height="42">
+                                <Grid>
+                                    <TextBlock
+                                        x:Name="OutputPathText"
+                                        Text="与原文件相同"
+                                        Style="{StaticResource TinyPixMonoStyle}"
+                                        FontSize="10"
+                                        VerticalAlignment="Center"
+                                        TextTrimming="CharacterEllipsis"
+                                        Margin="0,0,42,0" />
+                                    <TextBlock
+                                        Text="浏览"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        FontFamily="{ThemeResource TinyPixCjkFontFamily}"
+                                        FontSize="10"
+                                        FontWeight="SemiBold"
+                                        Foreground="{ThemeResource TinyPixMutedBrush}" />
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <Button
+                    x:Name="StartButton"
+                    Grid.Row="2"
+                    Height="48"
+                    Style="{StaticResource TinyPixPrimaryButtonStyle}"
+                    Click="StartButton_Click"
+                    AutomationProperties.Name="生成证件照">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <FontIcon Glyph="&#xE77B;" FontSize="14" Foreground="{ThemeResource TinyPixOnActionPrimaryBrush}" />
+                        <TextBlock
+                            Text="生成证件照"
+                            FontFamily="{ThemeResource TinyPixCjkFontFamily}"
+                            FontSize="13"
+                            FontWeight="Bold"
+                            Foreground="{ThemeResource TinyPixOnActionPrimaryBrush}" />
+                    </StackPanel>
+                </Button>
+            </Grid>
+        </Border>
+    </Grid>
+</Page>

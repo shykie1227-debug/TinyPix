@@ -64,7 +64,7 @@ def test_gif_page_is_wired_to_submission() -> None:
     page_code = (APP / "Pages" / "GifMakerPage.xaml.cs").read_text(encoding="utf-8")
     for marker in (
         "JobSubmissionService",
-        "AddFilesButton_Click",
+        "AddFilesAsync",
         "StartOutputButton_Click",
         "video.gif",
     ):
@@ -73,10 +73,9 @@ def test_gif_page_is_wired_to_submission() -> None:
     page_xaml = (APP / "Pages" / "GifMakerPage.xaml").read_text(encoding="utf-8")
     for marker in (
         "GIF 制作",
-        "中央预览区域",
-        "添加视频",
-        "开始制作",
-        "输出状态",
+        "PreviewStageControl",
+        "GIF 参数",
+        "生成 GIF",
     ):
         assert marker in page_xaml, marker
 

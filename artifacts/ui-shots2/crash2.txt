@@ -1,0 +1,16 @@
+=== crash2 2026-10-21T12:27:16.4359122+08:00 ===
+--- startup trace tail 40 ---
+no trace
+--- event ---
+错误应用程序名称: TinyPix.exe，版本: 1.0.0.0，时间戳: 0x6a3e0000
+错误模块名称: CoreMessagingXP.dll，版本: 10.0.27200.1019，时间戳: 0x82fb6d33
+异常代码: 0xc000027b
+错误偏移量: 0x0000000000093b66
+错误进程 ID: 0x2418
+错误应用程序启动时间: 0x01dd61141f7b345e
+错误应用程序路径: C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\TinyPix.exe
+错误模块路径: C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\CoreMessagingXP.dll
+报告 ID: 4be5084d-6d06-4b95-8b0c-5a52a63fd351
+错误程序包全名: 
+错误程序包相对应用程序 ID: 
+=== done ===
