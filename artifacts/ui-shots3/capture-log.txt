@@ -1,0 +1,1080 @@
+=== capture start 2026-10-21T13:16:31.8317884+08:00 session=1 user=F1B7\huashu ===
+13:16:32.262 DPI-aware set
+13:16:34.284 portable.flag already present
+13:16:34.313 launch C:\TinyPixBuild2\artifacts\TinyPix-single-file\TinyPix.exe
+13:16:41.473 window ready hwnd=3736032 title='TinyPix' pid=5968
+13:16:47.012 printwindow 00-startup-window.png ok=True 1216x848
+13:16:47.493 click at 190,86
+13:16:49.874 printwindow 01-image-window.png ok=True 1216x848
+13:16:50.113 click at 284,86
+13:16:52.727 printwindow 02-video-window.png ok=True 1216x848
+13:16:54.618 found 'GIF 制作' at scroll 32%
+13:16:54.894 click at 104,666
+13:16:57.040 printwindow 03-gif-window.png ok=True 1216x848
+13:17:01.719 found '视频时间剪辑' at scroll 96%
+13:17:01.987 click at 117,664
+13:17:04.140 printwindow 04-video-edit-window.png ok=True 1216x848
+13:17:04.462 click at 371,86
+13:17:06.570 printwindow 05-pdf-window.png ok=True 1216x848
+13:17:09.765 found '图片文字识别' at scroll 56%
+13:17:10.028 click at 117,666
+13:17:12.178 printwindow 06-ocr-window.png ok=True 1216x848
+13:17:12.641 found '二维码与条码生成' at scroll 0%
+13:17:12.912 click at 129,666
+13:17:15.186 printwindow 07-generator-window.png ok=True 1216x848
+13:17:17.719 found '智能证件照' at scroll 48%
+13:17:17.977 click at 111,660
+13:17:20.170 printwindow 08-idphoto-window.png ok=True 1216x848
+13:17:20.428 click at 1178,88
+13:17:22.612 printwindow 09-settings-window.png ok=True 1216x848
+13:17:22.964 click at 991,183
+13:17:24.183 fullscreen 99-fullscreen.png 1340x838
+13:17:24.215 --- startup trace ---
+13:17:24.229   12:05:33.851 [5264] App ctor enter
+13:17:24.229   12:05:33.885 [5264] env MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\
+13:17:24.262   12:05:33.937 [5264] module Microsoft.WindowsAppRuntime.dll = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\Microsoft.WindowsAppRuntime.dll
+13:17:24.262   12:05:33.938 [5264] env MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\
+13:17:24.276   12:05:33.945 [5264] InitializeComponent ok
+13:17:24.276   12:05:33.945 [5264] BuildServices enter
+13:17:24.276   12:05:33.978 [5264] BuildServices: exe dir = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64
+13:17:24.291   12:05:33.998 [5264] BuildServices FAILED: System.InvalidOperationException: 缂哄皯 portable.flag锛孴inyPix 鏃犳硶纭渚挎惡鏁版嵁鐩綍銆傝閲嶆柊瑙ｅ帇瀹屾暣鍙戣鍖呫�?
+13:17:24.313      at TinyPix.App.App.BuildServices() in C:\TinyPixBuild2\src\TinyPix.App\App.xaml.cs:line 102
+13:17:24.313      at TinyPix.App.App..ctor() in C:\TinyPixBuild2\src\TinyPix.App\App.xaml.cs:line 65
+13:17:24.322   12:07:51.373 [1908] App ctor enter
+13:17:24.322   12:07:51.387 [1908] env MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\
+13:17:24.337   12:07:51.418 [1908] module Microsoft.WindowsAppRuntime.dll = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\Microsoft.WindowsAppRuntime.dll
+13:17:24.340   12:07:51.419 [1908] env MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\
+13:17:24.362   12:07:51.427 [1908] InitializeComponent ok
+13:17:24.369   12:07:51.427 [1908] BuildServices enter
+13:17:24.369   12:07:51.443 [1908] BuildServices: exe dir = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64
+13:17:24.385   12:07:51.452 [1908] BuildServices: workspace ok
+13:17:24.385   12:07:51.495 [1908] BuildServices: provider built
+13:17:24.416   12:07:51.527 [1908] BuildServices: resolving VideoConvertHandler
+13:17:24.416   12:07:51.530 [1908] BuildServices: registered VideoConvertHandler
+13:17:24.431   12:07:51.530 [1908] BuildServices: resolving VideoCompressHandler
+13:17:24.431   12:07:51.531 [1908] BuildServices: registered VideoCompressHandler
+13:17:24.431   12:07:51.532 [1908] BuildServices: resolving GifMakerHandler
+13:17:24.462   12:07:51.532 [1908] BuildServices: registered GifMakerHandler
+13:17:24.462   12:07:51.533 [1908] BuildServices: resolving VideoTrimHandler
+13:17:24.462   12:07:51.533 [1908] BuildServices: registered VideoTrimHandler
+13:17:24.480   12:07:51.534 [1908] BuildServices: resolving VideoSplitHandler
+13:17:24.480   12:07:51.534 [1908] BuildServices: registered VideoSplitHandler
+13:17:24.480   12:07:51.535 [1908] BuildServices: resolving VideoMergeHandler
+13:17:24.512   12:07:51.535 [1908] BuildServices: registered VideoMergeHandler
+13:17:24.512   12:07:51.536 [1908] BuildServices: resolving VideoGeometryHandler
+13:17:24.525   12:07:51.536 [1908] BuildServices: registered VideoGeometryHandler
+13:17:24.525   12:07:51.537 [1908] BuildServices: resolving VideoSpeedVolumeHandler
+13:17:24.525   12:07:51.537 [1908] BuildServices: registered VideoSpeedVolumeHandler
+13:17:24.541   12:07:51.538 [1908] BuildServices: resolving VideoAudioHandler
+13:17:24.564   12:07:51.538 [1908] BuildServices: registered VideoAudioHandler
+13:17:24.572   12:07:51.546 [1908] BuildServices: resolving VideoOverlayHandler
+13:17:24.572   12:07:51.547 [1908] BuildServices: registered VideoOverlayHandler
+13:17:24.572   12:07:51.547 [1908] BuildServices: resolving VideoFramesHandler
+13:17:24.591   12:07:51.548 [1908] BuildServices: registered VideoFramesHandler
+13:17:24.612   12:07:51.548 [1908] BuildServices: resolving VideoMetadataHandler
+13:17:24.619   12:07:51.549 [1908] BuildServices: registered VideoMetadataHandler
+13:17:24.619   12:07:51.549 [1908] BuildServices: resolving ImageResizeHandler
+13:17:24.619   12:07:51.550 [1908] BuildServices: registered ImageResizeHandler
+13:17:24.635   12:07:51.550 [1908] BuildServices: resolving ImageCropHandler
+13:17:24.635   12:07:51.551 [1908] BuildServices: registered ImageCropHandler
+13:17:24.662   12:07:51.551 [1908] BuildServices: resolving ImageTransformHandler
+13:17:24.666   12:07:51.553 [1908] BuildServices: registered ImageTransformHandler
+13:17:24.666   12:07:51.567 [1908] BuildServices: resolving ImageConvertHandler
+13:17:24.666   12:07:51.567 [1908] BuildServices: registered ImageConvertHandler
+13:17:24.683   12:07:51.568 [1908] BuildServices: resolving ImageCompressHandler
+13:17:24.683   12:07:51.570 [1908] BuildServices: registered ImageCompressHandler
+13:17:24.713   12:07:51.571 [1908] BuildServices: resolving ImageColorHandler
+13:17:24.713   12:07:51.571 [1908] BuildServices: registered ImageColorHandler
+13:17:24.713   12:07:51.572 [1908] BuildServices: resolving ImageWatermarkHandler
+13:17:24.728   12:07:51.572 [1908] BuildServices: registered ImageWatermarkHandler
+13:17:24.728   12:07:51.573 [1908] BuildServices: resolving ImageExifHandler
+13:17:24.728   12:07:51.573 [1908] BuildServices: registered ImageExifHandler
+13:17:24.763   12:07:51.574 [1908] BuildServices: resolving ImageCollageHandler
+13:17:24.768   12:07:51.574 [1908] BuildServices: registered ImageCollageHandler
+13:17:24.768   12:07:51.575 [1908] BuildServices: resolving ImageBatchHandler
+13:17:24.778   12:07:51.575 [1908] BuildServices: registered ImageBatchHandler
+13:17:24.778   12:07:51.576 [1908] BuildServices: resolving ImageBackgroundHandler
+13:17:24.794   12:07:51.576 [1908] BuildServices: registered ImageBackgroundHandler
+13:17:24.812   12:07:51.577 [1908] BuildServices: resolving CodeGenerateHandler
+13:17:24.824   12:07:51.577 [1908] BuildServices: registered CodeGenerateHandler
+13:17:24.828   12:07:51.578 [1908] BuildServices: resolving CodeScanHandler
+13:17:24.828   12:07:51.578 [1908] BuildServices: registered CodeScanHandler
+13:17:24.828   12:07:51.578 [1908] BuildServices: resolving FileRenameHandler
+13:17:24.863   12:07:51.579 [1908] BuildServices: registered FileRenameHandler
+13:17:24.863   12:07:51.579 [1908] BuildServices: resolving FileHashHandler
+13:17:24.863   12:07:51.580 [1908] BuildServices: registered FileHashHandler
+13:17:24.879   12:07:51.580 [1908] BuildServices: resolving FileMetadataHandler
+13:17:24.879   12:07:51.581 [1908] BuildServices: registered FileMetadataHandler
+13:17:24.892   12:07:51.581 [1908] BuildServices: resolving CaptureRecordHandler
+13:17:24.912   12:07:51.582 [1908] BuildServices: registered CaptureRecordHandler
+13:17:24.912   12:07:51.582 [1908] BuildServices: resolving PdfMergeHandler
+13:17:24.922   12:07:51.583 [1908] BuildServices: registered PdfMergeHandler
+13:17:24.922   12:07:51.583 [1908] BuildServices: resolving PdfSplitHandler
+13:17:24.938   12:07:51.583 [1908] BuildServices: registered PdfSplitHandler
+13:17:24.938   12:07:51.584 [1908] BuildServices: resolving PdfReorderHandler
+13:17:24.962   12:07:51.584 [1908] BuildServices: registered PdfReorderHandler
+13:17:24.969   12:07:51.585 [1908] BuildServices: resolving PdfRotateHandler
+13:17:24.969   12:07:51.585 [1908] BuildServices: registered PdfRotateHandler
+13:17:24.984   12:07:51.586 [1908] BuildServices: resolving PdfWatermarkHandler
+13:17:24.984   12:07:51.586 [1908] BuildServices: registered PdfWatermarkHandler
+13:17:25.016   12:07:51.586 [1908] BuildServices: resolving PdfToImageHandler
+13:17:25.016   12:07:51.587 [1908] BuildServices: registered PdfToImageHandler
+13:17:25.016   12:07:51.587 [1908] BuildServices: resolving PdfFromImageHandler
+13:17:25.031   12:07:51.588 [1908] BuildServices: registered PdfFromImageHandler
+13:17:25.031   12:07:51.588 [1908] BuildServices: resolving PdfCompressHandler
+13:17:25.063   12:07:51.589 [1908] BuildServices: registered PdfCompressHandler
+13:17:25.063   12:07:51.589 [1908] BuildServices: resolving IdPhotoCreateHandler
+13:17:25.063   12:07:51.590 [1908] BuildServices: registered IdPhotoCreateHandler
+13:17:25.081   12:07:51.590 [1908] BuildServices: resolving IdPhotoCheckHandler
+13:17:25.081   12:07:51.591 [1908] BuildServices: registered IdPhotoCheckHandler
+13:17:25.081   12:07:51.591 [1908] BuildServices: resolving IdPhotoPrintHandler
+13:17:25.114   12:07:51.591 [1908] BuildServices: registered IdPhotoPrintHandler
+13:17:25.114   12:07:51.592 [1908] BuildServices: handlers registered
+13:17:25.125   12:07:51.592 [1908] BuildServices done
+13:17:25.125   12:07:52.133 [1908] OnLaunched enter
+13:17:25.125   12:07:53.222 [1908] OnLaunched done
+13:17:25.141   12:14:02.545 [2256] App ctor enter
+13:17:25.162   12:14:02.578 [2256] env MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\
+13:17:25.162   12:14:02.639 [2256] module Microsoft.WindowsAppRuntime.dll = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\Microsoft.WindowsAppRuntime.dll
+13:17:25.176   12:14:02.640 [2256] env MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\
+13:17:25.176   12:14:02.650 [2256] InitializeComponent ok
+13:17:25.188   12:14:02.650 [2256] BuildServices enter
+13:17:25.188   12:14:04.537 [2256] BuildServices: exe dir = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64
+13:17:25.219   12:14:04.547 [2256] BuildServices: workspace ok
+13:17:25.219   12:14:04.589 [2256] BuildServices: provider built
+13:17:25.219   12:14:04.624 [2256] BuildServices: resolving VideoConvertHandler
+13:17:25.239   12:14:04.627 [2256] BuildServices: registered VideoConvertHandler
+13:17:25.262   12:14:04.628 [2256] BuildServices: resolving VideoCompressHandler
+13:17:25.268   12:14:04.629 [2256] BuildServices: registered VideoCompressHandler
+13:17:25.282   12:14:04.629 [2256] BuildServices: resolving GifMakerHandler
+13:17:25.282   12:14:04.630 [2256] BuildServices: registered GifMakerHandler
+13:17:25.282   12:14:04.630 [2256] BuildServices: resolving VideoTrimHandler
+13:17:25.313   12:14:04.631 [2256] BuildServices: registered VideoTrimHandler
+13:17:25.313   12:14:04.631 [2256] BuildServices: resolving VideoSplitHandler
+13:17:25.333   12:14:04.632 [2256] BuildServices: registered VideoSplitHandler
+13:17:25.333   12:14:04.632 [2256] BuildServices: resolving VideoMergeHandler
+13:17:25.362   12:14:04.633 [2256] BuildServices: registered VideoMergeHandler
+13:17:25.362   12:14:04.633 [2256] BuildServices: resolving VideoGeometryHandler
+13:17:25.362   12:14:04.634 [2256] BuildServices: registered VideoGeometryHandler
+13:17:25.378   12:14:04.634 [2256] BuildServices: resolving VideoSpeedVolumeHandler
+13:17:25.378   12:14:04.634 [2256] BuildServices: registered VideoSpeedVolumeHandler
+13:17:25.391   12:14:04.635 [2256] BuildServices: resolving VideoAudioHandler
+13:17:25.412   12:14:04.635 [2256] BuildServices: registered VideoAudioHandler
+13:17:25.412   12:14:04.636 [2256] BuildServices: resolving VideoOverlayHandler
+13:17:25.423   12:14:04.639 [2256] BuildServices: registered VideoOverlayHandler
+13:17:25.423   12:14:04.640 [2256] BuildServices: resolving VideoFramesHandler
+13:17:25.438   12:14:04.640 [2256] BuildServices: registered VideoFramesHandler
+13:17:25.438   12:14:04.641 [2256] BuildServices: resolving VideoMetadataHandler
+13:17:25.463   12:14:04.642 [2256] BuildServices: registered VideoMetadataHandler
+13:17:25.463   12:14:04.642 [2256] BuildServices: resolving ImageResizeHandler
+13:17:25.479   12:14:04.642 [2256] BuildServices: registered ImageResizeHandler
+13:17:25.479   12:14:04.643 [2256] BuildServices: resolving ImageCropHandler
+13:17:25.479   12:14:04.643 [2256] BuildServices: registered ImageCropHandler
+13:17:25.513   12:14:04.644 [2256] BuildServices: resolving ImageTransformHandler
+13:17:25.513   12:14:04.646 [2256] BuildServices: registered ImageTransformHandler
+13:17:25.525   12:14:04.646 [2256] BuildServices: resolving ImageConvertHandler
+13:17:25.525   12:14:04.647 [2256] BuildServices: registered ImageConvertHandler
+13:17:25.525   12:14:04.647 [2256] BuildServices: resolving ImageCompressHandler
+13:17:25.543   12:14:04.649 [2256] BuildServices: registered ImageCompressHandler
+13:17:25.562   12:14:04.649 [2256] BuildServices: resolving ImageColorHandler
+13:17:25.573   12:14:04.650 [2256] BuildServices: registered ImageColorHandler
+13:17:25.573   12:14:04.650 [2256] BuildServices: resolving ImageWatermarkHandler
+13:17:25.573   12:14:04.650 [2256] BuildServices: registered ImageWatermarkHandler
+13:17:25.589   12:14:04.651 [2256] BuildServices: resolving ImageExifHandler
+13:17:25.589   12:14:04.651 [2256] BuildServices: registered ImageExifHandler
+13:17:25.619   12:14:04.652 [2256] BuildServices: resolving ImageCollageHandler
+13:17:25.619   12:14:04.652 [2256] BuildServices: registered ImageCollageHandler
+13:17:25.619   12:14:04.652 [2256] BuildServices: resolving ImageBatchHandler
+13:17:25.637   12:14:04.653 [2256] BuildServices: registered ImageBatchHandler
+13:17:25.637   12:14:04.653 [2256] BuildServices: resolving ImageBackgroundHandler
+13:17:25.665   12:14:04.671 [2256] BuildServices: registered ImageBackgroundHandler
+13:17:25.665   12:14:04.671 [2256] BuildServices: resolving CodeGenerateHandler
+13:17:25.665   12:14:04.672 [2256] BuildServices: registered CodeGenerateHandler
+13:17:25.682   12:14:04.673 [2256] BuildServices: resolving CodeScanHandler
+13:17:25.682   12:14:04.673 [2256] BuildServices: registered CodeScanHandler
+13:17:25.712   12:14:04.674 [2256] BuildServices: resolving FileRenameHandler
+13:17:25.712   12:14:04.674 [2256] BuildServices: registered FileRenameHandler
+13:17:25.712   12:14:04.675 [2256] BuildServices: resolving FileHashHandler
+13:17:25.728   12:14:04.675 [2256] BuildServices: registered FileHashHandler
+13:17:25.728   12:14:04.676 [2256] BuildServices: resolving FileMetadataHandler
+13:17:25.728   12:14:04.676 [2256] BuildServices: registered FileMetadataHandler
+13:17:25.763   12:14:04.676 [2256] BuildServices: resolving CaptureRecordHandler
+13:17:25.763   12:14:04.677 [2256] BuildServices: registered CaptureRecordHandler
+13:17:25.778   12:14:04.678 [2256] BuildServices: resolving PdfMergeHandler
+13:17:25.778   12:14:04.678 [2256] BuildServices: registered PdfMergeHandler
+13:17:25.790   12:14:04.680 [2256] BuildServices: resolving PdfSplitHandler
+13:17:25.814   12:14:04.680 [2256] BuildServices: registered PdfSplitHandler
+13:17:25.814   12:14:04.681 [2256] BuildServices: resolving PdfReorderHandler
+13:17:25.822   12:14:04.681 [2256] BuildServices: registered PdfReorderHandler
+13:17:25.822   12:14:04.682 [2256] BuildServices: resolving PdfRotateHandler
+13:17:25.838   12:14:04.682 [2256] BuildServices: registered PdfRotateHandler
+13:17:25.862   12:14:04.682 [2256] BuildServices: resolving PdfWatermarkHandler
+13:17:25.869   12:14:04.683 [2256] BuildServices: registered PdfWatermarkHandler
+13:17:25.869   12:14:04.683 [2256] BuildServices: resolving PdfToImageHandler
+13:17:25.869   12:14:04.684 [2256] BuildServices: registered PdfToImageHandler
+13:17:25.884   12:14:04.684 [2256] BuildServices: resolving PdfFromImageHandler
+13:17:25.884   12:14:04.685 [2256] BuildServices: registered PdfFromImageHandler
+13:17:25.884   12:14:04.685 [2256] BuildServices: resolving PdfCompressHandler
+13:17:25.884   12:14:04.685 [2256] BuildServices: registered PdfCompressHandler
+13:17:25.884   12:14:04.686 [2256] BuildServices: resolving IdPhotoCreateHandler
+13:17:25.884   12:14:04.686 [2256] BuildServices: registered IdPhotoCreateHandler
+13:17:25.884   12:14:04.687 [2256] BuildServices: resolving IdPhotoCheckHandler
+13:17:25.940   12:14:04.687 [2256] BuildServices: registered IdPhotoCheckHandler
+13:17:25.962   12:14:04.688 [2256] BuildServices: resolving IdPhotoPrintHandler
+13:17:25.962   12:14:04.688 [2256] BuildServices: registered IdPhotoPrintHandler
+13:17:25.978   12:14:04.688 [2256] BuildServices: handlers registered
+13:17:25.978   12:14:04.689 [2256] BuildServices done
+13:17:25.978   12:14:05.132 [2256] OnLaunched enter
+13:17:25.978   12:14:05.971 [2256] OnLaunched done
+13:17:25.978   12:21:57.685 [1684] App ctor enter
+13:17:25.978   12:21:57.702 [1684] env MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\
+13:17:26.030   12:21:57.781 [1684] module Microsoft.WindowsAppRuntime.dll = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\Microsoft.WindowsAppRuntime.dll
+13:17:26.030   12:21:57.782 [1684] env MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\
+13:17:26.041   12:21:57.791 [1684] InitializeComponent ok
+13:17:26.063   12:21:57.791 [1684] BuildServices enter
+13:17:26.072   12:21:59.683 [1684] BuildServices: exe dir = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64
+13:17:26.072   12:21:59.692 [1684] BuildServices: workspace ok
+13:17:26.072   12:21:59.736 [1684] BuildServices: provider built
+13:17:26.088   12:21:59.771 [1684] BuildServices: resolving VideoConvertHandler
+13:17:26.113   12:21:59.774 [1684] BuildServices: registered VideoConvertHandler
+13:17:26.120   12:21:59.774 [1684] BuildServices: resolving VideoCompressHandler
+13:17:26.120   12:21:59.775 [1684] BuildServices: registered VideoCompressHandler
+13:17:26.120   12:21:59.776 [1684] BuildServices: resolving GifMakerHandler
+13:17:26.135   12:21:59.776 [1684] BuildServices: registered GifMakerHandler
+13:17:26.162   12:21:59.777 [1684] BuildServices: resolving VideoTrimHandler
+13:17:26.166   12:21:59.778 [1684] BuildServices: registered VideoTrimHandler
+13:17:26.166   12:21:59.778 [1684] BuildServices: resolving VideoSplitHandler
+13:17:26.166   12:21:59.779 [1684] BuildServices: registered VideoSplitHandler
+13:17:26.182   12:21:59.779 [1684] BuildServices: resolving VideoMergeHandler
+13:17:26.182   12:21:59.780 [1684] BuildServices: registered VideoMergeHandler
+13:17:26.214   12:21:59.780 [1684] BuildServices: resolving VideoGeometryHandler
+13:17:26.214   12:21:59.781 [1684] BuildServices: registered VideoGeometryHandler
+13:17:26.214   12:21:59.781 [1684] BuildServices: resolving VideoSpeedVolumeHandler
+13:17:26.231   12:21:59.782 [1684] BuildServices: registered VideoSpeedVolumeHandler
+13:17:26.231   12:21:59.782 [1684] BuildServices: resolving VideoAudioHandler
+13:17:26.244   12:21:59.783 [1684] BuildServices: registered VideoAudioHandler
+13:17:26.262   12:21:59.783 [1684] BuildServices: resolving VideoOverlayHandler
+13:17:26.262   12:21:59.784 [1684] BuildServices: registered VideoOverlayHandler
+13:17:26.275   12:21:59.784 [1684] BuildServices: resolving VideoFramesHandler
+13:17:26.275   12:21:59.785 [1684] BuildServices: registered VideoFramesHandler
+13:17:26.291   12:21:59.785 [1684] BuildServices: resolving VideoMetadataHandler
+13:17:26.312   12:21:59.785 [1684] BuildServices: registered VideoMetadataHandler
+13:17:26.312   12:21:59.786 [1684] BuildServices: resolving ImageResizeHandler
+13:17:26.322   12:21:59.786 [1684] BuildServices: registered ImageResizeHandler
+13:17:26.322   12:21:59.786 [1684] BuildServices: resolving ImageCropHandler
+13:17:26.338   12:21:59.787 [1684] BuildServices: registered ImageCropHandler
+13:17:26.338   12:21:59.787 [1684] BuildServices: resolving ImageTransformHandler
+13:17:26.362   12:21:59.789 [1684] BuildServices: registered ImageTransformHandler
+13:17:26.369   12:21:59.790 [1684] BuildServices: resolving ImageConvertHandler
+13:17:26.369   12:21:59.790 [1684] BuildServices: registered ImageConvertHandler
+13:17:26.369   12:21:59.790 [1684] BuildServices: resolving ImageCompressHandler
+13:17:26.385   12:21:59.792 [1684] BuildServices: registered ImageCompressHandler
+13:17:26.413   12:21:59.793 [1684] BuildServices: resolving ImageColorHandler
+13:17:26.417   12:21:59.793 [1684] BuildServices: registered ImageColorHandler
+13:17:26.417   12:21:59.794 [1684] BuildServices: resolving ImageWatermarkHandler
+13:17:26.417   12:21:59.794 [1684] BuildServices: registered ImageWatermarkHandler
+13:17:26.431   12:21:59.795 [1684] BuildServices: resolving ImageExifHandler
+13:17:26.431   12:21:59.795 [1684] BuildServices: registered ImageExifHandler
+13:17:26.431   12:21:59.796 [1684] BuildServices: resolving ImageCollageHandler
+13:17:26.431   12:21:59.796 [1684] BuildServices: registered ImageCollageHandler
+13:17:26.431   12:21:59.797 [1684] BuildServices: resolving ImageBatchHandler
+13:17:26.479   12:21:59.797 [1684] BuildServices: registered ImageBatchHandler
+13:17:26.479   12:21:59.798 [1684] BuildServices: resolving ImageBackgroundHandler
+13:17:26.479   12:21:59.798 [1684] BuildServices: registered ImageBackgroundHandler
+13:17:26.479   12:21:59.798 [1684] BuildServices: resolving CodeGenerateHandler
+13:17:26.479   12:21:59.799 [1684] BuildServices: registered CodeGenerateHandler
+13:17:26.479   12:21:59.799 [1684] BuildServices: resolving CodeScanHandler
+13:17:26.479   12:21:59.800 [1684] BuildServices: registered CodeScanHandler
+13:17:26.479   12:21:59.800 [1684] BuildServices: resolving FileRenameHandler
+13:17:26.479   12:21:59.801 [1684] BuildServices: registered FileRenameHandler
+13:17:26.479   12:21:59.801 [1684] BuildServices: resolving FileHashHandler
+13:17:26.562   12:21:59.802 [1684] BuildServices: registered FileHashHandler
+13:17:26.575   12:21:59.802 [1684] BuildServices: resolving FileMetadataHandler
+13:17:26.575   12:21:59.803 [1684] BuildServices: registered FileMetadataHandler
+13:17:26.575   12:21:59.803 [1684] BuildServices: resolving CaptureRecordHandler
+13:17:26.590   12:21:59.821 [1684] BuildServices: registered CaptureRecordHandler
+13:17:26.612   12:21:59.822 [1684] BuildServices: resolving PdfMergeHandler
+13:17:26.612   12:21:59.822 [1684] BuildServices: registered PdfMergeHandler
+13:17:26.622   12:21:59.823 [1684] BuildServices: resolving PdfSplitHandler
+13:17:26.622   12:21:59.823 [1684] BuildServices: registered PdfSplitHandler
+13:17:26.622   12:21:59.824 [1684] BuildServices: resolving PdfReorderHandler
+13:17:26.637   12:21:59.824 [1684] BuildServices: registered PdfReorderHandler
+13:17:26.663   12:21:59.825 [1684] BuildServices: resolving PdfRotateHandler
+13:17:26.669   12:21:59.825 [1684] BuildServices: registered PdfRotateHandler
+13:17:26.669   12:21:59.826 [1684] BuildServices: resolving PdfWatermarkHandler
+13:17:26.669   12:21:59.826 [1684] BuildServices: registered PdfWatermarkHandler
+13:17:26.685   12:21:59.826 [1684] BuildServices: resolving PdfToImageHandler
+13:17:26.685   12:21:59.827 [1684] BuildServices: registered PdfToImageHandler
+13:17:26.713   12:21:59.827 [1684] BuildServices: resolving PdfFromImageHandler
+13:17:26.713   12:21:59.828 [1684] BuildServices: registered PdfFromImageHandler
+13:17:26.728   12:21:59.828 [1684] BuildServices: resolving PdfCompressHandler
+13:17:26.728   12:21:59.829 [1684] BuildServices: registered PdfCompressHandler
+13:17:26.744   12:21:59.829 [1684] BuildServices: resolving IdPhotoCreateHandler
+13:17:26.762   12:21:59.830 [1684] BuildServices: registered IdPhotoCreateHandler
+13:17:26.762   12:21:59.830 [1684] BuildServices: resolving IdPhotoCheckHandler
+13:17:26.775   12:21:59.831 [1684] BuildServices: registered IdPhotoCheckHandler
+13:17:26.775   12:21:59.831 [1684] BuildServices: resolving IdPhotoPrintHandler
+13:17:26.790   12:21:59.832 [1684] BuildServices: registered IdPhotoPrintHandler
+13:17:26.812   12:21:59.832 [1684] BuildServices: handlers registered
+13:17:26.822   12:21:59.832 [1684] BuildServices done
+13:17:26.822   12:22:00.321 [1684] OnLaunched enter
+13:17:26.822   12:22:01.140 [1684] OnLaunched done
+13:17:26.837   12:22:06.277 [1684] navigate ImageWorkbenchPage ok (tool=<none>)
+13:17:26.837   12:22:08.486 [1684] navigate VideoOutputPage ok (tool=<none>)
+13:17:26.862   12:22:19.825 [1684] navigate VideoEditorPage ok (tool=video.trim)
+13:17:26.871   12:22:22.183 [1684] navigate PdfPage ok (tool=<none>)
+13:17:26.871   12:22:27.937 [1684] navigate OcrQrPage ok (tool=ocr.image)
+13:17:26.884   12:24:55.041 [9240] App ctor enter
+13:17:26.884   12:24:55.071 [9240] env MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\
+13:17:26.884   12:24:55.086 [9240] module Microsoft.WindowsAppRuntime.dll = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\Microsoft.WindowsAppRuntime.dll
+13:17:26.917   12:24:55.087 [9240] env MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\
+13:17:26.917   12:24:55.093 [9240] InitializeComponent ok
+13:17:26.917   12:24:55.093 [9240] BuildServices enter
+13:17:26.933   12:24:55.124 [9240] BuildServices: exe dir = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64
+13:17:26.933   12:24:55.130 [9240] BuildServices: workspace ok
+13:17:26.933   12:24:55.150 [9240] BuildServices: provider built
+13:17:26.962   12:24:55.183 [9240] BuildServices: resolving VideoConvertHandler
+13:17:26.962   12:24:55.185 [9240] BuildServices: registered VideoConvertHandler
+13:17:26.978   12:24:55.186 [9240] BuildServices: resolving VideoCompressHandler
+13:17:26.978   12:24:55.187 [9240] BuildServices: registered VideoCompressHandler
+13:17:26.978   12:24:55.187 [9240] BuildServices: resolving GifMakerHandler
+13:17:27.012   12:24:55.187 [9240] BuildServices: registered GifMakerHandler
+13:17:27.012   12:24:55.188 [9240] BuildServices: resolving VideoTrimHandler
+13:17:27.025   12:24:55.188 [9240] BuildServices: registered VideoTrimHandler
+13:17:27.025   12:24:55.189 [9240] BuildServices: resolving VideoSplitHandler
+13:17:27.025   12:24:55.189 [9240] BuildServices: registered VideoSplitHandler
+13:17:27.062   12:24:55.189 [9240] BuildServices: resolving VideoMergeHandler
+13:17:27.062   12:24:55.190 [9240] BuildServices: registered VideoMergeHandler
+13:17:27.073   12:24:55.190 [9240] BuildServices: resolving VideoGeometryHandler
+13:17:27.073   12:24:55.191 [9240] BuildServices: registered VideoGeometryHandler
+13:17:27.087   12:24:55.191 [9240] BuildServices: resolving VideoSpeedVolumeHandler
+13:17:27.087   12:24:55.191 [9240] BuildServices: registered VideoSpeedVolumeHandler
+13:17:27.112   12:24:55.192 [9240] BuildServices: resolving VideoAudioHandler
+13:17:27.119   12:24:55.192 [9240] BuildServices: registered VideoAudioHandler
+13:17:27.119   12:24:55.192 [9240] BuildServices: resolving VideoOverlayHandler
+13:17:27.134   12:24:55.193 [9240] BuildServices: registered VideoOverlayHandler
+13:17:27.134   12:24:55.193 [9240] BuildServices: resolving VideoFramesHandler
+13:17:27.165   12:24:55.193 [9240] BuildServices: registered VideoFramesHandler
+13:17:27.165   12:24:55.194 [9240] BuildServices: resolving VideoMetadataHandler
+13:17:27.165   12:24:55.194 [9240] BuildServices: registered VideoMetadataHandler
+13:17:27.181   12:24:55.195 [9240] BuildServices: resolving ImageResizeHandler
+13:17:27.181   12:24:55.195 [9240] BuildServices: registered ImageResizeHandler
+13:17:27.212   12:24:55.195 [9240] BuildServices: resolving ImageCropHandler
+13:17:27.212   12:24:55.196 [9240] BuildServices: registered ImageCropHandler
+13:17:27.212   12:24:55.196 [9240] BuildServices: resolving ImageTransformHandler
+13:17:27.228   12:24:55.198 [9240] BuildServices: registered ImageTransformHandler
+13:17:27.228   12:24:55.199 [9240] BuildServices: resolving ImageConvertHandler
+13:17:27.228   12:24:55.200 [9240] BuildServices: registered ImageConvertHandler
+13:17:27.262   12:24:55.200 [9240] BuildServices: resolving ImageCompressHandler
+13:17:27.262   12:24:55.202 [9240] BuildServices: registered ImageCompressHandler
+13:17:27.275   12:24:55.203 [9240] BuildServices: resolving ImageColorHandler
+13:17:27.275   12:24:55.203 [9240] BuildServices: registered ImageColorHandler
+13:17:27.290   12:24:55.203 [9240] BuildServices: resolving ImageWatermarkHandler
+13:17:27.312   12:24:55.221 [9240] BuildServices: registered ImageWatermarkHandler
+13:17:27.312   12:24:55.221 [9240] BuildServices: resolving ImageExifHandler
+13:17:27.322   12:24:55.221 [9240] BuildServices: registered ImageExifHandler
+13:17:27.322   12:24:55.222 [9240] BuildServices: resolving ImageCollageHandler
+13:17:27.322   12:24:55.222 [9240] BuildServices: registered ImageCollageHandler
+13:17:27.337   12:24:55.222 [9240] BuildServices: resolving ImageBatchHandler
+13:17:27.337   12:24:55.223 [9240] BuildServices: registered ImageBatchHandler
+13:17:27.369   12:24:55.224 [9240] BuildServices: resolving ImageBackgroundHandler
+13:17:27.369   12:24:55.224 [9240] BuildServices: registered ImageBackgroundHandler
+13:17:27.369   12:24:55.225 [9240] BuildServices: resolving CodeGenerateHandler
+13:17:27.384   12:24:55.225 [9240] BuildServices: registered CodeGenerateHandler
+13:17:27.384   12:24:55.225 [9240] BuildServices: resolving CodeScanHandler
+13:17:27.413   12:24:55.226 [9240] BuildServices: registered CodeScanHandler
+13:17:27.415   12:24:55.226 [9240] BuildServices: resolving FileRenameHandler
+13:17:27.415   12:24:55.226 [9240] BuildServices: registered FileRenameHandler
+13:17:27.431   12:24:55.227 [9240] BuildServices: resolving FileHashHandler
+13:17:27.431   12:24:55.227 [9240] BuildServices: registered FileHashHandler
+13:17:27.462   12:24:55.228 [9240] BuildServices: resolving FileMetadataHandler
+13:17:27.462   12:24:55.228 [9240] BuildServices: registered FileMetadataHandler
+13:17:27.462   12:24:55.229 [9240] BuildServices: resolving CaptureRecordHandler
+13:17:27.478   12:24:55.229 [9240] BuildServices: registered CaptureRecordHandler
+13:17:27.478   12:24:55.230 [9240] BuildServices: resolving PdfMergeHandler
+13:17:27.478   12:24:55.230 [9240] BuildServices: registered PdfMergeHandler
+13:17:27.512   12:24:55.230 [9240] BuildServices: resolving PdfSplitHandler
+13:17:27.512   12:24:55.231 [9240] BuildServices: registered PdfSplitHandler
+13:17:27.525   12:24:55.231 [9240] BuildServices: resolving PdfReorderHandler
+13:17:27.525   12:24:55.232 [9240] BuildServices: registered PdfReorderHandler
+13:17:27.525   12:24:55.232 [9240] BuildServices: resolving PdfRotateHandler
+13:17:27.562   12:24:55.232 [9240] BuildServices: registered PdfRotateHandler
+13:17:27.562   12:24:55.233 [9240] BuildServices: resolving PdfWatermarkHandler
+13:17:27.572   12:24:55.233 [9240] BuildServices: registered PdfWatermarkHandler
+13:17:27.572   12:24:55.234 [9240] BuildServices: resolving PdfToImageHandler
+13:17:27.572   12:24:55.234 [9240] BuildServices: registered PdfToImageHandler
+13:17:27.587   12:24:55.235 [9240] BuildServices: resolving PdfFromImageHandler
+13:17:27.612   12:24:55.235 [9240] BuildServices: registered PdfFromImageHandler
+13:17:27.619   12:24:55.236 [9240] BuildServices: resolving PdfCompressHandler
+13:17:27.619   12:24:55.236 [9240] BuildServices: registered PdfCompressHandler
+13:17:27.619   12:24:55.236 [9240] BuildServices: resolving IdPhotoCreateHandler
+13:17:27.634   12:24:55.237 [9240] BuildServices: registered IdPhotoCreateHandler
+13:17:27.634   12:24:55.237 [9240] BuildServices: resolving IdPhotoCheckHandler
+13:17:27.665   12:24:55.238 [9240] BuildServices: registered IdPhotoCheckHandler
+13:17:27.665   12:24:55.238 [9240] BuildServices: resolving IdPhotoPrintHandler
+13:17:27.665   12:24:55.238 [9240] BuildServices: registered IdPhotoPrintHandler
+13:17:27.681   12:24:55.239 [9240] BuildServices: handlers registered
+13:17:27.681   12:24:55.239 [9240] BuildServices done
+13:17:27.681   12:24:55.392 [9240] OnLaunched enter
+13:17:27.712   12:24:55.890 [9240] OnLaunched done
+13:17:27.712   12:25:01.139 [9240] navigate ImageWorkbenchPage ok (tool=<none>)
+13:17:27.728   12:25:03.487 [9240] navigate VideoOutputPage ok (tool=<none>)
+13:17:27.728   12:25:07.742 [9240] navigate GifMakerPage ok (tool=video.gif)
+13:17:27.728   12:25:15.132 [9240] navigate VideoEditorPage ok (tool=video.trim)
+13:17:27.762   12:25:17.472 [9240] navigate PdfPage ok (tool=<none>)
+13:17:27.762   12:25:23.087 [9240] navigate OcrQrPage ok (tool=ocr.image)
+13:17:27.775   12:25:26.087 [9240] navigate GeneratorsPage THREW (tool=code.generate): System.NullReferenceException: Object reference not set to an instance of an object.
+13:17:27.775      at TinyPix.App.Pages.GeneratorsPage.ApplyForm(ToolForm form) in C:\TinyPixBuild2\src\TinyPix.App\Pages\GeneratorsPage.xaml.cs:line 122
+13:17:27.775      at TinyPix.App.Pages.GeneratorsPage.OnTaskChanged(Object sender, SelectionChangedEventArgs e) in C:\TinyPixBuild2\src\TinyPix.App\Pages\GeneratorsPage.xaml.cs:line 94
+13:17:27.791      at WinRT._EventSource_global__Microsoft_UI_Xaml_Controls_SelectionChangedEventHandler.EventState.<GetEventInvoke>b__1_0(Object sender, SelectionChangedEventArgs e)
+13:17:27.812      at ABI.Microsoft.UI.Xaml.Controls.SelectionChangedEventHandler.Do_Abi_Invoke(IntPtr thisPtr, IntPtr sender, IntPtr e)
+13:17:27.812   --- End of stack trace from previous location ---
+13:17:27.822      at WinRT.ExceptionHelpers.<ThrowExceptionForHR>g__Throw|38_0(Int32 hr)
+13:17:27.822      at ABI.Microsoft.UI.Xaml.Controls.IFrameMethods.Navigate(IObjectReference _obj, Type sourcePageType, Object parameter, NavigationTransitionInfo infoOverride)
+13:17:27.916      at Microsoft.UI.Xaml.Controls.Frame.Navigate(Type sourcePageType, Object parameter, NavigationTransitionInfo infoOverride)
+13:17:27.916      at TinyPix.App.MainWindow.Navigate(Type page, String toolId) in C:\TinyPixBuild2\src\TinyPix.App\MainWindow.xaml.cs:line 135
+13:17:27.916   12:29:54.102 [10092] App ctor enter
+13:17:27.934   12:29:54.133 [10092] env MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\
+13:17:27.934   12:29:54.193 [10092] module Microsoft.WindowsAppRuntime.dll = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\Microsoft.WindowsAppRuntime.dll
+13:17:27.962   12:29:54.194 [10092] env MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\
+13:17:27.962   12:29:54.201 [10092] InitializeComponent ok
+13:17:27.962   12:29:54.202 [10092] BuildServices enter
+13:17:27.978   12:29:55.871 [10092] BuildServices: exe dir = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64
+13:17:27.978   12:29:55.879 [10092] BuildServices: workspace ok
+13:17:27.994   12:29:55.902 [10092] BuildServices: provider built
+13:17:28.013   12:29:55.934 [10092] BuildServices: resolving VideoConvertHandler
+13:17:28.013   12:29:55.936 [10092] BuildServices: registered VideoConvertHandler
+13:17:28.025   12:29:55.937 [10092] BuildServices: resolving VideoCompressHandler
+13:17:28.025   12:29:55.938 [10092] BuildServices: registered VideoCompressHandler
+13:17:28.040   12:29:55.938 [10092] BuildServices: resolving GifMakerHandler
+13:17:28.063   12:29:55.939 [10092] BuildServices: registered GifMakerHandler
+13:17:28.063   12:29:55.939 [10092] BuildServices: resolving VideoTrimHandler
+13:17:28.075   12:29:55.940 [10092] BuildServices: registered VideoTrimHandler
+13:17:28.075   12:29:55.940 [10092] BuildServices: resolving VideoSplitHandler
+13:17:28.075   12:29:55.941 [10092] BuildServices: registered VideoSplitHandler
+13:17:28.088   12:29:55.941 [10092] BuildServices: resolving VideoMergeHandler
+13:17:28.113   12:29:55.941 [10092] BuildServices: registered VideoMergeHandler
+13:17:28.119   12:29:55.942 [10092] BuildServices: resolving VideoGeometryHandler
+13:17:28.119   12:29:55.942 [10092] BuildServices: registered VideoGeometryHandler
+13:17:28.135   12:29:55.942 [10092] BuildServices: resolving VideoSpeedVolumeHandler
+13:17:28.141   12:29:55.943 [10092] BuildServices: registered VideoSpeedVolumeHandler
+13:17:28.166   12:29:55.943 [10092] BuildServices: resolving VideoAudioHandler
+13:17:28.166   12:29:55.944 [10092] BuildServices: registered VideoAudioHandler
+13:17:28.166   12:29:55.944 [10092] BuildServices: resolving VideoOverlayHandler
+13:17:28.181   12:29:55.944 [10092] BuildServices: registered VideoOverlayHandler
+13:17:28.181   12:29:55.945 [10092] BuildServices: resolving VideoFramesHandler
+13:17:28.212   12:29:55.945 [10092] BuildServices: registered VideoFramesHandler
+13:17:28.322   12:29:55.946 [10092] BuildServices: resolving VideoMetadataHandler
+13:17:28.362   12:29:55.946 [10092] BuildServices: registered VideoMetadataHandler
+13:17:28.362   12:29:55.946 [10092] BuildServices: resolving ImageResizeHandler
+13:17:28.370   12:29:55.947 [10092] BuildServices: registered ImageResizeHandler
+13:17:28.378   12:29:55.948 [10092] BuildServices: resolving ImageCropHandler
+13:17:28.386   12:29:55.948 [10092] BuildServices: registered ImageCropHandler
+13:17:28.386   12:29:55.948 [10092] BuildServices: resolving ImageTransformHandler
+13:17:28.415   12:29:55.950 [10092] BuildServices: registered ImageTransformHandler
+13:17:28.415   12:29:55.951 [10092] BuildServices: resolving ImageConvertHandler
+13:17:28.415   12:29:55.951 [10092] BuildServices: registered ImageConvertHandler
+13:17:28.431   12:29:55.951 [10092] BuildServices: resolving ImageCompressHandler
+13:17:28.431   12:29:55.953 [10092] BuildServices: registered ImageCompressHandler
+13:17:28.431   12:29:55.970 [10092] BuildServices: resolving ImageColorHandler
+13:17:28.462   12:29:55.972 [10092] BuildServices: registered ImageColorHandler
+13:17:28.462   12:29:55.972 [10092] BuildServices: resolving ImageWatermarkHandler
+13:17:28.478   12:29:55.973 [10092] BuildServices: registered ImageWatermarkHandler
+13:17:28.478   12:29:55.973 [10092] BuildServices: resolving ImageExifHandler
+13:17:28.478   12:29:55.974 [10092] BuildServices: registered ImageExifHandler
+13:17:28.494   12:29:55.974 [10092] BuildServices: resolving ImageCollageHandler
+13:17:28.512   12:29:55.974 [10092] BuildServices: registered ImageCollageHandler
+13:17:28.512   12:29:55.975 [10092] BuildServices: resolving ImageBatchHandler
+13:17:28.525   12:29:55.975 [10092] BuildServices: registered ImageBatchHandler
+13:17:28.525   12:29:55.976 [10092] BuildServices: resolving ImageBackgroundHandler
+13:17:28.525   12:29:55.976 [10092] BuildServices: registered ImageBackgroundHandler
+13:17:28.562   12:29:55.976 [10092] BuildServices: resolving CodeGenerateHandler
+13:17:28.562   12:29:55.977 [10092] BuildServices: registered CodeGenerateHandler
+13:17:28.572   12:29:55.977 [10092] BuildServices: resolving CodeScanHandler
+13:17:28.572   12:29:55.978 [10092] BuildServices: registered CodeScanHandler
+13:17:28.572   12:29:55.978 [10092] BuildServices: resolving FileRenameHandler
+13:17:28.587   12:29:55.979 [10092] BuildServices: registered FileRenameHandler
+13:17:28.612   12:29:55.979 [10092] BuildServices: resolving FileHashHandler
+13:17:28.619   12:29:55.980 [10092] BuildServices: registered FileHashHandler
+13:17:28.619   12:29:55.980 [10092] BuildServices: resolving FileMetadataHandler
+13:17:28.619   12:29:55.981 [10092] BuildServices: registered FileMetadataHandler
+13:17:28.634   12:29:55.981 [10092] BuildServices: resolving CaptureRecordHandler
+13:17:28.634   12:29:55.982 [10092] BuildServices: registered CaptureRecordHandler
+13:17:28.665   12:29:55.982 [10092] BuildServices: resolving PdfMergeHandler
+13:17:28.665   12:29:55.982 [10092] BuildServices: registered PdfMergeHandler
+13:17:28.665   12:29:55.983 [10092] BuildServices: resolving PdfSplitHandler
+13:17:28.682   12:29:55.983 [10092] BuildServices: registered PdfSplitHandler
+13:17:28.688   12:29:55.984 [10092] BuildServices: resolving PdfReorderHandler
+13:17:28.713   12:29:55.984 [10092] BuildServices: registered PdfReorderHandler
+13:17:28.713   12:29:55.985 [10092] BuildServices: resolving PdfRotateHandler
+13:17:28.728   12:29:55.985 [10092] BuildServices: registered PdfRotateHandler
+13:17:28.728   12:29:55.985 [10092] BuildServices: resolving PdfWatermarkHandler
+13:17:28.728   12:29:55.986 [10092] BuildServices: registered PdfWatermarkHandler
+13:17:28.762   12:29:55.986 [10092] BuildServices: resolving PdfToImageHandler
+13:17:28.762   12:29:55.987 [10092] BuildServices: registered PdfToImageHandler
+13:17:28.775   12:29:55.987 [10092] BuildServices: resolving PdfFromImageHandler
+13:17:28.775   12:29:55.987 [10092] BuildServices: registered PdfFromImageHandler
+13:17:28.775   12:29:55.988 [10092] BuildServices: resolving PdfCompressHandler
+13:17:28.790   12:29:55.988 [10092] BuildServices: registered PdfCompressHandler
+13:17:28.812   12:29:55.989 [10092] BuildServices: resolving IdPhotoCreateHandler
+13:17:28.812   12:29:55.989 [10092] BuildServices: registered IdPhotoCreateHandler
+13:17:28.822   12:29:55.990 [10092] BuildServices: resolving IdPhotoCheckHandler
+13:17:28.822   12:29:55.990 [10092] BuildServices: registered IdPhotoCheckHandler
+13:17:28.822   12:29:55.990 [10092] BuildServices: resolving IdPhotoPrintHandler
+13:17:28.837   12:29:55.991 [10092] BuildServices: registered IdPhotoPrintHandler
+13:17:28.862   12:29:55.991 [10092] BuildServices: handlers registered
+13:17:28.869   12:29:55.991 [10092] BuildServices done
+13:17:28.869   12:29:56.421 [10092] OnLaunched enter
+13:17:28.869   12:29:57.189 [10092] OnLaunched done
+13:17:28.886   12:30:02.373 [10092] navigate ImageWorkbenchPage ok (tool=<none>)
+13:17:28.886   12:30:04.639 [10092] navigate VideoOutputPage ok (tool=<none>)
+13:17:28.915   12:30:09.090 [10092] navigate GifMakerPage ok (tool=video.gif)
+13:17:28.915   12:30:16.191 [10092] navigate VideoEditorPage ok (tool=video.trim)
+13:17:28.915   12:30:18.575 [10092] navigate PdfPage ok (tool=<none>)
+13:17:28.931   12:30:24.326 [10092] navigate OcrQrPage ok (tool=ocr.image)
+13:17:28.931   12:30:27.331 [10092] navigate GeneratorsPage THREW (tool=code.generate): System.NullReferenceException: Object reference not set to an instance of an object.
+13:17:28.962      at TinyPix.App.Pages.GeneratorsPage.ApplyForm(ToolForm form) in C:\TinyPixBuild2\src\TinyPix.App\Pages\GeneratorsPage.xaml.cs:line 122
+13:17:28.962      at TinyPix.App.Pages.GeneratorsPage.OnTaskChanged(Object sender, SelectionChangedEventArgs e) in C:\TinyPixBuild2\src\TinyPix.App\Pages\GeneratorsPage.xaml.cs:line 94
+13:17:28.962      at WinRT._EventSource_global__Microsoft_UI_Xaml_Controls_SelectionChangedEventHandler.EventState.<GetEventInvoke>b__1_0(Object sender, SelectionChangedEventArgs e)
+13:17:28.978      at ABI.Microsoft.UI.Xaml.Controls.SelectionChangedEventHandler.Do_Abi_Invoke(IntPtr thisPtr, IntPtr sender, IntPtr e)
+13:17:28.978   --- End of stack trace from previous location ---
+13:17:28.978      at WinRT.ExceptionHelpers.<ThrowExceptionForHR>g__Throw|38_0(Int32 hr)
+13:17:29.013      at ABI.Microsoft.UI.Xaml.Controls.IFrameMethods.Navigate(IObjectReference _obj, Type sourcePageType, Object parameter, NavigationTransitionInfo infoOverride)
+13:17:29.013      at Microsoft.UI.Xaml.Controls.Frame.Navigate(Type sourcePageType, Object parameter, NavigationTransitionInfo infoOverride)
+13:17:29.025      at TinyPix.App.MainWindow.Navigate(Type page, String toolId) in C:\TinyPixBuild2\src\TinyPix.App\MainWindow.xaml.cs:line 135
+13:17:29.025   12:30:27.332 [10092] ToolInvoked(code.generate) THREW: System.NullReferenceException: Object reference not set to an instance of an object.
+13:17:29.025      at TinyPix.App.Pages.GeneratorsPage.ApplyForm(ToolForm form) in C:\TinyPixBuild2\src\TinyPix.App\Pages\GeneratorsPage.xaml.cs:line 122
+13:17:29.062      at TinyPix.App.Pages.GeneratorsPage.OnTaskChanged(Object sender, SelectionChangedEventArgs e) in C:\TinyPixBuild2\src\TinyPix.App\Pages\GeneratorsPage.xaml.cs:line 94
+13:17:29.062      at WinRT._EventSource_global__Microsoft_UI_Xaml_Controls_SelectionChangedEventHandler.EventState.<GetEventInvoke>b__1_0(Object sender, SelectionChangedEventArgs e)
+13:17:29.072      at ABI.Microsoft.UI.Xaml.Controls.SelectionChangedEventHandler.Do_Abi_Invoke(IntPtr thisPtr, IntPtr sender, IntPtr e)
+13:17:29.072   --- End of stack trace from previous location ---
+13:17:29.072      at WinRT.ExceptionHelpers.<ThrowExceptionForHR>g__Throw|38_0(Int32 hr)
+13:17:29.087      at ABI.Microsoft.UI.Xaml.Controls.IFrameMethods.Navigate(IObjectReference _obj, Type sourcePageType, Object parameter, NavigationTransitionInfo infoOverride)
+13:17:29.112      at Microsoft.UI.Xaml.Controls.Frame.Navigate(Type sourcePageType, Object parameter, NavigationTransitionInfo infoOverride)
+13:17:29.119      at TinyPix.App.MainWindow.Navigate(Type page, String toolId) in C:\TinyPixBuild2\src\TinyPix.App\MainWindow.xaml.cs:line 135
+13:17:29.119      at TinyPix.App.MainWindow.OnToolInvoked(Object sender, String toolId) in C:\TinyPixBuild2\src\TinyPix.App\MainWindow.xaml.cs:line 127
+13:17:29.119      at TinyPix.App.Controls.LeftFilePanelControl.<>c__DisplayClass16_0.<OnToolSelectionChanged>b__0() in C:\TinyPixBuild2\src\TinyPix.App\Controls\LeftFilePanelControl.xaml.cs:line 101
+13:17:29.134   12:35:10.437 [4276] App ctor enter
+13:17:29.134   12:35:10.452 [4276] env MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\
+13:17:29.165   12:35:10.502 [4276] module Microsoft.WindowsAppRuntime.dll = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\Microsoft.WindowsAppRuntime.dll
+13:17:29.165   12:35:10.503 [4276] env MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\
+13:17:29.165   12:35:10.526 [4276] InitializeComponent ok
+13:17:29.181   12:35:10.527 [4276] BuildServices enter
+13:17:29.181   12:35:12.128 [4276] BuildServices: exe dir = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64
+13:17:29.212   12:35:12.135 [4276] BuildServices: workspace ok
+13:17:29.212   12:35:12.174 [4276] BuildServices: provider built
+13:17:29.212   12:35:12.189 [4276] BuildServices: resolving VideoConvertHandler
+13:17:29.228   12:35:12.192 [4276] BuildServices: registered VideoConvertHandler
+13:17:29.228   12:35:12.192 [4276] BuildServices: resolving VideoCompressHandler
+13:17:29.228   12:35:12.193 [4276] BuildServices: registered VideoCompressHandler
+13:17:29.244   12:35:12.194 [4276] BuildServices: resolving GifMakerHandler
+13:17:29.262   12:35:12.194 [4276] BuildServices: registered GifMakerHandler
+13:17:29.262   12:35:12.195 [4276] BuildServices: resolving VideoTrimHandler
+13:17:29.275   12:35:12.195 [4276] BuildServices: registered VideoTrimHandler
+13:17:29.275   12:35:12.197 [4276] BuildServices: resolving VideoSplitHandler
+13:17:29.275   12:35:12.197 [4276] BuildServices: registered VideoSplitHandler
+13:17:29.312   12:35:12.198 [4276] BuildServices: resolving VideoMergeHandler
+13:17:29.312   12:35:12.198 [4276] BuildServices: registered VideoMergeHandler
+13:17:29.322   12:35:12.199 [4276] BuildServices: resolving VideoGeometryHandler
+13:17:29.322   12:35:12.199 [4276] BuildServices: registered VideoGeometryHandler
+13:17:29.322   12:35:12.199 [4276] BuildServices: resolving VideoSpeedVolumeHandler
+13:17:29.337   12:35:12.200 [4276] BuildServices: registered VideoSpeedVolumeHandler
+13:17:29.369   12:35:12.200 [4276] BuildServices: resolving VideoAudioHandler
+13:17:29.369   12:35:12.201 [4276] BuildServices: registered VideoAudioHandler
+13:17:29.369   12:35:12.201 [4276] BuildServices: resolving VideoOverlayHandler
+13:17:29.385   12:35:12.201 [4276] BuildServices: registered VideoOverlayHandler
+13:17:29.385   12:35:12.202 [4276] BuildServices: resolving VideoFramesHandler
+13:17:29.412   12:35:12.203 [4276] BuildServices: registered VideoFramesHandler
+13:17:29.416   12:35:12.203 [4276] BuildServices: resolving VideoMetadataHandler
+13:17:29.416   12:35:12.203 [4276] BuildServices: registered VideoMetadataHandler
+13:17:29.431   12:35:12.220 [4276] BuildServices: resolving ImageResizeHandler
+13:17:29.431   12:35:12.221 [4276] BuildServices: registered ImageResizeHandler
+13:17:29.431   12:35:12.221 [4276] BuildServices: resolving ImageCropHandler
+13:17:29.462   12:35:12.222 [4276] BuildServices: registered ImageCropHandler
+13:17:29.462   12:35:12.222 [4276] BuildServices: resolving ImageTransformHandler
+13:17:29.478   12:35:12.224 [4276] BuildServices: registered ImageTransformHandler
+13:17:29.478   12:35:12.224 [4276] BuildServices: resolving ImageConvertHandler
+13:17:29.478   12:35:12.225 [4276] BuildServices: registered ImageConvertHandler
+13:17:29.494   12:35:12.225 [4276] BuildServices: resolving ImageCompressHandler
+13:17:29.512   12:35:12.227 [4276] BuildServices: registered ImageCompressHandler
+13:17:29.525   12:35:12.227 [4276] BuildServices: resolving ImageColorHandler
+13:17:29.525   12:35:12.228 [4276] BuildServices: registered ImageColorHandler
+13:17:29.525   12:35:12.228 [4276] BuildServices: resolving ImageWatermarkHandler
+13:17:29.540   12:35:12.229 [4276] BuildServices: registered ImageWatermarkHandler
+13:17:29.562   12:35:12.229 [4276] BuildServices: resolving ImageExifHandler
+13:17:29.562   12:35:12.229 [4276] BuildServices: registered ImageExifHandler
+13:17:29.572   12:35:12.230 [4276] BuildServices: resolving ImageCollageHandler
+13:17:29.572   12:35:12.230 [4276] BuildServices: registered ImageCollageHandler
+13:17:29.588   12:35:12.231 [4276] BuildServices: resolving ImageBatchHandler
+13:17:29.588   12:35:12.231 [4276] BuildServices: registered ImageBatchHandler
+13:17:29.619   12:35:12.232 [4276] BuildServices: resolving ImageBackgroundHandler
+13:17:29.619   12:35:12.232 [4276] BuildServices: registered ImageBackgroundHandler
+13:17:29.619   12:35:12.232 [4276] BuildServices: resolving CodeGenerateHandler
+13:17:29.635   12:35:12.233 [4276] BuildServices: registered CodeGenerateHandler
+13:17:29.635   12:35:12.233 [4276] BuildServices: resolving CodeScanHandler
+13:17:29.664   12:35:12.234 [4276] BuildServices: registered CodeScanHandler
+13:17:29.670   12:35:12.234 [4276] BuildServices: resolving FileRenameHandler
+13:17:29.670   12:35:12.234 [4276] BuildServices: registered FileRenameHandler
+13:17:29.681   12:35:12.235 [4276] BuildServices: resolving FileHashHandler
+13:17:29.681   12:35:12.235 [4276] BuildServices: registered FileHashHandler
+13:17:29.681   12:35:12.235 [4276] BuildServices: resolving FileMetadataHandler
+13:17:29.712   12:35:12.236 [4276] BuildServices: registered FileMetadataHandler
+13:17:29.712   12:35:12.236 [4276] BuildServices: resolving CaptureRecordHandler
+13:17:29.728   12:35:12.237 [4276] BuildServices: registered CaptureRecordHandler
+13:17:29.728   12:35:12.237 [4276] BuildServices: resolving PdfMergeHandler
+13:17:29.728   12:35:12.238 [4276] BuildServices: registered PdfMergeHandler
+13:17:29.766   12:35:12.238 [4276] BuildServices: resolving PdfSplitHandler
+13:17:29.766   12:35:12.238 [4276] BuildServices: registered PdfSplitHandler
+13:17:29.778   12:35:12.239 [4276] BuildServices: resolving PdfReorderHandler
+13:17:29.778   12:35:12.239 [4276] BuildServices: registered PdfReorderHandler
+13:17:29.778   12:35:12.239 [4276] BuildServices: resolving PdfRotateHandler
+13:17:29.812   12:35:12.240 [4276] BuildServices: registered PdfRotateHandler
+13:17:29.812   12:35:12.240 [4276] BuildServices: resolving PdfWatermarkHandler
+13:17:29.825   12:35:12.241 [4276] BuildServices: registered PdfWatermarkHandler
+13:17:29.825   12:35:12.241 [4276] BuildServices: resolving PdfToImageHandler
+13:17:29.825   12:35:12.242 [4276] BuildServices: registered PdfToImageHandler
+13:17:29.841   12:35:12.242 [4276] BuildServices: resolving PdfFromImageHandler
+13:17:29.862   12:35:12.243 [4276] BuildServices: registered PdfFromImageHandler
+13:17:29.872   12:35:12.243 [4276] BuildServices: resolving PdfCompressHandler
+13:17:29.872   12:35:12.244 [4276] BuildServices: registered PdfCompressHandler
+13:17:29.872   12:35:12.244 [4276] BuildServices: resolving IdPhotoCreateHandler
+13:17:29.887   12:35:12.244 [4276] BuildServices: registered IdPhotoCreateHandler
+13:17:29.887   12:35:12.245 [4276] BuildServices: resolving IdPhotoCheckHandler
+13:17:29.912   12:35:12.245 [4276] BuildServices: registered IdPhotoCheckHandler
+13:17:29.919   12:35:12.245 [4276] BuildServices: resolving IdPhotoPrintHandler
+13:17:29.919   12:35:12.246 [4276] BuildServices: registered IdPhotoPrintHandler
+13:17:29.934   12:35:12.246 [4276] BuildServices: handlers registered
+13:17:29.934   12:35:12.246 [4276] BuildServices done
+13:17:29.962   12:35:12.696 [4276] OnLaunched enter
+13:17:29.965   12:35:13.492 [4276] OnLaunched done
+13:17:29.965   12:35:18.642 [4276] navigate ImageWorkbenchPage ok (tool=<none>)
+13:17:29.965   12:35:20.979 [4276] navigate VideoOutputPage ok (tool=<none>)
+13:17:29.981   12:35:25.341 [4276] navigate GifMakerPage ok (tool=video.gif)
+13:17:29.981   12:35:32.448 [4276] navigate VideoEditorPage ok (tool=video.trim)
+13:17:30.012   12:35:34.880 [4276] navigate PdfPage ok (tool=<none>)
+13:17:30.012   12:35:40.577 [4276] navigate OcrQrPage ok (tool=ocr.image)
+13:17:30.012   12:35:43.443 [4276] navigate GeneratorsPage ok (tool=code.generate)
+13:17:30.028   12:35:48.381 [4276] navigate IdPhotoPage ok (tool=idphoto.create)
+13:17:30.028   12:40:47.031 [2792] App ctor enter
+13:17:30.062   12:40:47.047 [2792] env MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\
+13:17:30.062   12:40:47.124 [2792] module Microsoft.WindowsAppRuntime.dll = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\Microsoft.WindowsAppRuntime.dll
+13:17:30.075   12:40:47.125 [2792] env MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\
+13:17:30.075   12:40:47.134 [2792] InitializeComponent ok
+13:17:30.075   12:40:47.134 [2792] BuildServices enter
+13:17:30.091   12:40:48.781 [2792] BuildServices: exe dir = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64
+13:17:30.112   12:40:48.789 [2792] BuildServices: workspace ok
+13:17:30.122   12:40:48.829 [2792] BuildServices: provider built
+13:17:30.122   12:40:48.844 [2792] BuildServices: resolving VideoConvertHandler
+13:17:30.122   12:40:48.847 [2792] BuildServices: registered VideoConvertHandler
+13:17:30.137   12:40:48.848 [2792] BuildServices: resolving VideoCompressHandler
+13:17:30.137   12:40:48.849 [2792] BuildServices: registered VideoCompressHandler
+13:17:30.162   12:40:48.849 [2792] BuildServices: resolving GifMakerHandler
+13:17:30.169   12:40:48.850 [2792] BuildServices: registered GifMakerHandler
+13:17:30.169   12:40:48.850 [2792] BuildServices: resolving VideoTrimHandler
+13:17:30.169   12:40:48.851 [2792] BuildServices: registered VideoTrimHandler
+13:17:30.184   12:40:48.852 [2792] BuildServices: resolving VideoSplitHandler
+13:17:30.184   12:40:48.852 [2792] BuildServices: registered VideoSplitHandler
+13:17:30.216   12:40:48.852 [2792] BuildServices: resolving VideoMergeHandler
+13:17:30.216   12:40:48.853 [2792] BuildServices: registered VideoMergeHandler
+13:17:30.216   12:40:48.853 [2792] BuildServices: resolving VideoGeometryHandler
+13:17:30.231   12:40:48.870 [2792] BuildServices: registered VideoGeometryHandler
+13:17:30.231   12:40:48.871 [2792] BuildServices: resolving VideoSpeedVolumeHandler
+13:17:30.262   12:40:48.871 [2792] BuildServices: registered VideoSpeedVolumeHandler
+13:17:30.262   12:40:48.872 [2792] BuildServices: resolving VideoAudioHandler
+13:17:30.262   12:40:48.872 [2792] BuildServices: registered VideoAudioHandler
+13:17:30.278   12:40:48.872 [2792] BuildServices: resolving VideoOverlayHandler
+13:17:30.278   12:40:48.873 [2792] BuildServices: registered VideoOverlayHandler
+13:17:30.278   12:40:48.873 [2792] BuildServices: resolving VideoFramesHandler
+13:17:30.312   12:40:48.874 [2792] BuildServices: registered VideoFramesHandler
+13:17:30.312   12:40:48.874 [2792] BuildServices: resolving VideoMetadataHandler
+13:17:30.325   12:40:48.875 [2792] BuildServices: registered VideoMetadataHandler
+13:17:30.325   12:40:48.875 [2792] BuildServices: resolving ImageResizeHandler
+13:17:30.325   12:40:48.876 [2792] BuildServices: registered ImageResizeHandler
+13:17:30.340   12:40:48.876 [2792] BuildServices: resolving ImageCropHandler
+13:17:30.362   12:40:48.876 [2792] BuildServices: registered ImageCropHandler
+13:17:30.362   12:40:48.877 [2792] BuildServices: resolving ImageTransformHandler
+13:17:30.372   12:40:48.879 [2792] BuildServices: registered ImageTransformHandler
+13:17:30.372   12:40:48.879 [2792] BuildServices: resolving ImageConvertHandler
+13:17:30.387   12:40:48.880 [2792] BuildServices: registered ImageConvertHandler
+13:17:30.387   12:40:48.880 [2792] BuildServices: resolving ImageCompressHandler
+13:17:30.419   12:40:48.882 [2792] BuildServices: registered ImageCompressHandler
+13:17:30.419   12:40:48.882 [2792] BuildServices: resolving ImageColorHandler
+13:17:30.419   12:40:48.883 [2792] BuildServices: registered ImageColorHandler
+13:17:30.434   12:40:48.883 [2792] BuildServices: resolving ImageWatermarkHandler
+13:17:30.434   12:40:48.884 [2792] BuildServices: registered ImageWatermarkHandler
+13:17:30.462   12:40:48.884 [2792] BuildServices: resolving ImageExifHandler
+13:17:30.465   12:40:48.884 [2792] BuildServices: registered ImageExifHandler
+13:17:30.465   12:40:48.885 [2792] BuildServices: resolving ImageCollageHandler
+13:17:30.465   12:40:48.885 [2792] BuildServices: registered ImageCollageHandler
+13:17:30.481   12:40:48.886 [2792] BuildServices: resolving ImageBatchHandler
+13:17:30.481   12:40:48.886 [2792] BuildServices: registered ImageBatchHandler
+13:17:30.512   12:40:48.886 [2792] BuildServices: resolving ImageBackgroundHandler
+13:17:30.512   12:40:48.887 [2792] BuildServices: registered ImageBackgroundHandler
+13:17:30.512   12:40:48.887 [2792] BuildServices: resolving CodeGenerateHandler
+13:17:30.528   12:40:48.888 [2792] BuildServices: registered CodeGenerateHandler
+13:17:30.528   12:40:48.888 [2792] BuildServices: resolving CodeScanHandler
+13:17:30.528   12:40:48.889 [2792] BuildServices: registered CodeScanHandler
+13:17:30.562   12:40:48.889 [2792] BuildServices: resolving FileRenameHandler
+13:17:30.562   12:40:48.889 [2792] BuildServices: registered FileRenameHandler
+13:17:30.575   12:40:48.890 [2792] BuildServices: resolving FileHashHandler
+13:17:30.575   12:40:48.890 [2792] BuildServices: registered FileHashHandler
+13:17:30.575   12:40:48.890 [2792] BuildServices: resolving FileMetadataHandler
+13:17:30.590   12:40:48.891 [2792] BuildServices: registered FileMetadataHandler
+13:17:30.612   12:40:48.891 [2792] BuildServices: resolving CaptureRecordHandler
+13:17:30.622   12:40:48.892 [2792] BuildServices: registered CaptureRecordHandler
+13:17:30.622   12:40:48.892 [2792] BuildServices: resolving PdfMergeHandler
+13:17:30.622   12:40:48.893 [2792] BuildServices: registered PdfMergeHandler
+13:17:30.637   12:40:48.893 [2792] BuildServices: resolving PdfSplitHandler
+13:17:30.663   12:40:48.894 [2792] BuildServices: registered PdfSplitHandler
+13:17:30.669   12:40:48.894 [2792] BuildServices: resolving PdfReorderHandler
+13:17:30.669   12:40:48.894 [2792] BuildServices: registered PdfReorderHandler
+13:17:30.669   12:40:48.895 [2792] BuildServices: resolving PdfRotateHandler
+13:17:30.684   12:40:48.895 [2792] BuildServices: registered PdfRotateHandler
+13:17:30.684   12:40:48.895 [2792] BuildServices: resolving PdfWatermarkHandler
+13:17:30.715   12:40:48.896 [2792] BuildServices: registered PdfWatermarkHandler
+13:17:30.715   12:40:48.897 [2792] BuildServices: resolving PdfToImageHandler
+13:17:30.731   12:40:48.897 [2792] BuildServices: registered PdfToImageHandler
+13:17:30.731   12:40:48.898 [2792] BuildServices: resolving PdfFromImageHandler
+13:17:30.731   12:40:48.898 [2792] BuildServices: registered PdfFromImageHandler
+13:17:30.762   12:40:48.899 [2792] BuildServices: resolving PdfCompressHandler
+13:17:30.762   12:40:48.899 [2792] BuildServices: registered PdfCompressHandler
+13:17:30.762   12:40:48.899 [2792] BuildServices: resolving IdPhotoCreateHandler
+13:17:30.778   12:40:48.900 [2792] BuildServices: registered IdPhotoCreateHandler
+13:17:30.778   12:40:48.900 [2792] BuildServices: resolving IdPhotoCheckHandler
+13:17:30.794   12:40:48.900 [2792] BuildServices: registered IdPhotoCheckHandler
+13:17:30.814   12:40:48.902 [2792] BuildServices: resolving IdPhotoPrintHandler
+13:17:30.821   12:40:48.902 [2792] BuildServices: registered IdPhotoPrintHandler
+13:17:30.828   12:40:48.902 [2792] BuildServices: handlers registered
+13:17:30.828   12:40:48.903 [2792] BuildServices done
+13:17:30.844   12:40:49.443 [2792] OnLaunched enter
+13:17:30.862   12:40:49.841 [2792] mode=video pills image=False video=True toolbox=False
+13:17:30.875   12:40:50.244 [2792] OnLaunched done
+13:17:30.875   12:40:50.253 [2792] mode=video pills image=False video=True toolbox=False
+13:17:30.875   12:40:55.150 [2792] mode=image pills image=True video=False toolbox=False
+13:17:30.891   12:40:55.294 [2792] navigate ImageWorkbenchPage ok (tool=<none>)
+13:17:30.912   12:40:55.295 [2792] mode=image pills image=True video=False toolbox=False
+13:17:30.912   12:40:57.635 [2792] mode=video pills image=False video=True toolbox=False
+13:17:30.922   12:40:57.676 [2792] navigate VideoOutputPage ok (tool=<none>)
+13:17:30.922   12:40:57.677 [2792] mode=video pills image=False video=True toolbox=False
+13:17:30.937   12:41:01.853 [2792] mode=video pills image=False video=True toolbox=False
+13:17:30.937   12:41:01.927 [2792] navigate GifMakerPage ok (tool=video.gif)
+13:17:30.962   12:41:01.928 [2792] mode=video pills image=False video=True toolbox=False
+13:17:30.969   12:41:09.053 [2792] mode=video pills image=False video=True toolbox=False
+13:17:30.969   12:41:09.103 [2792] navigate VideoEditorPage ok (tool=video.trim)
+13:17:30.969   12:41:09.103 [2792] mode=video pills image=False video=True toolbox=False
+13:17:30.984   12:41:11.424 [2792] mode=toolbox pills image=False video=False toolbox=True
+13:17:30.984   12:41:11.442 [2792] navigate PdfPage ok (tool=<none>)
+13:17:31.015   12:41:11.443 [2792] mode=toolbox pills image=False video=False toolbox=True
+13:17:31.015   12:41:16.901 [2792] mode=toolbox pills image=False video=False toolbox=True
+13:17:31.015   12:41:16.933 [2792] navigate OcrQrPage ok (tool=ocr.image)
+13:17:31.031   12:41:16.934 [2792] mode=toolbox pills image=False video=False toolbox=True
+13:17:31.031   12:41:19.775 [2792] mode=toolbox pills image=False video=False toolbox=True
+13:17:31.031   12:41:19.821 [2792] navigate GeneratorsPage ok (tool=code.generate)
+13:17:31.062   12:41:19.822 [2792] mode=toolbox pills image=False video=False toolbox=True
+13:17:31.062   12:41:24.924 [2792] mode=toolbox pills image=False video=False toolbox=True
+13:17:31.078   12:41:24.943 [2792] navigate IdPhotoPage ok (tool=idphoto.create)
+13:17:31.078   12:41:24.944 [2792] mode=toolbox pills image=False video=False toolbox=True
+13:17:31.078   12:46:20.837 [5688] App ctor enter
+13:17:31.112   12:46:20.871 [5688] env MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\
+13:17:31.112   12:46:20.927 [5688] module Microsoft.WindowsAppRuntime.dll = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\Microsoft.WindowsAppRuntime.dll
+13:17:31.125   12:46:20.928 [5688] env MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\
+13:17:31.125   12:46:20.936 [5688] InitializeComponent ok
+13:17:31.125   12:46:20.937 [5688] BuildServices enter
+13:17:31.141   12:46:22.747 [5688] BuildServices: exe dir = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64
+13:17:31.162   12:46:22.773 [5688] BuildServices: workspace ok
+13:17:31.172   12:46:22.798 [5688] BuildServices: provider built
+13:17:31.172   12:46:22.832 [5688] BuildServices: resolving VideoConvertHandler
+13:17:31.172   12:46:22.835 [5688] BuildServices: registered VideoConvertHandler
+13:17:31.172   12:46:22.835 [5688] BuildServices: resolving VideoCompressHandler
+13:17:31.187   12:46:22.837 [5688] BuildServices: registered VideoCompressHandler
+13:17:31.212   12:46:22.837 [5688] BuildServices: resolving GifMakerHandler
+13:17:31.219   12:46:22.837 [5688] BuildServices: registered GifMakerHandler
+13:17:31.219   12:46:22.838 [5688] BuildServices: resolving VideoTrimHandler
+13:17:31.219   12:46:22.839 [5688] BuildServices: registered VideoTrimHandler
+13:17:31.235   12:46:22.839 [5688] BuildServices: resolving VideoSplitHandler
+13:17:31.235   12:46:22.840 [5688] BuildServices: registered VideoSplitHandler
+13:17:31.266   12:46:22.840 [5688] BuildServices: resolving VideoMergeHandler
+13:17:31.266   12:46:22.841 [5688] BuildServices: registered VideoMergeHandler
+13:17:31.266   12:46:22.841 [5688] BuildServices: resolving VideoGeometryHandler
+13:17:31.281   12:46:22.842 [5688] BuildServices: registered VideoGeometryHandler
+13:17:31.281   12:46:22.842 [5688] BuildServices: resolving VideoSpeedVolumeHandler
+13:17:31.281   12:46:22.843 [5688] BuildServices: registered VideoSpeedVolumeHandler
+13:17:31.312   12:46:22.843 [5688] BuildServices: resolving VideoAudioHandler
+13:17:31.312   12:46:22.843 [5688] BuildServices: registered VideoAudioHandler
+13:17:31.328   12:46:22.844 [5688] BuildServices: resolving VideoOverlayHandler
+13:17:31.328   12:46:22.844 [5688] BuildServices: registered VideoOverlayHandler
+13:17:31.328   12:46:22.845 [5688] BuildServices: resolving VideoFramesHandler
+13:17:31.344   12:46:22.845 [5688] BuildServices: registered VideoFramesHandler
+13:17:31.362   12:46:22.846 [5688] BuildServices: resolving VideoMetadataHandler
+13:17:31.362   12:46:22.846 [5688] BuildServices: registered VideoMetadataHandler
+13:17:31.375   12:46:22.846 [5688] BuildServices: resolving ImageResizeHandler
+13:17:31.375   12:46:22.847 [5688] BuildServices: registered ImageResizeHandler
+13:17:31.375   12:46:22.847 [5688] BuildServices: resolving ImageCropHandler
+13:17:31.412   12:46:22.848 [5688] BuildServices: registered ImageCropHandler
+13:17:31.412   12:46:22.848 [5688] BuildServices: resolving ImageTransformHandler
+13:17:31.422   12:46:22.850 [5688] BuildServices: registered ImageTransformHandler
+13:17:31.422   12:46:22.851 [5688] BuildServices: resolving ImageConvertHandler
+13:17:31.422   12:46:22.852 [5688] BuildServices: registered ImageConvertHandler
+13:17:31.437   12:46:22.852 [5688] BuildServices: resolving ImageCompressHandler
+13:17:31.462   12:46:22.871 [5688] BuildServices: registered ImageCompressHandler
+13:17:31.469   12:46:22.872 [5688] BuildServices: resolving ImageColorHandler
+13:17:31.469   12:46:22.872 [5688] BuildServices: registered ImageColorHandler
+13:17:31.469   12:46:22.873 [5688] BuildServices: resolving ImageWatermarkHandler
+13:17:31.484   12:46:22.873 [5688] BuildServices: registered ImageWatermarkHandler
+13:17:31.484   12:46:22.874 [5688] BuildServices: resolving ImageExifHandler
+13:17:31.515   12:46:22.874 [5688] BuildServices: registered ImageExifHandler
+13:17:31.515   12:46:22.875 [5688] BuildServices: resolving ImageCollageHandler
+13:17:31.515   12:46:22.875 [5688] BuildServices: registered ImageCollageHandler
+13:17:31.531   12:46:22.876 [5688] BuildServices: resolving ImageBatchHandler
+13:17:31.531   12:46:22.876 [5688] BuildServices: registered ImageBatchHandler
+13:17:31.531   12:46:22.876 [5688] BuildServices: resolving ImageBackgroundHandler
+13:17:31.562   12:46:22.877 [5688] BuildServices: registered ImageBackgroundHandler
+13:17:31.562   12:46:22.877 [5688] BuildServices: resolving CodeGenerateHandler
+13:17:31.578   12:46:22.878 [5688] BuildServices: registered CodeGenerateHandler
+13:17:31.583   12:46:22.878 [5688] BuildServices: resolving CodeScanHandler
+13:17:31.583   12:46:22.879 [5688] BuildServices: registered CodeScanHandler
+13:17:31.612   12:46:22.879 [5688] BuildServices: resolving FileRenameHandler
+13:17:31.612   12:46:22.880 [5688] BuildServices: registered FileRenameHandler
+13:17:31.625   12:46:22.880 [5688] BuildServices: resolving FileHashHandler
+13:17:31.625   12:46:22.880 [5688] BuildServices: registered FileHashHandler
+13:17:31.625   12:46:22.881 [5688] BuildServices: resolving FileMetadataHandler
+13:17:31.641   12:46:22.882 [5688] BuildServices: registered FileMetadataHandler
+13:17:31.663   12:46:22.882 [5688] BuildServices: resolving CaptureRecordHandler
+13:17:31.663   12:46:22.883 [5688] BuildServices: registered CaptureRecordHandler
+13:17:31.673   12:46:22.883 [5688] BuildServices: resolving PdfMergeHandler
+13:17:31.673   12:46:22.884 [5688] BuildServices: registered PdfMergeHandler
+13:17:31.673   12:46:22.884 [5688] BuildServices: resolving PdfSplitHandler
+13:17:31.687   12:46:22.885 [5688] BuildServices: registered PdfSplitHandler
+13:17:31.714   12:46:22.886 [5688] BuildServices: resolving PdfReorderHandler
+13:17:31.714   12:46:22.886 [5688] BuildServices: registered PdfReorderHandler
+13:17:31.728   12:46:22.886 [5688] BuildServices: resolving PdfRotateHandler
+13:17:31.728   12:46:22.887 [5688] BuildServices: registered PdfRotateHandler
+13:17:31.728   12:46:22.887 [5688] BuildServices: resolving PdfWatermarkHandler
+13:17:31.762   12:46:22.888 [5688] BuildServices: registered PdfWatermarkHandler
+13:17:31.762   12:46:22.888 [5688] BuildServices: resolving PdfToImageHandler
+13:17:31.775   12:46:22.889 [5688] BuildServices: registered PdfToImageHandler
+13:17:31.775   12:46:22.889 [5688] BuildServices: resolving PdfFromImageHandler
+13:17:31.775   12:46:22.890 [5688] BuildServices: registered PdfFromImageHandler
+13:17:31.794   12:46:22.890 [5688] BuildServices: resolving PdfCompressHandler
+13:17:31.812   12:46:22.891 [5688] BuildServices: registered PdfCompressHandler
+13:17:31.822   12:46:22.891 [5688] BuildServices: resolving IdPhotoCreateHandler
+13:17:31.822   12:46:22.892 [5688] BuildServices: registered IdPhotoCreateHandler
+13:17:31.822   12:46:22.893 [5688] BuildServices: resolving IdPhotoCheckHandler
+13:17:31.837   12:46:22.893 [5688] BuildServices: registered IdPhotoCheckHandler
+13:17:31.862   12:46:22.893 [5688] BuildServices: resolving IdPhotoPrintHandler
+13:17:31.869   12:46:22.894 [5688] BuildServices: registered IdPhotoPrintHandler
+13:17:31.869   12:46:22.894 [5688] BuildServices: handlers registered
+13:17:31.869   12:46:22.894 [5688] BuildServices done
+13:17:31.885   12:46:23.373 [5688] OnLaunched enter
+13:17:31.885   12:46:24.103 [5688] OnLaunched done
+13:17:31.915   12:46:29.328 [5688] navigate ImageWorkbenchPage ok (tool=<none>)
+13:17:31.915   12:46:31.587 [5688] navigate VideoOutputPage ok (tool=<none>)
+13:17:31.931   12:46:36.044 [5688] navigate GifMakerPage ok (tool=video.gif)
+13:17:31.931   12:46:43.044 [5688] navigate VideoEditorPage ok (tool=video.trim)
+13:17:31.931   12:46:45.424 [5688] navigate PdfPage ok (tool=<none>)
+13:17:31.931   12:46:51.038 [5688] navigate OcrQrPage ok (tool=ocr.image)
+13:17:31.931   12:46:53.883 [5688] navigate GeneratorsPage ok (tool=code.generate)
+13:17:31.931   12:46:58.826 [5688] navigate IdPhotoPage ok (tool=idphoto.create)
+13:17:31.931   12:51:49.150 [7264] App ctor enter
+13:17:31.931   12:51:49.182 [7264] env MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\
+13:17:31.931   12:51:49.234 [7264] module Microsoft.WindowsAppRuntime.dll = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\Microsoft.WindowsAppRuntime.dll
+13:17:32.012   12:51:49.234 [7264] env MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\
+13:17:32.012   12:51:49.243 [7264] InitializeComponent ok
+13:17:32.025   12:51:49.244 [7264] BuildServices enter
+13:17:32.025   12:51:51.036 [7264] BuildServices: exe dir = C:\TinyPixBuild2\src\TinyPix.App\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64
+13:17:32.025   12:51:51.045 [7264] BuildServices: workspace ok
+13:17:32.041   12:51:51.087 [7264] BuildServices: provider built
+13:17:32.065   12:51:51.122 [7264] BuildServices: resolving VideoConvertHandler
+13:17:32.072   12:51:51.125 [7264] BuildServices: registered VideoConvertHandler
+13:17:32.072   12:51:51.125 [7264] BuildServices: resolving VideoCompressHandler
+13:17:32.087   12:51:51.127 [7264] BuildServices: registered VideoCompressHandler
+13:17:32.113   12:51:51.127 [7264] BuildServices: resolving GifMakerHandler
+13:17:32.119   12:51:51.127 [7264] BuildServices: registered GifMakerHandler
+13:17:32.119   12:51:51.128 [7264] BuildServices: resolving VideoTrimHandler
+13:17:32.119   12:51:51.129 [7264] BuildServices: registered VideoTrimHandler
+13:17:32.135   12:51:51.129 [7264] BuildServices: resolving VideoSplitHandler
+13:17:32.135   12:51:51.130 [7264] BuildServices: registered VideoSplitHandler
+13:17:32.166   12:51:51.130 [7264] BuildServices: resolving VideoMergeHandler
+13:17:32.166   12:51:51.131 [7264] BuildServices: registered VideoMergeHandler
+13:17:32.166   12:51:51.131 [7264] BuildServices: resolving VideoGeometryHandler
+13:17:32.181   12:51:51.131 [7264] BuildServices: registered VideoGeometryHandler
+13:17:32.181   12:51:51.132 [7264] BuildServices: resolving VideoSpeedVolumeHandler
+13:17:32.181   12:51:51.132 [7264] BuildServices: registered VideoSpeedVolumeHandler
+13:17:32.212   12:51:51.133 [7264] BuildServices: resolving VideoAudioHandler
+13:17:32.212   12:51:51.133 [7264] BuildServices: registered VideoAudioHandler
+13:17:32.228   12:51:51.134 [7264] BuildServices: resolving VideoOverlayHandler
+13:17:32.228   12:51:51.134 [7264] BuildServices: registered VideoOverlayHandler
+13:17:32.228   12:51:51.135 [7264] BuildServices: resolving VideoFramesHandler
+13:17:32.228   12:51:51.135 [7264] BuildServices: registered VideoFramesHandler
+13:17:32.262   12:51:51.136 [7264] BuildServices: resolving VideoMetadataHandler
+13:17:32.262   12:51:51.136 [7264] BuildServices: registered VideoMetadataHandler
+13:17:32.275   12:51:51.137 [7264] BuildServices: resolving ImageResizeHandler
+13:17:32.275   12:51:51.137 [7264] BuildServices: registered ImageResizeHandler
+13:17:32.275   12:51:51.138 [7264] BuildServices: resolving ImageCropHandler
+13:17:32.291   12:51:51.138 [7264] BuildServices: registered ImageCropHandler
+13:17:32.312   12:51:51.139 [7264] BuildServices: resolving ImageTransformHandler
+13:17:32.322   12:51:51.141 [7264] BuildServices: registered ImageTransformHandler
+13:17:32.322   12:51:51.142 [7264] BuildServices: resolving ImageConvertHandler
+13:17:32.322   12:51:51.142 [7264] BuildServices: registered ImageConvertHandler
+13:17:32.337   12:51:51.143 [7264] BuildServices: resolving ImageCompressHandler
+13:17:32.337   12:51:51.145 [7264] BuildServices: registered ImageCompressHandler
+13:17:32.362   12:51:51.145 [7264] BuildServices: resolving ImageColorHandler
+13:17:32.369   12:51:51.146 [7264] BuildServices: registered ImageColorHandler
+13:17:32.369   12:51:51.146 [7264] BuildServices: resolving ImageWatermarkHandler
+13:17:32.369   12:51:51.147 [7264] BuildServices: registered ImageWatermarkHandler
+13:17:32.385   12:51:51.147 [7264] BuildServices: resolving ImageExifHandler
+13:17:32.412   12:51:51.148 [7264] BuildServices: registered ImageExifHandler
+13:17:32.416   12:51:51.149 [7264] BuildServices: resolving ImageCollageHandler
+13:17:32.416   12:51:51.149 [7264] BuildServices: registered ImageCollageHandler
+13:17:32.416   12:51:51.149 [7264] BuildServices: resolving ImageBatchHandler
+13:17:32.431   12:51:51.150 [7264] BuildServices: registered ImageBatchHandler
+13:17:32.431   12:51:51.151 [7264] BuildServices: resolving ImageBackgroundHandler
+13:17:32.463   12:51:51.151 [7264] BuildServices: registered ImageBackgroundHandler
+13:17:32.463   12:51:51.152 [7264] BuildServices: resolving CodeGenerateHandler
+13:17:32.478   12:51:51.152 [7264] BuildServices: registered CodeGenerateHandler
+13:17:32.478   12:51:51.152 [7264] BuildServices: resolving CodeScanHandler
+13:17:32.478   12:51:51.153 [7264] BuildServices: registered CodeScanHandler
+13:17:32.478   12:51:51.153 [7264] BuildServices: resolving FileRenameHandler
+13:17:32.512   12:51:51.170 [7264] BuildServices: registered FileRenameHandler
+13:17:32.512   12:51:51.171 [7264] BuildServices: resolving FileHashHandler
+13:17:32.525   12:51:51.172 [7264] BuildServices: registered FileHashHandler
+13:17:32.525   12:51:51.172 [7264] BuildServices: resolving FileMetadataHandler
+13:17:32.525   12:51:51.173 [7264] BuildServices: registered FileMetadataHandler
+13:17:32.562   12:51:51.173 [7264] BuildServices: resolving CaptureRecordHandler
+13:17:32.562   12:51:51.174 [7264] BuildServices: registered CaptureRecordHandler
+13:17:32.572   12:51:51.174 [7264] BuildServices: resolving PdfMergeHandler
+13:17:32.572   12:51:51.175 [7264] BuildServices: registered PdfMergeHandler
+13:17:32.588   12:51:51.175 [7264] BuildServices: resolving PdfSplitHandler
+13:17:32.588   12:51:51.176 [7264] BuildServices: registered PdfSplitHandler
+13:17:32.612   12:51:51.176 [7264] BuildServices: resolving PdfReorderHandler
+13:17:32.619   12:51:51.177 [7264] BuildServices: registered PdfReorderHandler
+13:17:32.619   12:51:51.177 [7264] BuildServices: resolving PdfRotateHandler
+13:17:32.634   12:51:51.178 [7264] BuildServices: registered PdfRotateHandler
+13:17:32.634   12:51:51.178 [7264] BuildServices: resolving PdfWatermarkHandler
+13:17:32.662   12:51:51.179 [7264] BuildServices: registered PdfWatermarkHandler
+13:17:32.666   12:51:51.180 [7264] BuildServices: resolving PdfToImageHandler
+13:17:32.666   12:51:51.180 [7264] BuildServices: registered PdfToImageHandler
+13:17:32.666   12:51:51.181 [7264] BuildServices: resolving PdfFromImageHandler
+13:17:32.681   12:51:51.181 [7264] BuildServices: registered PdfFromImageHandler
+13:17:32.681   12:51:51.181 [7264] BuildServices: resolving PdfCompressHandler
+13:17:32.713   12:51:51.182 [7264] BuildServices: registered PdfCompressHandler
+13:17:32.713   12:51:51.182 [7264] BuildServices: resolving IdPhotoCreateHandler
+13:17:32.713   12:51:51.183 [7264] BuildServices: registered IdPhotoCreateHandler
+13:17:32.728   12:51:51.183 [7264] BuildServices: resolving IdPhotoCheckHandler
+13:17:32.728   12:51:51.184 [7264] BuildServices: registered IdPhotoCheckHandler
+13:17:32.728   12:51:51.184 [7264] BuildServices: resolving IdPhotoPrintHandler
+13:17:32.762   12:51:51.184 [7264] BuildServices: registered IdPhotoPrintHandler
+13:17:32.762   12:51:51.185 [7264] BuildServices: handlers registered
+13:17:32.777   12:51:51.186 [7264] BuildServices done
+13:17:32.777   12:51:51.590 [7264] OnLaunched enter
+13:17:32.777   12:51:52.379 [7264] OnLaunched done
+13:17:32.777   12:51:57.540 [7264] navigate ImageWorkbenchPage ok (tool=<none>)
+13:17:32.777   12:51:59.823 [7264] navigate VideoOutputPage ok (tool=<none>)
+13:17:32.777   12:52:04.188 [7264] navigate GifMakerPage ok (tool=video.gif)
+13:17:32.777   12:52:11.093 [7264] navigate VideoEditorPage ok (tool=video.trim)
+13:17:32.777   12:52:13.436 [7264] navigate PdfPage ok (tool=<none>)
+13:17:32.777   12:52:18.928 [7264] navigate OcrQrPage ok (tool=ocr.image)
+13:17:32.777   12:52:21.741 [7264] navigate GeneratorsPage ok (tool=code.generate)
+13:17:32.864   12:52:26.729 [7264] navigate IdPhotoPage ok (tool=idphoto.create)
+13:17:32.864   13:16:39.777 [5968] App ctor enter
+13:17:32.878   13:16:39.794 [5968] env MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY = C:\Users\huashu\AppData\Local\Temp\.net\TinyPix\F-3W59y0SJ0L\
+13:17:32.878   13:16:39.865 [5968] module Microsoft.WindowsAppRuntime.dll = C:\Users\huashu\AppData\Local\Temp\.net\TinyPix\F-3W59y0SJ0L\Microsoft.WindowsAppRuntime.dll
+13:17:32.878   13:16:39.866 [5968] env MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY = C:\Users\huashu\AppData\Local\Temp\.net\TinyPix\F-3W59y0SJ0L\
+13:17:32.912   13:16:39.876 [5968] InitializeComponent ok
+13:17:32.912   13:16:39.876 [5968] BuildServices enter
+13:17:32.925   13:16:39.936 [5968] BuildServices: exe dir = C:\TinyPixBuild2\artifacts\TinyPix-single-file
+13:17:32.925   13:16:39.943 [5968] BuildServices: workspace ok
+13:17:32.925   13:16:39.985 [5968] BuildServices: provider built
+13:17:32.940   13:16:40.021 [5968] BuildServices: resolving VideoConvertHandler
+13:17:32.962   13:16:40.024 [5968] BuildServices: registered VideoConvertHandler
+13:17:32.972   13:16:40.024 [5968] BuildServices: resolving VideoCompressHandler
+13:17:32.972   13:16:40.026 [5968] BuildServices: registered VideoCompressHandler
+13:17:32.972   13:16:40.027 [5968] BuildServices: resolving GifMakerHandler
+13:17:32.987   13:16:40.027 [5968] BuildServices: registered GifMakerHandler
+13:17:33.012   13:16:40.028 [5968] BuildServices: resolving VideoTrimHandler
+13:17:33.019   13:16:40.029 [5968] BuildServices: registered VideoTrimHandler
+13:17:33.019   13:16:40.029 [5968] BuildServices: resolving VideoSplitHandler
+13:17:33.019   13:16:40.029 [5968] BuildServices: registered VideoSplitHandler
+13:17:33.034   13:16:40.030 [5968] BuildServices: resolving VideoMergeHandler
+13:17:33.034   13:16:40.030 [5968] BuildServices: registered VideoMergeHandler
+13:17:33.065   13:16:40.030 [5968] BuildServices: resolving VideoGeometryHandler
+13:17:33.065   13:16:40.031 [5968] BuildServices: registered VideoGeometryHandler
+13:17:33.065   13:16:40.031 [5968] BuildServices: resolving VideoSpeedVolumeHandler
+13:17:33.081   13:16:40.032 [5968] BuildServices: registered VideoSpeedVolumeHandler
+13:17:33.081   13:16:40.032 [5968] BuildServices: resolving VideoAudioHandler
+13:17:33.081   13:16:40.033 [5968] BuildServices: registered VideoAudioHandler
+13:17:33.112   13:16:40.033 [5968] BuildServices: resolving VideoOverlayHandler
+13:17:33.112   13:16:40.034 [5968] BuildServices: registered VideoOverlayHandler
+13:17:33.128   13:16:40.034 [5968] BuildServices: resolving VideoFramesHandler
+13:17:33.128   13:16:40.035 [5968] BuildServices: registered VideoFramesHandler
+13:17:33.128   13:16:40.035 [5968] BuildServices: resolving VideoMetadataHandler
+13:17:33.162   13:16:40.036 [5968] BuildServices: registered VideoMetadataHandler
+13:17:33.162   13:16:40.036 [5968] BuildServices: resolving ImageResizeHandler
+13:17:33.175   13:16:40.037 [5968] BuildServices: registered ImageResizeHandler
+13:17:33.175   13:16:40.037 [5968] BuildServices: resolving ImageCropHandler
+13:17:33.175   13:16:40.037 [5968] BuildServices: registered ImageCropHandler
+13:17:33.190   13:16:40.038 [5968] BuildServices: resolving ImageTransformHandler
+13:17:33.212   13:16:40.040 [5968] BuildServices: registered ImageTransformHandler
+13:17:33.222   13:16:40.041 [5968] BuildServices: resolving ImageConvertHandler
+13:17:33.222   13:16:40.041 [5968] BuildServices: registered ImageConvertHandler
+13:17:33.222   13:16:40.042 [5968] BuildServices: resolving ImageCompressHandler
+13:17:33.237   13:16:40.045 [5968] BuildServices: registered ImageCompressHandler
+13:17:33.262   13:16:40.045 [5968] BuildServices: resolving ImageColorHandler
+13:17:33.269   13:16:40.062 [5968] BuildServices: registered ImageColorHandler
+13:17:33.269   13:16:40.063 [5968] BuildServices: resolving ImageWatermarkHandler
+13:17:33.269   13:16:40.064 [5968] BuildServices: registered ImageWatermarkHandler
+13:17:33.284   13:16:40.064 [5968] BuildServices: resolving ImageExifHandler
+13:17:33.284   13:16:40.065 [5968] BuildServices: registered ImageExifHandler
+13:17:33.315   13:16:40.065 [5968] BuildServices: resolving ImageCollageHandler
+13:17:33.315   13:16:40.066 [5968] BuildServices: registered ImageCollageHandler
+13:17:33.315   13:16:40.066 [5968] BuildServices: resolving ImageBatchHandler
+13:17:33.331   13:16:40.067 [5968] BuildServices: registered ImageBatchHandler
+13:17:33.331   13:16:40.067 [5968] BuildServices: resolving ImageBackgroundHandler
+13:17:33.362   13:16:40.068 [5968] BuildServices: registered ImageBackgroundHandler
+13:17:33.362   13:16:40.068 [5968] BuildServices: resolving CodeGenerateHandler
+13:17:33.362   13:16:40.069 [5968] BuildServices: registered CodeGenerateHandler
+13:17:33.378   13:16:40.069 [5968] BuildServices: resolving CodeScanHandler
+13:17:33.378   13:16:40.070 [5968] BuildServices: registered CodeScanHandler
+13:17:33.412   13:16:40.070 [5968] BuildServices: resolving FileRenameHandler
+13:17:33.412   13:16:40.071 [5968] BuildServices: registered FileRenameHandler
+13:17:33.425   13:16:40.071 [5968] BuildServices: resolving FileHashHandler
+13:17:33.425   13:16:40.072 [5968] BuildServices: registered FileHashHandler
+13:17:33.425   13:16:40.072 [5968] BuildServices: resolving FileMetadataHandler
+13:17:33.440   13:16:40.072 [5968] BuildServices: registered FileMetadataHandler
+13:17:33.462   13:16:40.073 [5968] BuildServices: resolving CaptureRecordHandler
+13:17:33.472   13:16:40.073 [5968] BuildServices: registered CaptureRecordHandler
+13:17:33.472   13:16:40.074 [5968] BuildServices: resolving PdfMergeHandler
+13:17:33.472   13:16:40.074 [5968] BuildServices: registered PdfMergeHandler
+13:17:33.487   13:16:40.075 [5968] BuildServices: resolving PdfSplitHandler
+13:17:33.487   13:16:40.075 [5968] BuildServices: registered PdfSplitHandler
+13:17:33.519   13:16:40.076 [5968] BuildServices: resolving PdfReorderHandler
+13:17:33.519   13:16:40.076 [5968] BuildServices: registered PdfReorderHandler
+13:17:33.519   13:16:40.077 [5968] BuildServices: resolving PdfRotateHandler
+13:17:33.534   13:16:40.077 [5968] BuildServices: registered PdfRotateHandler
+13:17:33.534   13:16:40.078 [5968] BuildServices: resolving PdfWatermarkHandler
+13:17:33.565   13:16:40.078 [5968] BuildServices: registered PdfWatermarkHandler
+13:17:33.565   13:16:40.079 [5968] BuildServices: resolving PdfToImageHandler
+13:17:33.565   13:16:40.079 [5968] BuildServices: registered PdfToImageHandler
+13:17:33.581   13:16:40.079 [5968] BuildServices: resolving PdfFromImageHandler
+13:17:33.581   13:16:40.080 [5968] BuildServices: registered PdfFromImageHandler
+13:17:33.612   13:16:40.080 [5968] BuildServices: resolving PdfCompressHandler
+13:17:33.612   13:16:40.081 [5968] BuildServices: registered PdfCompressHandler
+13:17:33.612   13:16:40.081 [5968] BuildServices: resolving IdPhotoCreateHandler
+13:17:33.632   13:16:40.082 [5968] BuildServices: registered IdPhotoCreateHandler
+13:17:33.632   13:16:40.082 [5968] BuildServices: resolving IdPhotoCheckHandler
+13:17:33.632   13:16:40.083 [5968] BuildServices: registered IdPhotoCheckHandler
+13:17:33.665   13:16:40.083 [5968] BuildServices: resolving IdPhotoPrintHandler
+13:17:33.665   13:16:40.084 [5968] BuildServices: registered IdPhotoPrintHandler
+13:17:33.675   13:16:40.084 [5968] BuildServices: handlers registered
+13:17:33.675   13:16:40.085 [5968] BuildServices done
+13:17:33.675   13:16:40.344 [5968] OnLaunched enter
+13:17:33.712   13:16:41.241 [5968] OnLaunched done
+13:17:33.712   13:16:47.638 [5968] navigate ImageWorkbenchPage ok (tool=<none>)
+13:17:33.722   13:16:50.141 [5968] navigate VideoOutputPage ok (tool=<none>)
+13:17:33.722   13:16:54.940 [5968] navigate GifMakerPage ok (tool=video.gif)
+13:17:33.722   13:17:02.063 [5968] navigate VideoEditorPage ok (tool=video.trim)
+13:17:33.738   13:17:04.485 [5968] navigate PdfPage ok (tool=<none>)
+13:17:33.762   13:17:10.072 [5968] navigate OcrQrPage ok (tool=ocr.image)
+13:17:33.769   13:17:12.965 [5968] navigate GeneratorsPage ok (tool=code.generate)
+13:17:33.769   13:17:18.018 [5968] navigate IdPhotoPage ok (tool=idphoto.create)
+13:17:34.828 TinyPix stopped, capture done
